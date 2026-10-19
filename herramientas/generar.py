@@ -20,6 +20,7 @@ SITIO = os.path.join(RAIZ, "sitio")
 WA = "https://wa.me/573105996809"
 WA_COTIZAR = WA + "?text=Hola%20OMBU%2C%20quiero%20cotizar%20la%20renovaci%C3%B3n%20de%20mi%20espacio."
 URL = "https://revupag.github.io/ombu-propuesta/"
+LEGAL = "politica-de-datos.html"
 
 ARTICULOS = sorted(ARTICULOS, key=lambda a: a["fecha"], reverse=True)
 
@@ -36,10 +37,12 @@ def sprite():
 
 
 def rutas(nivel):
-    """nivel 0 = sitio/index.html, nivel 1 = sitio/blog/*.html"""
+    """nivel 0 = sitio/index.html, 1 = sitio/blog/*.html, 2 = sitio/legal/*.html"""
     if nivel == 0:
-        return {"A": "../assets/", "H": "", "B": "blog/", "P": "../index.html"}
-    return {"A": "../../assets/", "H": "../index.html", "B": "", "P": "../../index.html"}
+        return {"A": "../assets/", "H": "", "B": "blog/", "P": "../index.html", "L": "legal/" + LEGAL}
+    if nivel == 2:
+        return {"A": "../../assets/", "H": "../index.html", "B": "../blog/", "P": "../../index.html", "L": LEGAL}
+    return {"A": "../../assets/", "H": "../index.html", "B": "", "P": "../../index.html", "L": "../legal/" + LEGAL}
 
 
 def cabecera(nivel, activo=""):
@@ -138,6 +141,7 @@ def pie(nivel):
   </div>
   <div class="wrap ftr__bottom">
     <p>© 2026 OMBU Renovaciones · Medellín, Antioquia</p>
+    <p class="ftr__legal"><a href="{r['L']}">Política de datos</a><button type="button" data-cookies>Preferencias de cookies</button></p>
     <a href="{r['P']}">← Volver a la propuesta</a>
   </div>
 </footer>
@@ -233,8 +237,8 @@ def scripts(nivel, extra=""):
 """
 
 
-def cuerpo_comun(nivel):
-    return sprite() + '\n\n<a class="skip" href="#contenido">Saltar al contenido</a>\n\n' + cabecera(nivel, "blog")
+def cuerpo_comun(nivel, activo="blog"):
+    return sprite() + '\n\n<a class="skip" href="#contenido">Saltar al contenido</a>\n\n' + cabecera(nivel, activo)
 
 
 def fab():
@@ -369,6 +373,99 @@ def pagina_articulo(a):
 """ + pie(1) + fab() + scripts(1))
 
 
+PEND = '<mark class="pend">por confirmar</mark>'
+
+
+def pagina_politica():
+    return (head("Política de tratamiento de datos · OMBU Renovaciones", "Cómo OMBU Renovaciones recolecta, usa y protege tus datos personales, y cómo ejercer tus derechos.", 2, "og-sitio.jpg")
+            + '<body data-page="legal" data-root="../../" data-home="../index.html">\n' + cuerpo_comun(2, "") + f"""
+<main id="contenido">
+  <article class="art legal">
+    <header class="art__head wrap">
+      <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Política de datos</span></nav>
+      <h1 class="display art__title">Política de tratamiento <em>de datos personales</em></h1>
+      <p class="lead art__lead">Cómo recolectamos, usamos y protegemos tu información, y cómo puedes conocerla, actualizarla o pedir que la eliminemos.</p>
+      <p class="post__meta"><span>Vigente desde el 19 de octubre de 2026</span></p>
+    </header>
+    <div class="wrap legal__body">
+      <div class="prose">
+        <h2>1. Responsable del tratamiento</h2>
+        <ul>
+          <li><strong>Responsable:</strong> OMBU Renovaciones</li>
+          <li><strong>NIT:</strong> {PEND}</li>
+          <li><strong>Domicilio:</strong> Medellín, Antioquia, Colombia. Dirección: {PEND}</li>
+          <li><strong>Correo para temas de datos:</strong> {PEND}</li>
+          <li><strong>WhatsApp:</strong> <a href="{WA}" target="_blank" rel="noopener">+57 310 599 6809</a></li>
+        </ul>
+
+        <h2>2. Marco legal</h2>
+        <p>Esta política cumple la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto Único 1074 de 2015) y demás normas colombianas sobre protección de datos personales.</p>
+
+        <h2>3. Qué datos recolectamos</h2>
+        <ul>
+          <li><strong>Datos de contacto:</strong> nombre y número de celular que escribes en el formulario o nos envías por WhatsApp.</li>
+          <li><strong>Datos del proyecto:</strong> tipo de espacio, ideas, fotos, planos y medidas que decidas compartir.</li>
+          <li><strong>Datos de navegación:</strong> tus preferencias de cookies, guardadas en tu propio navegador.</li>
+        </ul>
+        <p>No pedimos datos sensibles ni datos de menores de edad.</p>
+
+        <h2>4. Para qué los usamos</h2>
+        <ul>
+          <li>Responder tu solicitud, asesorarte y preparar tu cotización.</li>
+          <li>Coordinar visitas, diseño, ejecución y entrega de tu proyecto.</li>
+          <li>Enviarte información sobre el estado de tu obra y garantías.</li>
+          <li>Enviarte novedades de OMBU, solo si nos das permiso. Puedes retirarlo cuando quieras.</li>
+          <li>Cumplir obligaciones legales, contables y tributarias.</li>
+        </ul>
+
+        <h2>5. Autorización</h2>
+        <p>Al enviar el formulario o escribirnos por WhatsApp nos autorizas a tratar tus datos para las finalidades anteriores. Guardamos prueba de esa autorización (el mensaje recibido) mientras dure la relación contigo.</p>
+
+        <h2>6. Tus derechos</h2>
+        <p>Como titular de los datos puedes:</p>
+        <ul>
+          <li>Conocer, actualizar y corregir tus datos.</li>
+          <li>Pedir prueba de la autorización que nos diste.</li>
+          <li>Saber cómo hemos usado tus datos.</li>
+          <li>Revocar la autorización o pedir que eliminemos tus datos, cuando no exista un deber legal o contractual de conservarlos.</li>
+          <li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC).</li>
+          <li>Acceder gratis a tus datos personales.</li>
+        </ul>
+
+        <h2>7. Cómo ejercer tus derechos</h2>
+        <p>Escríbenos al correo de datos o por WhatsApp con tu nombre, número de contacto y lo que necesitas.</p>
+        <ul>
+          <li><strong>Consultas:</strong> respondemos en máximo 10 días hábiles. Si necesitamos más tiempo te avisamos, y nunca serán más de 5 días hábiles adicionales.</li>
+          <li><strong>Reclamos</strong> (corrección, actualización, eliminación o revocatoria): respondemos en máximo 15 días hábiles, prorrogables hasta 8 días hábiles más con aviso previo.</li>
+        </ul>
+        <p>Antes de acudir a la SIC debes haber presentado tu consulta o reclamo ante nosotros.</p>
+
+        <h2>8. Con quién compartimos tus datos</h2>
+        <p>No vendemos ni alquilamos tus datos. Los compartimos solo con quienes nos ayudan a prestar el servicio (por ejemplo, proveedores y contratistas de tu obra) y bajo deber de confidencialidad. Las conversaciones por WhatsApp pasan por los servidores de Meta Platforms, que pueden estar fuera de Colombia.</p>
+
+        <h2>9. Seguridad y conservación</h2>
+        <p>Aplicamos medidas razonables para evitar pérdida, uso o acceso no autorizado a tus datos. Los conservamos mientras dure la relación contigo y el tiempo que exija la ley.</p>
+
+        <h2 id="cookies">10. Cookies</h2>
+        <p>Las cookies son pequeños archivos que el sitio guarda en tu navegador. Las agrupamos así:</p>
+        <ul>
+          <li><strong>Necesarias:</strong> hacen funcionar el sitio y recuerdan tus preferencias de cookies. Siempre están activas.</li>
+          <li><strong>Analítica:</strong> nos dirían qué páginas se visitan para mejorar el sitio. Solo se activan si las aceptas.</li>
+          <li><strong>Marketing:</strong> permitirían mostrarte anuncios de OMBU en otras plataformas. Solo se activan si las aceptas.</li>
+        </ul>
+        <p>Hoy este sitio solo usa las necesarias. Puedes cambiar tu elección cuando quieras:</p>
+        <p><button class="btn" type="button" data-cookies>Preferencias de cookies</button></p>
+
+        <h2>11. Cambios a esta política</h2>
+        <p>Si cambiamos esta política publicaremos la nueva versión en esta página con su fecha de vigencia. Si el cambio afecta las finalidades, te pediremos una nueva autorización.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+""" + pie(2) + fab() + scripts(2))
+
+
 def jsonstr(s):
     import json
     return json.dumps(s, ensure_ascii=False)
@@ -403,7 +500,10 @@ def main():
     for a in ARTICULOS:
         with open(os.path.join(SITIO, "blog", a["slug"] + ".html"), "w", encoding="utf-8") as f:
             f.write(pagina_articulo(a))
-    print("Generado: sitio/index.html y", len(ARTICULOS) + 1, "páginas del blog")
+    os.makedirs(os.path.join(SITIO, "legal"), exist_ok=True)
+    with open(os.path.join(SITIO, "legal", LEGAL), "w", encoding="utf-8") as f:
+        f.write(pagina_politica())
+    print("Generado: sitio/index.html,", len(ARTICULOS) + 1, "páginas del blog y la política de datos")
 
 
 if __name__ == "__main__":

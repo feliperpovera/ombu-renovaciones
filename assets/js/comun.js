@@ -177,4 +177,72 @@
       fabUpdate();
     } else { fab.classList.add('is-on'); }
   }
+
+  /* ---------- Aviso y preferencias de cookies ----------
+     La elección queda en localStorage ('ombu-cookies'). Para cargar analítica o
+     marketing en el futuro: leer OMBU.consent o escuchar el evento 'ombu:consent'. */
+  var CK = 'ombu-cookies';
+  var POLITICA = ROOT + 'sitio/legal/politica-de-datos.html';
+  function leer() { try { return JSON.parse(localStorage.getItem(CK)); } catch (e) { return null; } }
+  function guardar(analitica, marketing) {
+    var c = { analitica: analitica, marketing: marketing, fecha: new Date().toISOString() };
+    try { localStorage.setItem(CK, JSON.stringify(c)); } catch (e) { /* modo privado: solo esta visita */ }
+    window.OMBU.consent = c;
+    document.dispatchEvent(new CustomEvent('ombu:consent', { detail: c }));
+    cerrarAviso();
+    if (dlg.open) dlg.close();
+  }
+  window.OMBU.consent = leer();
+
+  var aviso = document.createElement('section');
+  aviso.className = 'ck on-dark';
+  aviso.setAttribute('aria-label', 'Aviso de cookies');
+  aviso.innerHTML =
+    '<p class="ck__text">Usamos cookies necesarias para que el sitio funcione. Con tu permiso usaríamos también cookies de analítica y marketing. <a href="' + POLITICA + '#cookies">Más información</a></p>' +
+    '<div class="ck__btns">' +
+      '<button class="btn btn--light" type="button" data-ck="todas">Aceptar todas</button>' +
+      '<button class="btn btn--light" type="button" data-ck="rechazar">Solo necesarias</button>' +
+      '<button class="btn btn--ghost" type="button" data-ck="config">Configurar</button>' +
+    '</div>';
+
+  var dlg = document.createElement('dialog');
+  dlg.className = 'ckd';
+  dlg.setAttribute('aria-labelledby', 'ckd-title');
+  function fila(id, titulo, texto, fija) {
+    return '<label class="ckd__row"><span><strong>' + titulo + '</strong>' + texto + '</span>' +
+      '<input class="switch" type="checkbox" id="ck-' + id + '"' + (fija ? ' checked disabled' : '') + '></label>';
+  }
+  dlg.innerHTML =
+    '<form method="dialog" class="ckd__in">' +
+      '<h2 class="ckd__title" id="ckd-title">Preferencias de cookies</h2>' +
+      '<p class="ckd__lead">Elige qué cookies aceptas. Puedes cambiarlo cuando quieras desde el pie de página. <a href="' + POLITICA + '#cookies">Política de datos</a></p>' +
+      fila('necesarias', 'Necesarias', 'Hacen funcionar el sitio y guardan esta elección. Siempre activas.', true) +
+      fila('analitica', 'Analítica', 'Nos dicen qué páginas se visitan para mejorar el sitio.') +
+      fila('marketing', 'Marketing', 'Permiten mostrarte anuncios de OMBU en otras plataformas.') +
+      '<div class="ckd__btns">' +
+        '<button class="btn" type="button" data-ck="guardar">Guardar preferencias</button>' +
+        '<button class="btn btn--ghost" type="button" data-ck="todas">Aceptar todas</button>' +
+      '</div>' +
+      '<button class="ckd__x icon-btn" type="submit" aria-label="Cerrar">×</button>' +
+    '</form>';
+
+  function abrirAviso() { body.appendChild(aviso); body.classList.add('ck-open'); }
+  function cerrarAviso() { if (aviso.parentNode) aviso.remove(); body.classList.remove('ck-open'); }
+  function abrirPreferencias() {
+    var c = window.OMBU.consent || {};
+    $('#ck-analitica', dlg).checked = !!c.analitica;
+    $('#ck-marketing', dlg).checked = !!c.marketing;
+    if (!dlg.parentNode) body.appendChild(dlg);
+    dlg.showModal();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ck], [data-cookies]');
+    if (!b) return;
+    var a = b.dataset.ck;
+    if (b.hasAttribute('data-cookies') || a === 'config') abrirPreferencias();
+    else if (a === 'todas') guardar(true, true);
+    else if (a === 'rechazar') guardar(false, false);
+    else if (a === 'guardar') guardar($('#ck-analitica', dlg).checked, $('#ck-marketing', dlg).checked);
+  });
+  if (!window.OMBU.consent) abrirAviso();
 })();
