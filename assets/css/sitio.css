@@ -323,8 +323,8 @@ body.menu-open { overflow: hidden; }
   padding: 1.75rem; border-radius: var(--radius); background: var(--ombu-lavanda); color: var(--ombu-carbon);
 }
 .quote__mark { width: 36px; height: 30px; fill: var(--ombu-carbon); opacity: .9; }
-.quote__lead { font-size: var(--fs-md); font-weight: 600; line-height: 1.45; }
-.quote__text { font-size: var(--fs-sm); line-height: 1.65; }
+.quote__lead { font-size: var(--fs-md); font-weight: 600; line-height: 1.45; min-height: calc(1.45em * 4); }
+.quote__text { font-size: var(--fs-sm); line-height: 1.65; min-height: calc(1.65em * 5); }
 .js .quote__text:not(.is-open) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; }
 .quote__more {
   align-self: flex-start; margin-top: -.5rem; min-height: 44px; padding: 0;
