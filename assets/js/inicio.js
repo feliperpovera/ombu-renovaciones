@@ -1,4 +1,5 @@
-/* OMBU Renovaciones · Portada: comparadores, proyectos, fichas, visor y formulario.
+/* OMBU Renovaciones · Tarjetas de proyecto con comparador, fichas, visor, testimonios y formulario.
+   Se carga en Inicio, Proyectos y Contacto; cada parte se activa solo si su HTML existe.
    Lo común a todas las páginas (encabezado, menú, carriles) está en comun.js. */
 (function () {
   'use strict';
@@ -9,7 +10,6 @@
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
-  var hero = $('.hero');
 
   function waLink(text) { return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(text); }
 
@@ -30,52 +30,16 @@
     return function () { if (raf) cancelAnimationFrame(raf); raf = null; };
   }
 
-  /* ---------- Comparador grande antes / después ---------- */
-  var ba = $('#ba');
-  if (ba) {
-    var stage = $('.ba__stage', ba);
-    var range = $('.ba__range', ba);
-    var stopIntro = function () {};
-    var setPos = function (v) {
-      v = Math.max(0, Math.min(100, v));
-      ba.style.setProperty('--pos', v + '%');
-      range.value = Math.round(v);
-      ba.dataset.edge = v < 12 ? 'left' : v > 88 ? 'right' : '';
-    };
-    range.addEventListener('input', function () { setPos(+range.value); });
-    // Arrastre en toda la foto (en iOS el range solo responde tocando el pulgar)
-    range.style.pointerEvents = 'none';
-    var dragging = false;
-    var fromEvent = function (e) {
-      var r = stage.getBoundingClientRect();
-      setPos(((e.clientX - r.left) / r.width) * 100);
-    };
-    stage.addEventListener('pointerdown', function (e) {
-      dragging = true; stage.setPointerCapture(e.pointerId); fromEvent(e); stopIntro();
-    });
-    stage.addEventListener('pointermove', function (e) { if (dragging) fromEvent(e); });
-    ['pointerup', 'pointercancel'].forEach(function (t) { stage.addEventListener(t, function () { dragging = false; }); });
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        io.disconnect();
-        stopIntro = hint(setPos, 2200, 22, 350);
-      }, { threshold: 0.6 });
-      io.observe(stage);
-    }
-  }
-
-  /* ---------- Proyectos: tarjetas con comparador ---------- */
-  var projSec = $('#servicios');
-  var track = $('#proj-track');
+  /* ---------- Proyectos: tarjetas con comparador ----------
+     Cada <ul data-proj="slug,slug"> recibe las tarjetas de esos proyectos (assets/js/proyectos.js). */
   function src(p, f) { return IMG + p.slug + '/' + f[0]; }
   function srcset(p, ph) { return src(p, ph[0]) + ' ' + ph[0][1] + 'w, ' + src(p, ph[1]) + ' ' + ph[1][1] + 'w'; }
+  var porSlug = {};
+  PROYECTOS.forEach(function (p) { porSlug[p.slug] = p; });
 
-  $('#proj-count').textContent = PROYECTOS.length;
-  track.innerHTML = PROYECTOS.map(function (p, i) {
+  function tarjeta(p, lazy) {
     var a = p.par[0], d = p.par[1];
     var total = p.despues.length + p.antes.length;
-    var lazy = i < 2 ? 'eager' : 'lazy';
     return '<li class="card">' +
       '<div class="cmp" style="--pos: 50%">' +
         '<img class="cmp__img" src="' + src(p, d) + '" width="' + d[1] + '" height="' + d[2] + '" loading="' + lazy + '" decoding="async"' +
@@ -92,12 +56,18 @@
         '<span class="card__meta">' + total + ' fotos · Ver proyecto</span></span>' +
         '<span class="card__go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
       '</button></li>';
-  }).join('');
+  }
+  $$('[data-proj]').forEach(function (ul) {
+    var enCarril = !!ul.closest('.rail');
+    ul.insertAdjacentHTML('beforeend', ul.dataset.proj.split(',').map(function (slug, i) {
+      return porSlug[slug] ? tarjeta(porSlug[slug], enCarril && i < 2 ? 'eager' : 'lazy') : '';
+    }).join(''));
+  });
 
   /* Cada comparador: el divisor se arrastra desde su tirador (con el dedo) o desde
      cualquier punto de la foto (con el mouse). Un toque sin arrastre abre el proyecto;
      deslizar el dedo fuera del tirador sigue moviendo el carrusel. */
-  $$('.cmp', track).forEach(function (cmp) {
+  $$('[data-proj] .cmp').forEach(function (cmp) {
     var range = $('.cmp__range', cmp);
     var grab = $('.cmp__grab', cmp);
     var card = cmp.parentElement;
@@ -141,17 +111,9 @@
       io.observe(cmp);
     }
   });
-  if (projSec._railUpdate) projSec._railUpdate();
-
-  var toggle = $('#proj-toggle');
-  toggle.addEventListener('click', function () {
-    var grid = !projSec.classList.contains('is-grid');
-    projSec.classList.toggle('is-grid', grid);
-    toggle.setAttribute('aria-expanded', String(grid));
-    $('span', toggle).textContent = grid ? 'Ver en carrusel' : 'Ver todos';
-    track.scrollLeft = 0;
-    if (!grid) projSec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-    if (projSec._railUpdate) projSec._railUpdate();
+  $$('[data-proj]').forEach(function (ul) {
+    var sec = ul.closest('section');
+    if (sec && sec._railUpdate) sec._railUpdate();
   });
 
   /* ---------- Testimonios largos: plegables ---------- */
@@ -174,215 +136,232 @@
     t.insertAdjacentElement('afterend', more);
   });
 
-  /* ---------- Diálogos con animación de salida ---------- */
-  function closeAnimated(dlg, done) {
-    if (!dlg.open) return;
-    if (reduceMotion) { dlg.close(); if (done) done(); return; }
-    dlg.classList.add('is-closing');
-    setTimeout(function () {
-      dlg.classList.remove('is-closing'); dlg.close(); if (done) done();
-    }, 280);
-  }
-
-  /* ---------- Ficha de proyecto ---------- */
+  /* ---------- Ficha de proyecto y visor (solo donde hay tarjetas) ---------- */
   var sheet = $('#sheet');
-  var scroller = $('.sheet__scroll', sheet);
-  var gal = $('#panel-gal');
-  var tabs = $$('.tab', sheet);
-  var current = null;
-  var currentTab = 'despues';
-  var lastFocus = null;
+  if (sheet) {
+    /* ---------- Diálogos con animación de salida ---------- */
+    function closeAnimated(dlg, done) {
+      if (!dlg.open) return;
+      if (reduceMotion) { dlg.close(); if (done) done(); return; }
+      dlg.classList.add('is-closing');
+      setTimeout(function () {
+        dlg.classList.remove('is-closing'); dlg.close(); if (done) done();
+      }, 280);
+    }
 
-  function renderGallery(kind) {
-    currentTab = kind;
-    var list = current[kind];
-    tabs.forEach(function (t) {
-      var on = t.dataset.tab === kind;
-      t.setAttribute('aria-selected', String(on));
-      t.tabIndex = on ? 0 : -1;
-    });
-    gal.setAttribute('aria-labelledby', kind === 'despues' ? 'tab-d' : 'tab-a');
-    gal.innerHTML = list.map(function (ph, i) {
-      return '<figure class="gal__item"><button class="gal__btn" type="button" data-lb="' + i + '" aria-label="Ampliar foto ' + (i + 1) + ' de ' + list.length + ' (' + (kind === 'despues' ? 'después' : 'antes') + ')">' +
-        '<img src="' + src(current, ph[0]) + '" width="' + ph[0][1] + '" height="' + ph[0][2] + '" loading="lazy" decoding="async" alt="">' +
-        '</button></figure>';
-    }).join('');
-  }
+    /* ---------- Ficha de proyecto ---------- */
+    var scroller = $('.sheet__scroll', sheet);
+    var gal = $('#panel-gal');
+    var tabs = $$('.tab', sheet);
+    var current = null;
+    var currentTab = 'despues';
+    var lastFocus = null;
 
-  function openSheet(slug, push) {
-    var p = PROYECTOS.filter(function (x) { return x.slug === slug; })[0];
-    if (!p) return;
-    current = p;
-    lastFocus = lastFocus || document.activeElement;
-    var cover = p.despues[0];
-    var img = $('#sheet-cover');
-    img.src = src(p, cover[1]); img.srcset = srcset(p, cover); img.sizes = '(min-width: 960px) 1040px, 100vw';
-    img.width = cover[1][1]; img.height = cover[1][2];
-    img.alt = 'Proyecto ' + p.nombre + ' terminado';
-    $('#sheet-title').textContent = p.nombre;
-    $('.sheet__bar-title', sheet).textContent = p.nombre;
-    var meta = p.despues.length + ' fotos del resultado';
-    if (p.antes.length) meta += ' · ' + p.antes.length + ' del estado inicial';
-    $('#sheet-meta').textContent = meta;
-    $('span', tabs[0]).textContent = '(' + p.despues.length + ')';
-    $('span', tabs[1]).textContent = '(' + p.antes.length + ')';
-    tabs[1].disabled = !p.antes.length;
-    $('#sheet-wa').href = waLink('Hola OMBU, vi el proyecto ' + p.nombre + ' en su página y quiero algo así para mi espacio.');
-    renderGallery('despues');
-    scroller.scrollTop = 0;
-    sheet.classList.remove('is-scrolled');
-    if (!sheet.open) sheet.showModal();
-    document.body.classList.add('sheet-open');
-    $('[data-close]', sheet).focus({ preventScroll: true });
-    if (push) history.pushState({ sheet: slug }, '', '#proyecto/' + slug);
-  }
+    function renderGallery(kind) {
+      currentTab = kind;
+      var list = current[kind];
+      tabs.forEach(function (t) {
+        var on = t.dataset.tab === kind;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      gal.setAttribute('aria-labelledby', kind === 'despues' ? 'tab-d' : 'tab-a');
+      gal.innerHTML = list.map(function (ph, i) {
+        return '<figure class="gal__item"><button class="gal__btn" type="button" data-lb="' + i + '" aria-label="Ampliar foto ' + (i + 1) + ' de ' + list.length + ' (' + (kind === 'despues' ? 'después' : 'antes') + ')">' +
+          '<img src="' + src(current, ph[0]) + '" width="' + ph[0][1] + '" height="' + ph[0][2] + '" loading="lazy" decoding="async" alt="">' +
+          '</button></figure>';
+      }).join('');
+    }
 
-  function hideSheet() {
-    closeAnimated(sheet, function () {
-      document.body.classList.remove('sheet-open');
-      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
-      lastFocus = null;
-    });
-  }
-  function requestCloseSheet() {
-    if (history.state && history.state.sheet) history.back(); // popstate cierra
-    else { hideSheet(); if (location.hash.indexOf('#proyecto/') === 0) history.replaceState(null, '', location.pathname + location.search); }
-  }
+    function openSheet(slug, push) {
+      var p = PROYECTOS.filter(function (x) { return x.slug === slug; })[0];
+      if (!p) return;
+      current = p;
+      lastFocus = lastFocus || document.activeElement;
+      var cover = p.despues[0];
+      var img = $('#sheet-cover');
+      img.src = src(p, cover[1]); img.srcset = srcset(p, cover); img.sizes = '(min-width: 960px) 1040px, 100vw';
+      img.width = cover[1][1]; img.height = cover[1][2];
+      img.alt = 'Proyecto ' + p.nombre + ' terminado';
+      $('#sheet-title').textContent = p.nombre;
+      $('.sheet__bar-title', sheet).textContent = p.nombre;
+      var meta = p.despues.length + ' fotos del resultado';
+      if (p.antes.length) meta += ' · ' + p.antes.length + ' del estado inicial';
+      $('#sheet-meta').textContent = meta;
+      $('span', tabs[0]).textContent = '(' + p.despues.length + ')';
+      $('span', tabs[1]).textContent = '(' + p.antes.length + ')';
+      tabs[1].disabled = !p.antes.length;
+      $('#sheet-wa').href = waLink('Hola OMBU, vi el proyecto ' + p.nombre + ' en su página y quiero algo así para mi espacio.');
+      renderGallery('despues');
+      scroller.scrollTop = 0;
+      sheet.classList.remove('is-scrolled');
+      if (!sheet.open) sheet.showModal();
+      document.body.classList.add('sheet-open');
+      $('[data-close]', sheet).focus({ preventScroll: true });
+      if (push) history.pushState({ sheet: slug }, '', '#proyecto/' + slug);
+    }
 
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-open]');
-    if (b) { e.preventDefault(); lastFocus = b.closest('.menu, .drop') ? null : b; openSheet(b.dataset.open, true); }
-  });
-  $('[data-close]', sheet).addEventListener('click', requestCloseSheet);
-  sheet.addEventListener('cancel', function (e) { e.preventDefault(); requestCloseSheet(); });
-  sheet.addEventListener('click', function (e) { if (e.target === sheet) requestCloseSheet(); });
-  scroller.addEventListener('scroll', function () {
-    sheet.classList.toggle('is-scrolled', scroller.scrollTop > $('.sheet__hero', sheet).offsetHeight - 70);
-  }, { passive: true });
-
-  tabs.forEach(function (t, i) {
-    t.addEventListener('click', function () {
-      if (t.dataset.tab === currentTab) return;
-      gal.classList.add('is-swapping');
-      setTimeout(function () { renderGallery(t.dataset.tab); gal.classList.remove('is-swapping'); }, 150);
-    });
-    t.addEventListener('keydown', function (e) {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      var other = tabs[1 - i];
-      if (other.disabled) return;
-      other.focus(); other.click();
-    });
-  });
-
-  $('[data-share]', sheet).addEventListener('click', function () {
-    var url = location.href.split('#')[0] + '#proyecto/' + current.slug;
-    var data = { title: current.nombre + ' · OMBU Renovaciones', text: 'Mira este proyecto de OMBU Renovaciones', url: url };
-    if (navigator.share) { navigator.share(data).catch(function () {}); return; }
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(function () {
-        var btn = $('[data-share]', sheet);
-        btn.setAttribute('aria-label', 'Enlace copiado');
-        btn.classList.add('is-done');
-        setTimeout(function () { btn.setAttribute('aria-label', 'Compartir proyecto'); btn.classList.remove('is-done'); }, 1800);
+    function hideSheet() {
+      closeAnimated(sheet, function () {
+        document.body.classList.remove('sheet-open');
+        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        lastFocus = null;
       });
     }
-  });
-
-  window.addEventListener('popstate', function () {
-    var m = location.hash.match(/^#proyecto\/([\w-]+)/);
-    if (m) openSheet(m[1], false);
-    else if (sheet.open) { if (lb.open) lb.close(); hideSheet(); }
-  });
-
-  /* ---------- Visor de fotos ---------- */
-  var lb = $('#lb');
-  var lbTrack = $('#lb-track');
-  var lbCount = $('#lb-count');
-  var lbList = [];
-  var lbIndex = 0;
-
-  function lbGo(i, smooth) {
-    lbIndex = Math.max(0, Math.min(lbList.length - 1, i));
-    lbTrack.scrollTo({ left: lbIndex * lbTrack.clientWidth, behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
-    lbUpdate();
-  }
-  function lbUpdate() {
-    lbCount.textContent = (lbIndex + 1) + ' / ' + lbList.length + ' · ' + (currentTab === 'despues' ? 'Después' : 'Antes');
-    $('[data-lb-prev]', lb).disabled = lbIndex === 0;
-    $('[data-lb-next]', lb).disabled = lbIndex === lbList.length - 1;
-  }
-  gal.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-lb]');
-    if (!b) return;
-    lbList = current[currentTab];
-    lbTrack.innerHTML = lbList.map(function (ph, i) {
-      return '<li><img src="' + src(current, ph[1]) + '" width="' + ph[1][1] + '" height="' + ph[1][2] + '"' +
-        ' loading="' + (Math.abs(i - +b.dataset.lb) < 2 ? 'eager' : 'lazy') + '" decoding="async"' +
-        ' alt="' + current.nombre + ', foto ' + (i + 1) + ' (' + (currentTab === 'despues' ? 'después' : 'antes') + ')"></li>';
-    }).join('');
-    lb.showModal();
-    requestAnimationFrame(function () { lbGo(+b.dataset.lb, false); });
-    lb._opener = b;
-  });
-  var lbScrollT;
-  lbTrack.addEventListener('scroll', function () {
-    clearTimeout(lbScrollT);
-    lbScrollT = setTimeout(function () {
-      var i = Math.round(lbTrack.scrollLeft / lbTrack.clientWidth);
-      if (i !== lbIndex) { lbIndex = i; lbUpdate(); }
-    }, 60);
-  }, { passive: true });
-  $('[data-lb-prev]', lb).addEventListener('click', function () { lbGo(lbIndex - 1, true); });
-  $('[data-lb-next]', lb).addEventListener('click', function () { lbGo(lbIndex + 1, true); });
-  $('[data-close]', lb).addEventListener('click', function () { lb.close(); });
-  lb.addEventListener('close', function () { if (lb._opener) lb._opener.focus({ preventScroll: true }); });
-  lb.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { e.preventDefault(); lbGo(lbIndex + 1, true); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); lbGo(lbIndex - 1, true); }
-  });
-  window.addEventListener('resize', function () { if (lb.open) lbGo(lbIndex, false); });
-
-  /* Enlace directo a un proyecto (#proyecto/kuna-1002) */
-  var initial = location.hash.match(/^#proyecto\/([\w-]+)/);
-  if (initial) openSheet(initial[1], false);
-
-  /* ---------- Formulario → WhatsApp ---------- */
-  var form = $('#form');
-  function setError(input, msg) {
-    var err = $('#' + input.getAttribute('aria-describedby'));
-    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-    err.textContent = msg || '';
-  }
-  function validate(input) {
-    var v = input.value.trim();
-    if (input.name === 'nombre') return v.length < 2 ? 'Escribe tu nombre.' : '';
-    if (input.name === 'celular') {
-      var digits = v.replace(/\D/g, '');
-      if (!digits) return 'Escribe tu número de celular.';
-      if (digits.length < 7) return 'Revisa el número: parece incompleto.';
+    function requestCloseSheet() {
+      if (history.state && history.state.sheet) history.back(); // popstate cierra
+      else { hideSheet(); if (location.hash.indexOf('#proyecto/') === 0) history.replaceState(null, '', location.pathname + location.search); }
     }
-    return '';
-  }
-  $$('input[required]', form).forEach(function (input) {
-    input.addEventListener('blur', function () { if (input.value) setError(input, validate(input)); });
-    input.addEventListener('input', function () { if (input.getAttribute('aria-invalid') === 'true') setError(input, validate(input)); });
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var firstBad = null;
-    $$('input[required]', form).forEach(function (input) {
-      var msg = validate(input); setError(input, msg);
-      if (msg && !firstBad) firstBad = input;
-    });
-    if (firstBad) { firstBad.focus(); return; }
-    var d = new FormData(form);
-    var espacio = String(d.get('espacio'));
-    var text = 'Hola OMBU, soy ' + d.get('nombre').trim() + '. Quiero transformar ' +
-      (espacio === 'Otro espacio' ? 'un espacio' : 'mi ' + espacio.toLowerCase()) + '.';
-    var idea = String(d.get('mensaje') || '').trim();
-    if (idea) text += '\n\nMi idea: ' + idea;
-    text += '\n\nMi celular: ' + d.get('celular').trim();
-    window.open(waLink(text), '_blank', 'noopener');
-  });
 
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-open]');
+      if (b) { e.preventDefault(); lastFocus = b.closest('.menu, .drop') ? null : b; openSheet(b.dataset.open, true); }
+    });
+    $('[data-close]', sheet).addEventListener('click', requestCloseSheet);
+    sheet.addEventListener('cancel', function (e) { e.preventDefault(); requestCloseSheet(); });
+    sheet.addEventListener('click', function (e) { if (e.target === sheet) requestCloseSheet(); });
+    scroller.addEventListener('scroll', function () {
+      sheet.classList.toggle('is-scrolled', scroller.scrollTop > $('.sheet__hero', sheet).offsetHeight - 70);
+    }, { passive: true });
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () {
+        if (t.dataset.tab === currentTab) return;
+        gal.classList.add('is-swapping');
+        setTimeout(function () { renderGallery(t.dataset.tab); gal.classList.remove('is-swapping'); }, 150);
+      });
+      t.addEventListener('keydown', function (e) {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        var other = tabs[1 - i];
+        if (other.disabled) return;
+        other.focus(); other.click();
+      });
+    });
+
+    $('[data-share]', sheet).addEventListener('click', function () {
+      var url = location.href.split('#')[0] + '#proyecto/' + current.slug;
+      var data = { title: current.nombre + ' · OMBU Renovaciones', text: 'Mira este proyecto de OMBU Renovaciones', url: url };
+      if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function () {
+          var btn = $('[data-share]', sheet);
+          btn.setAttribute('aria-label', 'Enlace copiado');
+          btn.classList.add('is-done');
+          setTimeout(function () { btn.setAttribute('aria-label', 'Compartir proyecto'); btn.classList.remove('is-done'); }, 1800);
+        });
+      }
+    });
+
+    window.addEventListener('popstate', function () {
+      var m = location.hash.match(/^#proyecto\/([\w-]+)/);
+      if (m) openSheet(m[1], false);
+      else if (sheet.open) { if (lb.open) lb.close(); hideSheet(); }
+    });
+
+    /* ---------- Visor de fotos ---------- */
+    var lb = $('#lb');
+    var lbTrack = $('#lb-track');
+    var lbCount = $('#lb-count');
+    var lbList = [];
+    var lbIndex = 0;
+
+    function lbGo(i, smooth) {
+      lbIndex = Math.max(0, Math.min(lbList.length - 1, i));
+      lbTrack.scrollTo({ left: lbIndex * lbTrack.clientWidth, behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
+      lbUpdate();
+    }
+    function lbUpdate() {
+      lbCount.textContent = (lbIndex + 1) + ' / ' + lbList.length + ' · ' + (currentTab === 'despues' ? 'Después' : 'Antes');
+      $('[data-lb-prev]', lb).disabled = lbIndex === 0;
+      $('[data-lb-next]', lb).disabled = lbIndex === lbList.length - 1;
+    }
+    gal.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-lb]');
+      if (!b) return;
+      lbList = current[currentTab];
+      lbTrack.innerHTML = lbList.map(function (ph, i) {
+        return '<li><img src="' + src(current, ph[1]) + '" width="' + ph[1][1] + '" height="' + ph[1][2] + '"' +
+          ' loading="' + (Math.abs(i - +b.dataset.lb) < 2 ? 'eager' : 'lazy') + '" decoding="async"' +
+          ' alt="' + current.nombre + ', foto ' + (i + 1) + ' (' + (currentTab === 'despues' ? 'después' : 'antes') + ')"></li>';
+      }).join('');
+      lb.showModal();
+      requestAnimationFrame(function () { lbGo(+b.dataset.lb, false); });
+      lb._opener = b;
+    });
+    var lbScrollT;
+    lbTrack.addEventListener('scroll', function () {
+      clearTimeout(lbScrollT);
+      lbScrollT = setTimeout(function () {
+        var i = Math.round(lbTrack.scrollLeft / lbTrack.clientWidth);
+        if (i !== lbIndex) { lbIndex = i; lbUpdate(); }
+      }, 60);
+    }, { passive: true });
+    $('[data-lb-prev]', lb).addEventListener('click', function () { lbGo(lbIndex - 1, true); });
+    $('[data-lb-next]', lb).addEventListener('click', function () { lbGo(lbIndex + 1, true); });
+    $('[data-close]', lb).addEventListener('click', function () { lb.close(); });
+    lb.addEventListener('close', function () { if (lb._opener) lb._opener.focus({ preventScroll: true }); });
+    lb.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); lbGo(lbIndex + 1, true); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); lbGo(lbIndex - 1, true); }
+    });
+    window.addEventListener('resize', function () { if (lb.open) lbGo(lbIndex, false); });
+
+    /* Enlace directo a un proyecto (#proyecto/kuna-1002) */
+    var initial = location.hash.match(/^#proyecto\/([\w-]+)/);
+    if (initial) openSheet(initial[1], false);
+  }
+
+  /* ---------- Formulario de contacto → WhatsApp ---------- */
+  var form = $('#form');
+  if (form) {
+    var servicio = new URLSearchParams(location.search).get('servicio');
+    if (servicio) $('#f-msg').value = 'Me interesa el servicio de ' + servicio + '. ';
+    var setError = function (input, msg) {
+      var err = $('#' + input.getAttribute('aria-describedby'));
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      err.textContent = msg || '';
+    };
+    var validate = function (input) {
+      var v = input.value.trim();
+      if (input.type === 'checkbox') return input.checked ? '' : 'Necesitamos tu autorización para contactarte.';
+      if (input.name === 'nombre') return v.length < 2 ? 'Escribe tu nombre.' : '';
+      if (input.name === 'apellido') return v.length < 2 ? 'Escribe tu apellido.' : '';
+      if (input.name === 'ciudad') return v.length < 2 ? 'Escribe tu ciudad.' : '';
+      if (input.name === 'celular') {
+        var digits = v.replace(/\D/g, '');
+        if (!digits) return 'Escribe tu número de celular.';
+        if (digits.length < 7) return 'Revisa el número: parece incompleto.';
+      }
+      return '';
+    };
+    var campos = $$('input[required]', form);
+    campos.forEach(function (input) {
+      input.addEventListener(input.type === 'checkbox' ? 'change' : 'blur', function () {
+        if (input.type === 'checkbox' || input.value) setError(input, validate(input));
+      });
+      input.addEventListener('input', function () { if (input.getAttribute('aria-invalid') === 'true') setError(input, validate(input)); });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      campos.forEach(function (input) {
+        var msg = validate(input); setError(input, msg);
+        if (msg && !firstBad) firstBad = input;
+      });
+      if (firstBad) { firstBad.focus(); return; }
+      var d = new FormData(form);
+      var t = function (k) { return String(d.get(k) || '').trim(); };
+      var espacio = t('espacio');
+      var text = 'Hola OMBU, soy ' + t('nombre') + ' ' + t('apellido') + ', de ' + t('ciudad') + '. Quiero transformar ' +
+        (espacio === 'Otro' ? 'un espacio' : 'mi ' + espacio.toLowerCase()) + '.';
+      if (t('mensaje')) text += '\n\nMi idea: ' + t('mensaje');
+      text += '\n\nMi celular: ' + t('celular');
+      text += '\n\nAutorizo el tratamiento de mis datos según su política de datos.';
+      var url = waLink(text);
+      window.open(url, '_blank', 'noopener');
+      $('#form-wa').href = url;
+      var ok = $('#form-ok');
+      form.hidden = true; ok.hidden = false; ok.focus();
+    });
+  }
 })();

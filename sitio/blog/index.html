@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Blog · OMBU Renovaciones</title>
-  <meta name="description" content="Guías e ideas para renovar tu apartamento, casa u oficina en Medellín, del equipo de OMBU.">
+  <meta name="description" content="Ideas, inspiración y conocimiento para transformar espacios: diseño, renovación, materiales y construcción.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#363840">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CO">
   <meta property="og:site_name" content="OMBU Renovaciones">
   <meta property="og:title" content="Blog · OMBU Renovaciones">
-  <meta property="og:description" content="Guías e ideas para renovar tu apartamento, casa u oficina en Medellín, del equipo de OMBU.">
-  <meta property="og:image" content="https://revupag.github.io/ombu-propuesta/assets/img/og-sitio.jpg">
+  <meta property="og:description" content="Ideas, inspiración y conocimiento para transformar espacios: diseño, renovación, materiales y construcción.">
+  <meta property="og:image" content="https://feliperpovera.github.io/ombu-renovaciones/assets/img/og-sitio.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="../../assets/img/favicon-48.png" sizes="48x48" type="image/png">
@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="../../assets/css/blog.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
 </head>
-<body data-page="blog" data-root="../../" data-home="../index.html">
+<body data-page="blog" data-root="../../">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -51,6 +51,9 @@
     <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+    <symbol id="i-sofa" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 13a2 2 0 1 1 4 0v2h10v-2a2 2 0 1 1 4 0v4H3z"/><path d="M6 17v2M18 17v2"/></g></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 3h6v3H9z"/><path d="M9 13l2 2 4-4"/></g></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></g></symbol>
   </defs>
 </svg>
 
@@ -59,28 +62,33 @@
 <!-- ============ Encabezado ============ -->
 <header class="hdr" id="hdr" data-state="solid">
   <div class="hdr__in wrap">
-    <a class="hdr__logo" href="../index.html#inicio" aria-label="OMBU Renovaciones, ir al inicio">
+    <a class="hdr__logo" href="../index.html" aria-label="OMBU Renovaciones, ir al inicio">
       <svg class="logo" viewBox="0 0 156 41" aria-hidden="true"><use href="../../assets/img/marca.svg#ombu-logo"/></svg>
     </a>
     <nav class="hdr__nav" aria-label="Principal">
       <ul>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../nosotros.html">Nosotros</a></li>
         <li class="has-drop">
           <button class="hdr__drop-btn" type="button" aria-expanded="false" aria-controls="drop-servicios">Servicios <svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></button>
           <div class="drop" id="drop-servicios" hidden>
             <div class="drop__head">
-              <p class="drop__title">Nuestros proyectos</p>
-              <a class="link-arrow" href="../index.html#servicios">Ver todos <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <p class="drop__title">Nuestros servicios</p>
+              <a class="link-arrow" href="../servicios/index.html">Ver todos <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
             </div>
-            <ul class="drop__grid" data-proyectos="drop" role="list"></ul>
+            <ul class="drop__grid drop__grid--svc" role="list">
+              <li><a href="../servicios/diseno.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-design"/></svg></span><span><strong>Diseño</strong>Convertimos tus ideas en espacios funcionales y personalizados, definiendo cada detalle antes de comenzar.</span></a></li>
+              <li><a href="../servicios/construccion.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-build"/></svg></span><span><strong>Construcción</strong>Materializamos los diseños con nuestro equipo técnico, procesos definidos y acompañamiento durante toda la obra.</span></a></li>
+              <li><a href="../servicios/mobiliario.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-sofa"/></svg></span><span><strong>Mobiliario</strong>Creamos y seleccionamos piezas que complementan tus espacios con identidad, funcionalidad y diseño.</span></a></li>
+              <li><a href="../servicios/interventoria.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-clipboard"/></svg></span><span><strong>Interventoría</strong>Supervisamos proyectos para verificar el cumplimiento técnico, la calidad y los cronogramas establecidos.</span></a></li>
+            </ul>
           </div>
         </li>
-        <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-        <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
-        <li><a href="../index.html#testimonios">Testimonios</a></li>
-        <li><a href="index.html" aria-current="page">Blog</a></li>
+        <li><a href="../proyectos.html">Proyectos</a></li>
+        <li><a href="../blog/index.html" aria-current="page">Blog</a></li>
       </ul>
     </nav>
-    <a class="btn hdr__cta" href="../index.html#contacto">Cotizar</a>
+    <a class="btn hdr__cta" href="../contacto.html">Contacto</a>
     <button class="hdr__burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
       <span></span><span></span>
     </button>
@@ -91,15 +99,21 @@
 <div class="menu on-dark" id="menu" hidden>
   <nav class="menu__nav" aria-label="Menú">
     <ul>
+      <li><a href="../index.html">Inicio</a></li>
+      <li><a href="../nosotros.html">Nosotros</a></li>
       <li>
         <button class="menu__acc" type="button" aria-expanded="false" aria-controls="menu-servicios">Servicios <svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></button>
-        <ul class="menu__sub" id="menu-servicios" data-proyectos="menu" role="list" hidden></ul>
+        <ul class="menu__sub" id="menu-servicios" role="list" hidden>
+          <li><a href="../servicios/diseno.html">Diseño</a></li>
+          <li><a href="../servicios/construccion.html">Construcción</a></li>
+          <li><a href="../servicios/mobiliario.html">Mobiliario</a></li>
+          <li><a href="../servicios/interventoria.html">Interventoría</a></li>
+          <li><a href="../servicios/index.html">Ver todos</a></li>
+        </ul>
       </li>
-      <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-      <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
-      <li><a href="../index.html#testimonios">Testimonios</a></li>
-      <li><a href="index.html" aria-current="page">Blog</a></li>
-      <li><a href="../index.html#contacto">Contacto</a></li>
+      <li><a href="../proyectos.html">Proyectos</a></li>
+      <li><a href="../blog/index.html" aria-current="page">Blog</a></li>
+      <li><a href="../contacto.html">Contacto</a></li>
     </ul>
   </nav>
   <div class="menu__foot">
@@ -115,20 +129,20 @@
 </div>
 
 <main id="contenido">
-  <section class="bhero" aria-labelledby="bhero-title">
+  <section class="bhero" aria-labelledby="page-title">
     <div class="wrap">
       <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Blog</span></nav>
-      <h1 class="display bhero__title" id="bhero-title">Ideas para transformar <em>tu espacio</em></h1>
-      <p class="lead">Guías prácticas, ideas de diseño y lo que aprendemos en cada obra. Para que tu renovación empiece con las decisiones correctas.</p>
+      <h1 class="display bhero__title" id="page-title">Ideas, inspiración y conocimiento <em>para transformar espacios.</em></h1>
+      <p class="lead">Diseño e interiorismo, consejos para renovar, materiales, procesos de construcción y tendencias.</p>
     </div>
   </section>
 
   <section class="wrap blist" aria-label="Artículos">
-    <article class="feature reveal" data-cat="Guías">
+    <article class="feature reveal" data-cat="Consejos para renovar">
       <a class="feature__link" href="remodelar-apartamento-medellin.html">
         <div class="feature__media"><img src="../../assets/img/proyectos/aires-del-campestre/d01-l.webp" width="1024" height="683" alt="Sala y comedor del proyecto Aires del Campestre, renovado por OMBU" fetchpriority="high"></div>
         <div class="feature__body">
-          <p class="post__meta"><span class="post__cat">Guías</span><span>29 de septiembre de 2026</span><span>6 min</span></p>
+          <p class="post__meta"><span class="post__cat">Consejos para renovar</span><span>29 de septiembre de 2026</span><span>6 min</span></p>
           <h2 class="feature__title">Cómo remodelar tu apartamento en Medellín sin estrés: <em>guía paso a paso</em></h2>
           <p class="post__excerpt">Del primer boceto a la entrega de llaves: los siete pasos que evitan sobrecostos, retrasos y dolores de cabeza.</p>
           <span class="btn">Leer artículo <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
@@ -138,49 +152,49 @@
 
     <div class="filters" role="group" aria-label="Filtrar por tema">
       <button class="filter" type="button" aria-pressed="true" data-filter="">Todos</button>
-          <button class="filter" type="button" aria-pressed="false" data-filter="Cocinas">Cocinas</button>
-          <button class="filter" type="button" aria-pressed="false" data-filter="Guías">Guías</button>
-          <button class="filter" type="button" aria-pressed="false" data-filter="Ideas">Ideas</button>
+          <button class="filter" type="button" aria-pressed="false" data-filter="Consejos para renovar">Consejos para renovar</button>
+          <button class="filter" type="button" aria-pressed="false" data-filter="Diseño e interiorismo">Diseño e interiorismo</button>
+          <button class="filter" type="button" aria-pressed="false" data-filter="Inspiración y tendencias">Inspiración y tendencias</button>
     </div>
     <ul class="posts" id="posts" role="list">
-<li class="post post--dup" data-cat="Guías">
-  <a class="post__link" href="remodelar-apartamento-medellin.html">
+<li class="post post--dup" data-cat="Consejos para renovar">
+  <a class="post__link" href="../blog/remodelar-apartamento-medellin.html">
     <div class="post__media"><img src="../../assets/img/proyectos/aires-del-campestre/d01-s.webp" width="768" height="512" loading="lazy" decoding="async" alt=""></div>
     <div class="post__body">
-      <p class="post__meta"><span class="post__cat">Guías</span><span>6 min de lectura</span></p>
+      <p class="post__meta"><span class="post__cat">Consejos para renovar</span><span>6 min de lectura</span></p>
       <h2 class="post__title">Cómo remodelar tu apartamento en Medellín sin estrés: <em>guía paso a paso</em></h2>
       <p class="post__excerpt">Del primer boceto a la entrega de llaves: los siete pasos que evitan sobrecostos, retrasos y dolores de cabeza.</p>
       <span class="post__more">Leer artículo <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
     </div>
   </a>
 </li>
-<li class="post" data-cat="Guías">
-  <a class="post__link" href="preguntas-antes-de-contratar.html">
+<li class="post" data-cat="Consejos para renovar">
+  <a class="post__link" href="../blog/preguntas-antes-de-contratar.html">
     <div class="post__media"><img src="../../assets/img/proyectos/torrealta/d01-s.webp" width="768" height="512" loading="lazy" decoding="async" alt=""></div>
     <div class="post__body">
-      <p class="post__meta"><span class="post__cat">Guías</span><span>5 min de lectura</span></p>
+      <p class="post__meta"><span class="post__cat">Consejos para renovar</span><span>5 min de lectura</span></p>
       <h2 class="post__title">7 preguntas que debes hacer <em>antes de contratar una remodelación</em></h2>
       <p class="post__excerpt">Pólizas, contrato, quién dirige la obra y cómo se paga. Lo que tienes que saber antes de firmar.</p>
       <span class="post__more">Leer artículo <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
     </div>
   </a>
 </li>
-<li class="post" data-cat="Cocinas">
-  <a class="post__link" href="cocina-abierta.html">
+<li class="post" data-cat="Diseño e interiorismo">
+  <a class="post__link" href="../blog/cocina-abierta.html">
     <div class="post__media"><img src="../../assets/img/comparador-despues-768.webp" width="768" height="512" loading="lazy" decoding="async" alt=""></div>
     <div class="post__body">
-      <p class="post__meta"><span class="post__cat">Cocinas</span><span>5 min de lectura</span></p>
+      <p class="post__meta"><span class="post__cat">Diseño e interiorismo</span><span>5 min de lectura</span></p>
       <h2 class="post__title">Cocina abierta: <em>lo que debes saber antes de tumbar un muro</em></h2>
       <p class="post__excerpt">Integrar la cocina con la sala cambia por completo un apartamento. Antes de derribar, revisa estos cinco puntos.</p>
       <span class="post__more">Leer artículo <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
     </div>
   </a>
 </li>
-<li class="post" data-cat="Ideas">
-  <a class="post__link" href="ideas-espacios-amplios.html">
+<li class="post" data-cat="Inspiración y tendencias">
+  <a class="post__link" href="../blog/ideas-espacios-amplios.html">
     <div class="post__media"><img src="../../assets/img/proyectos/avignon/d01-s.webp" width="768" height="512" loading="lazy" decoding="async" alt=""></div>
     <div class="post__body">
-      <p class="post__meta"><span class="post__cat">Ideas</span><span>4 min de lectura</span></p>
+      <p class="post__meta"><span class="post__cat">Inspiración y tendencias</span><span>4 min de lectura</span></p>
       <h2 class="post__title">5 ideas para que tu apartamento <em>se vea más amplio</em></h2>
       <p class="post__excerpt">Color, luz, muebles a la medida y espacios integrados: así se gana amplitud sin sumar un solo metro.</p>
       <span class="post__more">Leer artículo <svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
@@ -196,11 +210,12 @@
       <img src="../../assets/img/proyectos/palo-alto/d01-s.webp" width="768" height="512" loading="lazy" decoding="async" alt="">
     </picture>
     <div class="wrap band__in reveal">
-      <h2 class="band__title display" id="band-title">¿Listo para dar el primer paso <em>hacia tu nuevo hogar?</em></h2>
-      <p class="lead">Comienza tu renovación con expertos.</p>
-      <a class="btn btn--light btn--lg" href="../index.html#contacto">Quiero cotizar <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <h2 class="band__title display" id="band-title">Tu próximo espacio empieza <em>con una conversación.</em></h2>
+      <p class="lead">Cuéntanos qué tienes en mente. Nuestro equipo te ayudará a dar el primer paso.</p>
+      <a class="btn btn--light btn--lg" href="../contacto.html">Hablemos de tu proyecto <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
   </section>
+
 </main>
 
 <!-- ============ Pie ============ -->
@@ -208,16 +223,16 @@
   <div class="wrap ftr__grid">
     <div class="ftr__brand">
       <svg class="logo" viewBox="0 0 156 41" role="img" aria-label="OMBU"><use href="../../assets/img/marca.svg#ombu-logo"/></svg>
-      <p>Transforma tu espacio, <em>transforma tu vida.</em></p>
+      <p>Tú sueñas el espacio. <em>Nosotros nos encargamos de todo.</em></p>
     </div>
     <nav class="ftr__nav" aria-label="Pie de página">
       <ul>
-        <li><a href="../index.html#servicios">Servicios</a></li>
-        <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-        <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
-        <li><a href="index.html">Blog</a></li>
-        <li><a href="../index.html#testimonios">Testimonios</a></li>
-        <li><a href="../index.html#contacto">Contacto</a></li>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../nosotros.html">Nosotros</a></li>
+        <li><a href="../servicios/index.html">Servicios</a></li>
+        <li><a href="../proyectos.html">Proyectos</a></li>
+        <li><a href="../blog/index.html">Blog</a></li>
+        <li><a href="../contacto.html">Contacto</a></li>
       </ul>
     </nav>
     <div class="ftr__social">
@@ -238,6 +253,7 @@
 <a class="fab" id="fab" href="https://wa.me/573105996809?text=Hola%20OMBU%2C%20quiero%20cotizar%20la%20renovaci%C3%B3n%20de%20mi%20espacio." target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <svg aria-hidden="true"><use href="#i-wa"/></svg>
 </a>
+
 <script src="../../assets/js/proyectos.js"></script>
 <script src="../../assets/js/comun.js"></script>
 <script src="../../assets/js/blog.js"></script>

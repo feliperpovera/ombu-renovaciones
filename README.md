@@ -18,14 +18,14 @@ pie de página) hay un enlace de vuelta. Pensado para abrirse desde el celular.
 | Ruta | Qué es |
 |---|---|
 | `index.html` | La **propuesta**: diagnóstico del sitio actual, lo que vamos a construir, comparativa antes/después, proceso y entregables. Termina en el CTA que lleva al sitio. |
-| `sitio/index.html` | El **sitio terminado**, navegable y funcional: inicio, comparador antes/después, servicios con los 13 proyectos (cada tarjeta con su propio comparador), ficha y galería, por qué OMBU, proceso, historia, testimonios, avance del blog y contacto. |
+| `sitio/` | El **sitio terminado** según «Estructura y contenidos»: Inicio (resumen de todo), `nosotros.html` (incluye cómo trabajamos), `servicios/` (índice + Diseño, Construcción, Mobiliario, Interventoría), `proyectos.html` (galerías y antes/después con ficha), `contacto.html` (formulario + preguntas frecuentes) y `legal/politica-de-datos.html`. |
 | `sitio/blog/` | **Blog**: índice con artículo destacado y filtro por temas, y cuatro artículos. |
-| `herramientas/generar.py` | Genera la cabecera, el menú y el pie comunes y las páginas del blog. Los artículos están en `herramientas/articulos.py`. |
+| `herramientas/generar.py` | Genera **todas** las páginas de `sitio/` (textos, menú, pie y secciones repetidas). Los artículos están en `herramientas/articulos.py`. |
 | `assets/css/brand.css` | Sistema de marca: color, tipografía, escala y componentes base. |
 | `assets/css/propuesta.css` · `sitio.css` | Estilos de cada página. |
 | `assets/js/proyectos.js` | Los 13 proyectos con sus fotos clasificadas en «antes» y «después». |
 | `assets/js/comun.js` | Cabecera, desplegable de Servicios, menú móvil, carriles y WhatsApp flotante (todas las páginas). |
-| `assets/js/inicio.js` · `blog.js` | Interacciones de la portada y del blog, sin librerías externas. |
+| `assets/js/inicio.js` · `blog.js` | Tarjetas con comparador, ficha, visor y formulario (Inicio, Proyectos, Contacto); filtro y compartir del blog. Sin librerías externas. |
 | `assets/img/marca.svg` | Logo y símbolo de OMBU en vectorial. |
 | `assets/img/proyectos/` | 188 fotos de obra en WebP, en dos tamaños. |
 
@@ -93,11 +93,10 @@ El sitio nuevo carga **25 archivos y 0,6 MB** en la misma prueba.
 
 ---
 
-## Cómo editar el blog o el menú
+## Cómo editar textos, páginas o el blog
 
-La cabecera, el menú y el pie se escriben una sola vez en `herramientas/generar.py`
-y se copian a todas las páginas. Para añadir o cambiar un artículo, edita
-`herramientas/articulos.py` y ejecuta:
+Todo el HTML de `sitio/` sale de `herramientas/generar.py` (no se edita a mano).
+Cambia ahí los textos o, para un artículo, `herramientas/articulos.py`, y ejecuta:
 
 ```bash
 python3 herramientas/generar.py

@@ -7,12 +7,12 @@
   <meta name="description" content="Cómo OMBU Renovaciones recolecta, usa y protege tus datos personales, y cómo ejercer tus derechos.">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#363840">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CO">
   <meta property="og:site_name" content="OMBU Renovaciones">
   <meta property="og:title" content="Política de tratamiento de datos · OMBU Renovaciones">
   <meta property="og:description" content="Cómo OMBU Renovaciones recolecta, usa y protege tus datos personales, y cómo ejercer tus derechos.">
-  <meta property="og:image" content="https://revupag.github.io/ombu-propuesta/assets/img/og-sitio.jpg">
+  <meta property="og:image" content="https://feliperpovera.github.io/ombu-renovaciones/assets/img/og-sitio.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="../../assets/img/favicon-48.png" sizes="48x48" type="image/png">
@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="../../assets/css/blog.css">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
 </head>
-<body data-page="legal" data-root="../../" data-home="../index.html">
+<body data-page="legal" data-root="../../">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -51,6 +51,9 @@
     <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></g></symbol>
+    <symbol id="i-sofa" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 13a2 2 0 1 1 4 0v2h10v-2a2 2 0 1 1 4 0v4H3z"/><path d="M6 17v2M18 17v2"/></g></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 3h6v3H9z"/><path d="M9 13l2 2 4-4"/></g></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></g></symbol>
   </defs>
 </svg>
 
@@ -59,28 +62,33 @@
 <!-- ============ Encabezado ============ -->
 <header class="hdr" id="hdr" data-state="solid">
   <div class="hdr__in wrap">
-    <a class="hdr__logo" href="../index.html#inicio" aria-label="OMBU Renovaciones, ir al inicio">
+    <a class="hdr__logo" href="../index.html" aria-label="OMBU Renovaciones, ir al inicio">
       <svg class="logo" viewBox="0 0 156 41" aria-hidden="true"><use href="../../assets/img/marca.svg#ombu-logo"/></svg>
     </a>
     <nav class="hdr__nav" aria-label="Principal">
       <ul>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../nosotros.html">Nosotros</a></li>
         <li class="has-drop">
           <button class="hdr__drop-btn" type="button" aria-expanded="false" aria-controls="drop-servicios">Servicios <svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></button>
           <div class="drop" id="drop-servicios" hidden>
             <div class="drop__head">
-              <p class="drop__title">Nuestros proyectos</p>
-              <a class="link-arrow" href="../index.html#servicios">Ver todos <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+              <p class="drop__title">Nuestros servicios</p>
+              <a class="link-arrow" href="../servicios/index.html">Ver todos <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
             </div>
-            <ul class="drop__grid" data-proyectos="drop" role="list"></ul>
+            <ul class="drop__grid drop__grid--svc" role="list">
+              <li><a href="../servicios/diseno.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-design"/></svg></span><span><strong>Diseño</strong>Convertimos tus ideas en espacios funcionales y personalizados, definiendo cada detalle antes de comenzar.</span></a></li>
+              <li><a href="../servicios/construccion.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-build"/></svg></span><span><strong>Construcción</strong>Materializamos los diseños con nuestro equipo técnico, procesos definidos y acompañamiento durante toda la obra.</span></a></li>
+              <li><a href="../servicios/mobiliario.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-sofa"/></svg></span><span><strong>Mobiliario</strong>Creamos y seleccionamos piezas que complementan tus espacios con identidad, funcionalidad y diseño.</span></a></li>
+              <li><a href="../servicios/interventoria.html"><span class="drop__ico"><svg aria-hidden="true"><use href="#i-clipboard"/></svg></span><span><strong>Interventoría</strong>Supervisamos proyectos para verificar el cumplimiento técnico, la calidad y los cronogramas establecidos.</span></a></li>
+            </ul>
           </div>
         </li>
-        <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-        <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
-        <li><a href="../index.html#testimonios">Testimonios</a></li>
+        <li><a href="../proyectos.html">Proyectos</a></li>
         <li><a href="../blog/index.html">Blog</a></li>
       </ul>
     </nav>
-    <a class="btn hdr__cta" href="../index.html#contacto">Cotizar</a>
+    <a class="btn hdr__cta" href="../contacto.html">Contacto</a>
     <button class="hdr__burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menú">
       <span></span><span></span>
     </button>
@@ -91,15 +99,21 @@
 <div class="menu on-dark" id="menu" hidden>
   <nav class="menu__nav" aria-label="Menú">
     <ul>
+      <li><a href="../index.html">Inicio</a></li>
+      <li><a href="../nosotros.html">Nosotros</a></li>
       <li>
         <button class="menu__acc" type="button" aria-expanded="false" aria-controls="menu-servicios">Servicios <svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></button>
-        <ul class="menu__sub" id="menu-servicios" data-proyectos="menu" role="list" hidden></ul>
+        <ul class="menu__sub" id="menu-servicios" role="list" hidden>
+          <li><a href="../servicios/diseno.html">Diseño</a></li>
+          <li><a href="../servicios/construccion.html">Construcción</a></li>
+          <li><a href="../servicios/mobiliario.html">Mobiliario</a></li>
+          <li><a href="../servicios/interventoria.html">Interventoría</a></li>
+          <li><a href="../servicios/index.html">Ver todos</a></li>
+        </ul>
       </li>
-      <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-      <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
-      <li><a href="../index.html#testimonios">Testimonios</a></li>
+      <li><a href="../proyectos.html">Proyectos</a></li>
       <li><a href="../blog/index.html">Blog</a></li>
-      <li><a href="../index.html#contacto">Contacto</a></li>
+      <li><a href="../contacto.html">Contacto</a></li>
     </ul>
   </nav>
   <div class="menu__foot">
@@ -138,7 +152,7 @@
 
         <h2>3. Qué datos recolectamos</h2>
         <ul>
-          <li><strong>Datos de contacto:</strong> nombre y número de celular que escribes en el formulario o nos envías por WhatsApp.</li>
+          <li><strong>Datos de contacto:</strong> nombre, apellido, número de celular y ciudad que escribes en el formulario o nos envías por WhatsApp.</li>
           <li><strong>Datos del proyecto:</strong> tipo de espacio, ideas, fotos, planos y medidas que decidas compartir.</li>
           <li><strong>Datos de navegación:</strong> tus preferencias de cookies, guardadas en tu propio navegador.</li>
         </ul>
@@ -154,7 +168,7 @@
         </ul>
 
         <h2>5. Autorización</h2>
-        <p>Al enviar el formulario o escribirnos por WhatsApp nos autorizas a tratar tus datos para las finalidades anteriores. Guardamos prueba de esa autorización (el mensaje recibido) mientras dure la relación contigo.</p>
+        <p>Al marcar la casilla de autorización del formulario, o al escribirnos por WhatsApp, nos autorizas a tratar tus datos para las finalidades anteriores. Guardamos prueba de esa autorización mientras dure la relación contigo.</p>
 
         <h2>6. Tus derechos</h2>
         <p>Como titular de los datos puedes:</p>
@@ -196,6 +210,7 @@
       </div>
     </div>
   </article>
+
 </main>
 
 <!-- ============ Pie ============ -->
@@ -203,16 +218,16 @@
   <div class="wrap ftr__grid">
     <div class="ftr__brand">
       <svg class="logo" viewBox="0 0 156 41" role="img" aria-label="OMBU"><use href="../../assets/img/marca.svg#ombu-logo"/></svg>
-      <p>Transforma tu espacio, <em>transforma tu vida.</em></p>
+      <p>Tú sueñas el espacio. <em>Nosotros nos encargamos de todo.</em></p>
     </div>
     <nav class="ftr__nav" aria-label="Pie de página">
       <ul>
-        <li><a href="../index.html#servicios">Servicios</a></li>
-        <li><a href="../index.html#por-que">Por qué OMBU</a></li>
-        <li><a href="../index.html#proceso">Cómo trabajamos</a></li>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../nosotros.html">Nosotros</a></li>
+        <li><a href="../servicios/index.html">Servicios</a></li>
+        <li><a href="../proyectos.html">Proyectos</a></li>
         <li><a href="../blog/index.html">Blog</a></li>
-        <li><a href="../index.html#testimonios">Testimonios</a></li>
-        <li><a href="../index.html#contacto">Contacto</a></li>
+        <li><a href="../contacto.html">Contacto</a></li>
       </ul>
     </nav>
     <div class="ftr__social">
@@ -226,15 +241,15 @@
   </div>
   <div class="wrap ftr__bottom">
     <p>© 2026 OMBU Renovaciones · Medellín, Antioquia</p>
-    <p class="ftr__legal"><a href="politica-de-datos.html">Política de datos</a><button type="button" data-cookies>Preferencias de cookies</button></p>
+    <p class="ftr__legal"><a href="../legal/politica-de-datos.html">Política de datos</a><button type="button" data-cookies>Preferencias de cookies</button></p>
     <a href="../../index.html">← Volver a la propuesta</a>
   </div>
 </footer>
 <a class="fab" id="fab" href="https://wa.me/573105996809?text=Hola%20OMBU%2C%20quiero%20cotizar%20la%20renovaci%C3%B3n%20de%20mi%20espacio." target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   <svg aria-hidden="true"><use href="#i-wa"/></svg>
 </a>
+
 <script src="../../assets/js/proyectos.js"></script>
 <script src="../../assets/js/comun.js"></script>
-<script src="../../assets/js/blog.js"></script>
 </body>
 </html>

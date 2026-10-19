@@ -1,5 +1,5 @@
 /* OMBU Renovaciones · Partes comunes a todas las páginas del sitio:
-   encabezado, desplegable de Servicios, menú móvil, revelado, carriles y WhatsApp flotante. */
+   encabezado, desplegable de Servicios, menú móvil, revelado, carriles, WhatsApp flotante y cookies. */
 (function () {
   'use strict';
 
@@ -8,9 +8,6 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var body = document.body;
   var ROOT = body.dataset.root || '../';          // ruta hasta la carpeta que contiene assets/
-  var HOME = body.dataset.home || '';             // ruta hasta la portada del sitio ('' si ya estamos en ella)
-  var enInicio = body.dataset.page === 'inicio';
-  var PROYECTOS = window.OMBU_PROYECTOS || [];
 
   /* ---------- Encabezado ---------- */
   var hdr = $('#hdr');
@@ -21,21 +18,6 @@
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  /* ---------- Listas de proyectos (desplegable y menú móvil) ---------- */
-  function thumb(p) {
-    var ext = p.despues[0][0][0].split('.').pop();
-    return ROOT + 'assets/img/proyectos/' + p.slug + '/thumb.' + ext;
-  }
-  $$('[data-proyectos]').forEach(function (ul) {
-    var conFoto = ul.dataset.proyectos === 'drop';
-    ul.innerHTML = PROYECTOS.map(function (p) {
-      var href = (enInicio ? '' : HOME) + '#proyecto/' + p.slug;
-      return '<li><a href="' + href + '"' + (enInicio ? ' data-open="' + p.slug + '"' : '') + '>' +
-        (conFoto ? '<img src="' + thumb(p) + '" width="150" height="150" loading="lazy" decoding="async" alt="">' : '') +
-        '<span>' + p.nombre + '</span></a></li>';
-    }).join('');
-  });
 
   /* ---------- Desplegable de Servicios (escritorio) ---------- */
   var dropBtn = $('.hdr__drop-btn');
@@ -93,21 +75,6 @@
       var open = acc.getAttribute('aria-expanded') !== 'true';
       acc.setAttribute('aria-expanded', String(open));
       sub.hidden = !open;
-    });
-  }
-
-  /* ---------- Sección activa (solo en la portada) ---------- */
-  var navLinks = $$('.hdr__nav > ul > li > a[href^="#"]');
-  if (enInicio && 'IntersectionObserver' in window && navLinks.length) {
-    var spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        navLinks.forEach(function (a) { a.setAttribute('aria-current', a.getAttribute('href') === '#' + e.target.id ? 'true' : 'false'); });
-        if (dropBtn) dropBtn.classList.toggle('is-current', e.target.id === 'servicios');
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    navLinks.map(function (a) { return a.getAttribute('href').slice(1); }).concat('servicios').forEach(function (id) {
-      var s = document.getElementById(id); if (s) spy.observe(s);
     });
   }
 
