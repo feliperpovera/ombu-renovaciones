@@ -59,7 +59,7 @@
   }
   $$('[data-proj]').forEach(function (ul) {
     var enCarril = !!ul.closest('.rail');
-    ul.insertAdjacentHTML('beforeend', ul.dataset.proj.split(',').map(function (slug, i) {
+    ul.insertAdjacentHTML('afterbegin', ul.dataset.proj.split(',').map(function (slug, i) {
       return porSlug[slug] ? tarjeta(porSlug[slug], enCarril && i < 2 ? 'eager' : 'lazy') : '';
     }).join(''));
   });

@@ -41,10 +41,10 @@ SERVICIOS = [
     {"slug": "diseno", "n": "01", "nombre": "Diseño", "ico": "i-design",
      "resumen": "Convertimos tus ideas en espacios funcionales y personalizados, definiendo cada detalle antes de comenzar.",
      "titulo": "Diseñamos espacios", "titulo_em": "que se sienten tuyos.",
-     "texto": "Transformamos tus ideas en propuestas que combinan estética, funcionalidad y personalidad. Cada decisión de diseño parte de tus necesidades y de la manera en que quieres vivir o utilizar el espacio.",
+     "texto": "Transformamos tus ideas en espacios estéticos y funcionales, pensados para tus necesidades y tu comodidad al habitarlos.",
      "lista_titulo": "¿Qué incluye?",
      "lista": ["Desarrollo de propuestas de diseño.", "Renders.", "Planos.", "Detalles de carpintería.", "Selección de materiales y acabados."],
-     "cta": "Quiero diseñar mi espacio", "foto": ("kuna-1002", "d02", 1024, 683)},
+     "cta": "Quiero diseñar mi espacio", "foto": ("altos-de-la-concha", "d05", 1024, 683)},
     {"slug": "construccion", "n": "02", "nombre": "Construcción", "ico": "i-build",
      "resumen": "Materializamos los diseños con nuestro equipo técnico, procesos definidos y acompañamiento durante toda la obra.",
      "titulo": "De los planos", "titulo_em": "a la realidad.",
@@ -53,7 +53,7 @@ SERVICIOS = [
      "lista": ["Diagnóstico técnico.", "Coordinación de materiales y personal.", "Planimetría.", "Ejecución de las actividades de obra.", "Seguimiento del cronograma."],
      "cta": "Quiero transformar mi espacio", "foto": ("torrealta", "d01", 1024, 683)},
     {"slug": "mobiliario", "n": "03", "nombre": "Mobiliario", "ico": "i-sofa",
-     "resumen": "Creamos y seleccionamos piezas que complementan tus espacios con identidad, funcionalidad y diseño.",
+     "resumen": "Creamos piezas que complementan tus espacios con identidad, funcionalidad y diseño.",
      "titulo": "Los detalles que", "titulo_em": "completan tu espacio.",
      "texto": "Complementamos nuestros proyectos con piezas de mobiliario exclusivas y soluciones hechas a la medida que responden a las características de cada ambiente.",
      "lista_titulo": "Lo que ofrecemos",
@@ -69,7 +69,7 @@ SERVICIOS = [
 ]
 
 ATRIBUTOS = [
-    ("i-shield", "Confianza y respaldo", "Certificaciones, pólizas y procesos que aportan seguridad a cada proyecto."),
+    ("i-shield", "Confianza y respaldo", "Contratos, pólizas y procesos que aportan seguridad a cada proyecto."),
     ("i-design", "Diseño a la medida", "Soluciones pensadas alrededor de tus necesidades."),
     ("i-compare", "Experiencia comprobada", "Proyectos y transformaciones que muestran nuestro trabajo."),
     ("i-chat", "Acompañamiento cercano", "Profesionales presentes en cada etapa."),
@@ -89,7 +89,7 @@ ETAPAS = [
     ("Diseñamos contigo", ["Realizamos el levantamiento del espacio y conocemos tus expectativas.", "Desarrollamos una propuesta inicial.",
                            "Revisamos y ajustamos el diseño contigo.", "Aprobamos los diseños y el presupuesto."]),
     ("Hacemos realidad el proyecto", ["Iniciamos la etapa de obra.",
-                                      "Ejecutamos el proyecto con director general, residente, personal de obra y acompañamiento comercial. Compartimos informes semanales y programamos visitas de seguimiento cuando lo solicitas."]),
+                                      "Ejecutamos el proyecto con director de obra, líder de ejecución, residente de obra y personal de ejecución. Compartimos informes semanales y programamos visitas de seguimiento con el cliente."]),
     ("Entregamos", ["Realizamos la entrega final del proyecto."]),
 ]
 
@@ -119,9 +119,10 @@ TESTIMONIOS = [
 # Proyectos (slugs de assets/js/proyectos.js). Los que no tienen fotos van como «pendiente».
 DESTACADOS = ["torrealta", "fenikas", "aires-del-campestre", "palo-alto", "kuna-1002", "bosque-alto"]
 REALIZADOS_SIN_FOTO = ["Tierra Clara", "Báltico", "Casa Mediterránea", "Twins", "Salento"]
-TRANSFORMACIONES = ["torrealta", "fenikas", "aires-del-campestre", "palo-alto"]
-OTROS = ["kuna-1002", "bosque-alto", "altos-de-la-rioja", "kuna-802", "altos-de-la-concha-2",
-         "torrebalsillas", "palmar-de-la-abadia", "altos-de-la-concha"]
+# Página de Proyectos: todos juntos en una sola cuadrícula (los pendientes van al final)
+PROYECTOS_TODOS = ["torrealta", "fenikas", "aires-del-campestre", "palo-alto", "kuna-1002", "bosque-alto",
+                   "altos-de-la-rioja", "kuna-802", "altos-de-la-concha-2", "torrebalsillas",
+                   "palmar-de-la-abadia", "altos-de-la-concha"]
 
 ICONOS_EXTRA = """    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
@@ -286,7 +287,7 @@ def pie(n):
   <div class="wrap ftr__grid">
     <div class="ftr__brand">
       <svg class="logo" viewBox="0 0 156 41" role="img" aria-label="OMBU"><use href="{r['A']}img/marca.svg#ombu-logo"/></svg>
-      <p>Tú sueñas el espacio. <em>Nosotros nos encargamos de todo.</em></p>
+      <p>Una vida detrás <em>de cada puerta.</em></p>
     </div>
     <nav class="ftr__nav" aria-label="Pie de página">
       <ul>
@@ -391,7 +392,7 @@ def phero(titulo, titulo_em, lead, migas, extra=""):
 
 # ---------------------------------------------------------------- secciones reutilizables
 
-def sec_servicios(n, titulo, titulo_em, cta=True, excluir=None, eyebrow="Servicios"):
+def sec_servicios(n, titulo, titulo_em, cta=True, excluir=(), eyebrow="Servicios"):
     u = R(n)["u"]
     cards = "\n".join(f"""        <li class="svc reveal">
           <a class="svc__link" href="{u('servicios/' + s['slug'] + '.html')}">
@@ -400,7 +401,7 @@ def sec_servicios(n, titulo, titulo_em, cta=True, excluir=None, eyebrow="Servici
             <p>{s['resumen']}</p>
             <span class="svc__more">Ver servicio {ico('i-arrow')}</span>
           </a>
-        </li>""" for s in SERVICIOS if s["slug"] != excluir)
+        </li>""" for s in SERVICIOS if s["slug"] not in excluir)
     pie_ = f'\n      <a class="btn btn--lg sec__cta" href="{u("servicios/index.html")}">Conoce nuestros servicios {ico("i-arrow")}</a>' if cta else ""
     return f"""  <section class="sec svcs" id="servicios" aria-labelledby="svc-title">
     <div class="wrap">
@@ -579,7 +580,7 @@ def sec_blog(n, titulo="Ideas para", titulo_em="tu próximo espacio", lista=None
 
 
 def banda_final(n, cta="Hablemos de tu proyecto", href="contacto.html"):
-    return banda(n, "Tu próximo espacio empieza", "con una conversación.",
+    return banda(n, "Tu próxima vida empieza", "con una conversación.",
                  "Cuéntanos qué tienes en mente. Nuestro equipo te ayudará a dar el primer paso.", cta, href)
 
 
@@ -611,7 +612,7 @@ def pag_inicio():
     <div class="hero__body wrap">
       <p class="eyebrow">Diseño y construcción · Medellín</p>
       <h1 class="hero__title display" id="hero-title">Tú sueñas el espacio. <em>Nosotros nos encargamos de todo.</em></h1>
-      <p class="hero__lead">Diseñamos, transformamos y construimos espacios que se adaptan a ti. Con un equipo propio que te acompaña desde la primera idea hasta la entrega final.</p>
+      <p class="hero__lead">Diseñamos y construimos espacios que se adaptan a ti. Con un equipo propio que te acompaña desde la primera idea hasta la entrega final.</p>
       <div class="hero__ctas">
         <a class="btn btn--light btn--lg" href="contacto.html">Empezar mi proyecto {ico('i-arrow')}</a>
         <a class="btn btn--ghost btn--lg" href="proyectos.html">Ver proyectos</a>
@@ -639,7 +640,7 @@ def pag_inicio():
       <div class="story__copy reveal">
         <p class="eyebrow">Sobre OMBU</p>
         <h2 class="title" id="story-title">Espacios pensados para ti. <em>Procesos respaldados por expertos.</em></h2>
-        <p>Somos una empresa de diseño y construcción especializada en transformar viviendas, oficinas y espacios comerciales.</p>
+        <p>Somos una empresa de diseño y construcción especializada en renovar viviendas, oficinas y espacios comerciales.</p>
         <p>Creemos que cada espacio debe responder a quienes lo habitan. Por eso, combinamos <strong>diseño personalizado, conocimiento técnico y un equipo propio</strong> de profesionales para hacer realidad cada proyecto.</p>
         <a class="btn btn--lg story__cta" href="nosotros.html">Conoce OMBU {ico('i-arrow')}</a>
       </div>
@@ -756,6 +757,8 @@ def pag_servicios():
 
 def pag_servicio(s):
     slug, f, w, h = s["foto"]
+    # En Diseño no se ofrece Construcción como servicio complementario (ajuste del cliente, 29-oct-2026)
+    s = dict(s, excluir=(s["slug"], "construccion") if s["slug"] == "diseno" else (s["slug"],))
     lista = "\n".join(f"        <li>{ico('i-check')}<span>{x}</span></li>" for x in s["lista"])
     catalogo = ""
     if s["slug"] == "mobiliario":
@@ -800,7 +803,7 @@ def pag_servicio(s):
     </div>
   </section>
 {catalogo}
-{sec_servicios(1, "Otros servicios", "que se complementan.", cta=False, excluir=s['slug'], eyebrow="También hacemos")}
+{sec_servicios(1, "Otros servicios", "que se complementan.", cta=False, excluir=s['excluir'], eyebrow="También hacemos")}
 {banda_final(1, s['cta'], cta)}"""
     return pagina(f"{s['nombre']} · Servicios OMBU Renovaciones", s["texto"], 1, "svc-" + s["slug"], "servicio", cuerpo)
 
@@ -811,30 +814,19 @@ def pag_proyectos():
           <p class="card__btn"><span class="card__txt"><span class="card__name">{nombre}</span><span class="card__meta">{nota}</span></span></p>
         </li>"""
 
-    def sec(id_, eyebrow, titulo, titulo_em, lead, ul):
-        return f"""  <section class="sec projects pgal" id="{id_}" aria-labelledby="{id_}-title">
+    pendientes = "\n".join(ph_card(t, "Fotos pendientes") for t in REALIZADOS_SIN_FOTO)
+    badge = '\n      <div class="badge bhero__badge" aria-hidden="true"><strong>+80</strong><span>proyectos</span></div>'
+    cuerpo = (phero("Espacios que hablan", "por nosotros.",
+                    'Detrás de cada proyecto hay una idea, un proceso y una transformación. Desliza cada foto para comparar el antes y el después, y toca el nombre para ver todas las fotos. <span class="sr-only">Más de 80 proyectos.</span>',
+                    [("Inicio", "index.html"), ("Proyectos", None)], badge)
+              + f"""  <section class="sec projects pgal" id="todos" aria-label="Proyectos">
     <div class="wrap">
-      <div class="sec__head reveal">
-        <p class="eyebrow">{eyebrow}</p>
-        <h2 class="title" id="{id_}-title">{titulo} <em>{titulo_em}</em></h2>
-        <p class="lead">{lead}</p>
-      </div>
-{ul}
+      <ul class="pgrid" data-proj="{",".join(PROYECTOS_TODOS)}" role="list">
+{pendientes}
+      </ul>
     </div>
   </section>
 """
-    realizados = "\n".join(ph_card(t, "Fotos pendientes") for t in REALIZADOS_SIN_FOTO)
-    badge = '\n      <div class="badge bhero__badge" aria-hidden="true"><strong>+80</strong><span>proyectos</span></div>'
-    cuerpo = (phero("Espacios que hablan", "por nosotros.",
-                    'Detrás de cada proyecto hay una idea, un proceso y una transformación. Conoce algunos de los espacios que hemos diseñado y construido. <span class="sr-only">Más de 80 proyectos.</span>',
-                    [("Inicio", "index.html"), ("Proyectos", None)], badge)
-              + sec("realizados", "Galería 1", "Proyectos", "realizados.", "El resultado final de algunos de nuestros proyectos.",
-                    f'      <ul class="pgrid" role="list">\n{realizados}\n      </ul>')
-              + sec("transformaciones", "Galería 2", "Transformaciones:", "antes y después.",
-                    "Desliza cada foto para comparar el espacio antes y después de la obra. Toca el nombre para ver todas las fotos.",
-                    f'      <ul class="pgrid" data-proj="{",".join(TRANSFORMACIONES)}" role="list">\n{ph_card("Salento", "Antes y después pendiente")}\n      </ul>')
-              + sec("mas", "Más proyectos", "Otros espacios", "que transformamos.", "Más obras de OMBU con fotos del antes y el después.",
-                    f'      <ul class="pgrid" data-proj="{",".join(OTROS)}" role="list"></ul>')
               + banda_final(0, "Quiero transformar mi espacio"))
     return pagina("Proyectos · OMBU Renovaciones", "Más de 80 proyectos de diseño y construcción. Mira el antes y el después de las obras de OMBU.",
                   0, "proyectos", "proyectos", cuerpo, js=("inicio.js",), extra_body=dialogos())
