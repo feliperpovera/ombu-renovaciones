@@ -848,3 +848,15 @@ body.ck-open .fab { opacity: 0; pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) { .svc__link, .svc__more svg, .faq__item .chev { transition: none; } }
 .sec__head .lead { max-width: 60ch; }
+
+/* ---------- Documentos legales ---------- */
+.legal__nav { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.legal__nav p { font-size: var(--fs-xs); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text-soft); margin-bottom: .5rem; }
+.legal__nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; }
+.legal__nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ombu-carbon); text-underline-offset: 3px; }
+.legal__nav a[aria-current] { font-weight: 600; text-decoration: none; }
+.legal__table { overflow-x: auto; }
+.legal__table table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: var(--fs-sm); line-height: 1.5; }
+.legal__table th, .legal__table td { padding: .75rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.legal__table th { font-weight: 600; background: var(--ombu-niebla); }
+.legal__table code { font-size: .9em; }

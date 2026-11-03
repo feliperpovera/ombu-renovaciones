@@ -149,7 +149,7 @@
      La elección queda en localStorage ('ombu-cookies'). Para cargar analítica o
      marketing en el futuro: leer OMBU.consent o escuchar el evento 'ombu:consent'. */
   var CK = 'ombu-cookies';
-  var POLITICA = ROOT + 'sitio/legal/politica-de-datos.html';
+  var POLITICA = ROOT + 'sitio/legal/politica-de-cookies.html';
   function leer() { try { return JSON.parse(localStorage.getItem(CK)); } catch (e) { return null; } }
   function guardar(analitica, marketing) {
     var c = { analitica: analitica, marketing: marketing, fecha: new Date().toISOString() };
@@ -165,7 +165,7 @@
   aviso.className = 'ck on-dark';
   aviso.setAttribute('aria-label', 'Aviso de cookies');
   aviso.innerHTML =
-    '<p class="ck__text">Usamos cookies necesarias para que el sitio funcione. Con tu permiso usaríamos también cookies de analítica y marketing. <a href="' + POLITICA + '#cookies">Más información</a></p>' +
+    '<p class="ck__text">Usamos cookies necesarias para que el sitio funcione. Con tu permiso usaríamos también cookies de analítica y marketing. <a href="' + POLITICA + '">Más información</a></p>' +
     '<div class="ck__btns">' +
       '<button class="btn btn--light" type="button" data-ck="todas">Aceptar todas</button>' +
       '<button class="btn btn--light" type="button" data-ck="rechazar">Solo necesarias</button>' +
@@ -182,7 +182,7 @@
   dlg.innerHTML =
     '<form method="dialog" class="ckd__in">' +
       '<h2 class="ckd__title" id="ckd-title">Preferencias de cookies</h2>' +
-      '<p class="ckd__lead">Elige qué cookies aceptas. Puedes cambiarlo cuando quieras desde el pie de página. <a href="' + POLITICA + '#cookies">Política de datos</a></p>' +
+      '<p class="ckd__lead">Elige qué cookies aceptas. Puedes cambiarlo cuando quieras desde el pie de página. <a href="' + POLITICA + '">Política de cookies</a></p>' +
       fila('necesarias', 'Necesarias', 'Hacen funcionar el sitio y guardan esta elección. Siempre activas.', true) +
       fila('analitica', 'Analítica', 'Nos dicen qué páginas se visitan para mejorar el sitio.') +
       fila('marketing', 'Marketing', 'Permiten mostrarte anuncios de OMBU en otras plataformas.') +

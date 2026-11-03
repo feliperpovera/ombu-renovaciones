@@ -24,6 +24,14 @@ WA = "https://wa.me/573105996809"
 WA_COTIZAR = WA + "?text=Hola%20OMBU%2C%20quiero%20cotizar%20la%20renovaci%C3%B3n%20de%20mi%20espacio."
 URL = "https://feliperpovera.github.io/ombu-renovaciones/"
 LEGAL = "legal/politica-de-datos.html"
+# Documentos legales (archivo en sitio/legal/, nombre corto para el pie)
+LEGALES = [
+    ("terminos-y-condiciones.html", "Términos y condiciones"),
+    ("politica-de-datos.html", "Política de datos"),
+    ("aviso-de-privacidad.html", "Aviso de privacidad"),
+    ("politica-de-cookies.html", "Política de cookies"),
+]
+VIGENCIA = "3 de noviembre de 2026"
 
 ARTICULOS = sorted(ARTICULOS, key=lambda a: a["fecha"], reverse=True)
 
@@ -137,7 +145,7 @@ ICONOS_EXTRA = """    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 
 def R(n):
     """Rutas para una página a n carpetas de sitio/ (0 = sitio/, 1 = sitio/blog/, sitio/servicios/…)."""
     sube = "../" * n
-    return {"A": "../" + sube + "assets/", "P": "../" + sube + "index.html", "u": lambda p: sube + p, "root": "../" + sube}
+    return {"A": "../" + sube + "assets/", "u": lambda p: sube + p, "root": "../" + sube}
 
 
 def esc(s):
@@ -271,7 +279,6 @@ def cabecera(n, activo):
     <div class="menu__social">
       <a href="https://www.instagram.com/ombu.renovaciones/" target="_blank" rel="noopener" aria-label="Instagram de OMBU">{ico("i-ig")}</a>
       <a href="https://www.facebook.com/share/1AA67nPHKe/" target="_blank" rel="noopener" aria-label="Facebook de OMBU">{ico("i-fb")}</a>
-      <a class="menu__back" href="{r['P']}">← Volver a la propuesta</a>
     </div>
   </div>
 </div>
@@ -305,8 +312,7 @@ def pie(n):
   </div>
   <div class="wrap ftr__bottom">
     <p>© 2026 OMBU Renovaciones · Medellín, Antioquia</p>
-    <p class="ftr__legal"><a href="{u(LEGAL)}">Política de datos</a><button type="button" data-cookies>Preferencias de cookies</button></p>
-    <a href="{r['P']}">← Volver a la propuesta</a>
+    <p class="ftr__legal">{"".join(f'<a href="{u("legal/" + f)}">{t}</a>' for f, t in LEGALES)}<button type="button" data-cookies>Preferencias de cookies</button></p>
   </div>
 </footer>
 """
@@ -878,7 +884,7 @@ def pag_contacto():
             <textarea id="f-msg" name="mensaje" rows="4" placeholder="Ej.: renovar cocina y baños, cambiar pisos…"></textarea>
           </div>
           <div class="field">
-            <label class="check"><input id="f-ok" type="checkbox" name="autorizo" required aria-describedby="e-ok"><span>Autorizo a OMBU Renovaciones a tratar mis datos personales según su <a href="{LEGAL}" target="_blank">política de tratamiento de datos</a>.</span></label>
+            <label class="check"><input id="f-ok" type="checkbox" name="autorizo" required aria-describedby="e-ok"><span>Acepto los <a href="legal/terminos-y-condiciones.html" target="_blank">términos y condiciones</a> y autorizo a OMBU Renovaciones a tratar mis datos personales según su <a href="{LEGAL}" target="_blank">política de tratamiento de datos</a>.</span></label>
             <p class="field__err" id="e-ok" aria-live="polite"></p>
           </div>
           <button class="btn btn--lg btn--block form__submit" type="submit">Enviar mi proyecto {ico('i-arrow')}</button>
@@ -991,25 +997,68 @@ def pag_articulo(a):
 
 PEND = '<mark class="pend">por confirmar</mark>'
 
-
-def pag_politica():
-    cuerpo = f"""  <article class="art legal">
-    <header class="art__head wrap">
-      <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Política de datos</span></nav>
-      <h1 class="display art__title">Política de tratamiento <em>de datos personales</em></h1>
-      <p class="lead art__lead">Cómo recolectamos, usamos y protegemos tu información, y cómo puedes conocerla, actualizarla o pedir que la eliminemos.</p>
-      <p class="post__meta"><span>Vigente desde el 19 de octubre de 2026</span></p>
-    </header>
-    <div class="wrap legal__body">
-      <div class="prose">
-        <h2>1. Responsable del tratamiento</h2>
-        <ul>
+RESPONSABLE = f"""        <ul>
           <li><strong>Responsable:</strong> OMBU Renovaciones</li>
           <li><strong>NIT:</strong> {PEND}</li>
           <li><strong>Domicilio:</strong> Medellín, Antioquia, Colombia. Dirección: {PEND}</li>
-          <li><strong>Correo para temas de datos:</strong> {PEND}</li>
+          <li><strong>Correo:</strong> {PEND}</li>
           <li><strong>WhatsApp:</strong> <a href="{WA}" target="_blank" rel="noopener">+57 310 599 6809</a></li>
+        </ul>"""
+
+COOKIES_BTN = '<p><button class="btn" type="button" data-cookies>Preferencias de cookies</button></p>'
+
+LEGAL_TEXTOS = {
+    "terminos-y-condiciones.html": ("Términos y condiciones", "de uso del sitio",
+        "Las reglas para usar este sitio web y lo que puedes esperar de la información que publicamos.", f"""
+        <h2>1. Quiénes somos</h2>
+        <p>Este sitio pertenece a OMBU Renovaciones, empresa de diseño y construcción con domicilio en Medellín, Colombia.</p>
+{RESPONSABLE}
+
+        <h2>2. Aceptación</h2>
+        <p>Al navegar por este sitio o enviar el formulario de contacto aceptas estos términos. Si no estás de acuerdo con ellos, te pedimos no usar el sitio.</p>
+
+        <h2>3. Uso del sitio</h2>
+        <p>Puedes usar el sitio para conocer nuestros servicios y proyectos y para contactarnos. No está permitido:</p>
+        <ul>
+          <li>Usarlo para fines ilegales o que afecten derechos de otras personas.</li>
+          <li>Enviar información falsa o hacerte pasar por otra persona.</li>
+          <li>Intentar dañar, sobrecargar o acceder sin permiso a partes del sitio o de sus servidores.</li>
+          <li>Copiar o reutilizar el contenido con fines comerciales sin nuestra autorización.</li>
         </ul>
+
+        <h2>4. Información del sitio</h2>
+        <p>Los textos, fotografías y proyectos del sitio muestran trabajos realizados y tienen fines informativos. No son una oferta comercial vinculante.</p>
+        <p>Los tiempos que mencionamos (por ejemplo, de 30 a 45 días para diseño o de 90 a 180 días para obra) son referencias. El alcance, el valor, los plazos y las garantías de cada proyecto se definen en la cotización y en el contrato escrito que firmamos contigo.</p>
+
+        <h2>5. Cotizaciones y contratos</h2>
+        <p>La primera reunión es gratuita. Enviar el formulario o escribirnos por WhatsApp no crea ningún compromiso para ninguna de las partes. Cada proyecto se rige por su propio contrato, que prevalece sobre lo publicado en este sitio.</p>
+
+        <h2>6. Propiedad intelectual</h2>
+        <p>La marca OMBU, el logo, los textos, las fotografías, los diseños y demás contenidos del sitio pertenecen a OMBU Renovaciones o se usan con autorización de sus titulares. Están protegidos por la Ley 23 de 1982, la Decisión Andina 351 de 1993 y demás normas de derechos de autor y propiedad industrial. No puedes reproducirlos, modificarlos ni distribuirlos sin nuestra autorización previa y por escrito.</p>
+
+        <h2>7. Enlaces a otros sitios</h2>
+        <p>El sitio tiene enlaces a WhatsApp, Instagram y Facebook. Esas plataformas tienen sus propios términos y políticas de privacidad, y no somos responsables de su contenido ni de su funcionamiento.</p>
+
+        <h2>8. Responsabilidad</h2>
+        <p>Trabajamos para que el sitio funcione bien y su información esté actualizada, pero no podemos garantizar que esté siempre disponible o libre de errores. No respondemos por daños causados por el uso indebido del sitio, por fallas técnicas ajenas a nosotros o por el contenido de sitios de terceros.</p>
+
+        <h2>9. Datos personales</h2>
+        <p>Tratamos los datos que nos compartes según nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>, nuestro <a href="aviso-de-privacidad.html">Aviso de privacidad</a> y nuestra <a href="politica-de-cookies.html">Política de cookies</a>.</p>
+
+        <h2>10. Derechos como consumidor</h2>
+        <p>Cuando contratas nuestros servicios como consumidor tienes los derechos que reconoce el Estatuto del Consumidor (Ley 1480 de 2011). Para peticiones, quejas o reclamos escríbenos por los canales de contacto. También puedes acudir a la Superintendencia de Industria y Comercio (SIC).</p>
+
+        <h2>11. Cambios a estos términos</h2>
+        <p>Podemos actualizar estos términos. Publicaremos la nueva versión en esta página con su fecha de vigencia.</p>
+
+        <h2>12. Ley aplicable</h2>
+        <p>Estos términos se rigen por las leyes de la República de Colombia. Cualquier controversia se resolverá ante los jueces de Medellín, sin perjuicio de los derechos que tengas como consumidor ante la SIC.</p>
+"""),
+
+    "politica-de-datos.html": ("Política de tratamiento", "de datos personales",
+        "Cómo recolectamos, usamos y protegemos tu información, y cómo puedes conocerla, actualizarla o pedir que la eliminemos.", f"""
+        <h2>1. Responsable del tratamiento</h2>
+{RESPONSABLE}
 
         <h2>2. Marco legal</h2>
         <p>Esta política cumple la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto Único 1074 de 2015) y demás normas colombianas sobre protección de datos personales.</p>
@@ -1046,7 +1095,7 @@ def pag_politica():
         </ul>
 
         <h2>7. Cómo ejercer tus derechos</h2>
-        <p>Escríbenos al correo de datos o por WhatsApp con tu nombre, número de contacto y lo que necesitas.</p>
+        <p>Escríbenos al correo o por WhatsApp con tu nombre, número de contacto y lo que necesitas.</p>
         <ul>
           <li><strong>Consultas:</strong> respondemos en máximo 10 días hábiles. Si necesitamos más tiempo te avisamos, y nunca serán más de 5 días hábiles adicionales.</li>
           <li><strong>Reclamos</strong> (corrección, actualización, eliminación o revocatoria): respondemos en máximo 15 días hábiles, prorrogables hasta 8 días hábiles más con aviso previo.</li>
@@ -1059,24 +1108,89 @@ def pag_politica():
         <h2>9. Seguridad y conservación</h2>
         <p>Aplicamos medidas razonables para evitar pérdida, uso o acceso no autorizado a tus datos. Los conservamos mientras dure la relación contigo y el tiempo que exija la ley.</p>
 
-        <h2 id="cookies">10. Cookies</h2>
-        <p>Las cookies son pequeños archivos que el sitio guarda en tu navegador. Las agrupamos así:</p>
-        <ul>
-          <li><strong>Necesarias:</strong> hacen funcionar el sitio y recuerdan tus preferencias de cookies. Siempre están activas.</li>
-          <li><strong>Analítica:</strong> nos dirían qué páginas se visitan para mejorar el sitio. Solo se activan si las aceptas.</li>
-          <li><strong>Marketing:</strong> permitirían mostrarte anuncios de OMBU en otras plataformas. Solo se activan si las aceptas.</li>
-        </ul>
-        <p>Hoy este sitio solo usa las necesarias. Puedes cambiar tu elección cuando quieras:</p>
-        <p><button class="btn" type="button" data-cookies>Preferencias de cookies</button></p>
+        <h2>10. Cookies</h2>
+        <p>Lo que guarda el sitio en tu navegador está explicado en nuestra <a href="politica-de-cookies.html">Política de cookies</a>.</p>
 
         <h2>11. Cambios a esta política</h2>
         <p>Si cambiamos esta política publicaremos la nueva versión en esta página con su fecha de vigencia. Si el cambio afecta las finalidades, te pediremos una nueva autorización.</p>
+"""),
+
+    "aviso-de-privacidad.html": ("Aviso", "de privacidad",
+        "El resumen de cómo tratamos tus datos personales, según el artículo 15 del Decreto 1377 de 2013.", f"""
+        <h2>Responsable</h2>
+{RESPONSABLE}
+
+        <h2>Qué hacemos con tus datos</h2>
+        <p>Recolectamos tu nombre, apellido, celular, ciudad y la información de tu proyecto para responder tu solicitud, asesorarte, preparar tu cotización, coordinar tu proyecto y, si nos das permiso, enviarte novedades de OMBU.</p>
+
+        <h2>Tus derechos</h2>
+        <p>Puedes conocer, actualizar, corregir y pedir que eliminemos tus datos, revocar tu autorización, pedir prueba de ella y presentar quejas ante la Superintendencia de Industria y Comercio. Las preguntas sobre datos sensibles o de menores de edad son de respuesta opcional.</p>
+
+        <h2>Cómo ejercerlos</h2>
+        <p>Escríbenos al correo o por WhatsApp. Respondemos consultas en máximo 10 días hábiles y reclamos en máximo 15 días hábiles.</p>
+
+        <h2>Política completa</h2>
+        <p>Consulta todos los detalles en nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>.</p>
+"""),
+
+    "politica-de-cookies.html": ("Política", "de cookies",
+        "Qué guarda este sitio en tu navegador, para qué y cómo puedes cambiar tu elección.", f"""
+        <h2>1. Qué son</h2>
+        <p>Las cookies y el almacenamiento local son pequeños archivos que un sitio guarda en tu navegador para recordar información entre visitas.</p>
+
+        <h2>2. Qué usamos hoy</h2>
+        <div class="legal__table">
+          <table>
+            <thead><tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr></thead>
+            <tbody><tr><td><code>ombu-cookies</code></td><td>Necesaria (almacenamiento local)</td><td>Recordar las preferencias de cookies que elegiste.</td><td>Hasta que la borres de tu navegador</td></tr></tbody>
+          </table>
+        </div>
+        <p>Hoy este sitio no usa cookies de analítica ni de marketing, ni carga herramientas de terceros que te rastreen.</p>
+
+        <h2>3. Categorías</h2>
+        <ul>
+          <li><strong>Necesarias:</strong> hacen funcionar el sitio y recuerdan tus preferencias. Siempre están activas.</li>
+          <li><strong>Analítica:</strong> nos dirían qué páginas se visitan para mejorar el sitio. Solo se activarían si las aceptas.</li>
+          <li><strong>Marketing:</strong> permitirían mostrarte anuncios de OMBU en otras plataformas. Solo se activarían si las aceptas.</li>
+        </ul>
+        <p>Si en el futuro activamos analítica o marketing, actualizaremos esta tabla antes de hacerlo.</p>
+
+        <h2>4. Enlaces a otras plataformas</h2>
+        <p>Al tocar los botones de WhatsApp, Instagram o Facebook sales de este sitio. Esas plataformas usan sus propias cookies según sus políticas.</p>
+
+        <h2>5. Cómo cambiar tu elección</h2>
+        <p>Puedes cambiar tu elección cuando quieras con este botón o desde el pie de página. También puedes borrar o bloquear las cookies en la configuración de tu navegador.</p>
+        {COOKIES_BTN}
+
+        <h2>6. Más información</h2>
+        <p>Consulta nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>.</p>
+"""),
+}
+
+
+def pag_legal(archivo):
+    titulo, titulo_em, lead, cuerpo_legal = LEGAL_TEXTOS[archivo]
+    nombre = dict(LEGALES)[archivo]
+    otros = "".join(f'<li><a href="{f}"{" aria-current=\"page\"" if f == archivo else ""}>{t}</a></li>' for f, t in LEGALES)
+    cuerpo = f"""  <article class="art legal">
+    <header class="art__head wrap">
+      <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span></nav>
+      <h1 class="display art__title">{titulo} <em>{titulo_em}</em></h1>
+      <p class="lead art__lead">{lead}</p>
+      <p class="post__meta"><span>Vigente desde el {VIGENCIA}</span></p>
+    </header>
+    <div class="wrap legal__body">
+      <div class="prose">
+{cuerpo_legal}
       </div>
+      <nav class="legal__nav" aria-label="Documentos legales">
+        <p>Documentos legales</p>
+        <ul role="list">{otros}</ul>
+      </nav>
     </div>
   </article>
 """
-    return pagina("Política de tratamiento de datos · OMBU Renovaciones", "Cómo OMBU Renovaciones recolecta, usa y protege tus datos personales, y cómo ejercer tus derechos.",
-                  1, "", "legal", cuerpo)
+    return pagina(f"{titulo} {titulo_em} · OMBU Renovaciones", lead, 1, "", "legal", cuerpo)
 
 
 # ---------------------------------------------------------------- escritura
@@ -1089,10 +1203,11 @@ def main():
         "contacto.html": pag_contacto(),
         "servicios/index.html": pag_servicios(),
         "blog/index.html": pag_blog_indice(),
-        LEGAL: pag_politica(),
     }
     for s in SERVICIOS:
         paginas["servicios/" + s["slug"] + ".html"] = pag_servicio(s)
+    for f, _ in LEGALES:
+        paginas["legal/" + f] = pag_legal(f)
     for a in ARTICULOS:
         paginas["blog/" + a["slug"] + ".html"] = pag_articulo(a)
     for ruta, contenido in paginas.items():

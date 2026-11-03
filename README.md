@@ -1,15 +1,12 @@
-# OMBU Renovaciones — Propuesta de sitio web
+# OMBU Renovaciones — Sitio web
 
-Propuesta comercial y demostración navegable del nuevo sitio web de
-**OMBU Renovaciones** (Medellín, Colombia).
+Sitio web de **OMBU Renovaciones** (Medellín, Colombia).
 
 ### ▶ Ver en vivo
 
-**https://revupag.github.io/ombu-propuesta/**
+**https://feliperpovera.github.io/ombu-renovaciones/sitio/**
 
-Ese es el enlace para enviarle al cliente. Abre en la propuesta; el botón
-«Sí, quiero ver mi página» lleva al sitio terminado, y desde el sitio (menú y
-pie de página) hay un enlace de vuelta. Pensado para abrirse desde el celular.
+La raíz del repositorio redirige al sitio. Pensado para abrirse desde el celular.
 
 ---
 
@@ -17,12 +14,12 @@ pie de página) hay un enlace de vuelta. Pensado para abrirse desde el celular.
 
 | Ruta | Qué es |
 |---|---|
-| `index.html` | La **propuesta**: diagnóstico del sitio actual, lo que vamos a construir, comparativa antes/después, proceso y entregables. Termina en el CTA que lleva al sitio. |
-| `sitio/` | El **sitio terminado** según «Estructura y contenidos»: Inicio (resumen de todo), `nosotros.html` (incluye cómo trabajamos), `servicios/` (índice + Diseño, Construcción, Mobiliario, Interventoría), `proyectos.html` (galerías y antes/después con ficha), `contacto.html` (formulario + preguntas frecuentes) y `legal/politica-de-datos.html`. |
+| `index.html` | Redirige a `sitio/`. |
+| `sitio/` | El **sitio terminado** según «Estructura y contenidos»: Inicio (resumen de todo), `nosotros.html` (incluye cómo trabajamos), `servicios/` (índice + Diseño, Construcción, Mobiliario, Interventoría), `proyectos.html` (galerías y antes/después con ficha), `contacto.html` (formulario + preguntas frecuentes) y `legal/` (términos y condiciones, política de datos, aviso de privacidad y política de cookies). |
 | `sitio/blog/` | **Blog**: índice con artículo destacado y filtro por temas, y cuatro artículos. |
 | `herramientas/generar.py` | Genera **todas** las páginas de `sitio/` (textos, menú, pie y secciones repetidas). Los artículos están en `herramientas/articulos.py`. |
 | `assets/css/brand.css` | Sistema de marca: color, tipografía, escala y componentes base. |
-| `assets/css/propuesta.css` · `sitio.css` | Estilos de cada página. |
+| `assets/css/sitio.css` · `blog.css` | Estilos del sitio y del blog. |
 | `assets/js/proyectos.js` | Los 13 proyectos con sus fotos clasificadas en «antes» y «después». |
 | `assets/js/comun.js` | Cabecera, desplegable de Servicios, menú móvil, carriles y WhatsApp flotante (todas las páginas). |
 | `assets/js/inicio.js` · `blog.js` | Tarjetas con comparador, ficha, visor y formulario (Inicio, Proyectos, Contacto); filtro y compartir del blog. Sin librerías externas. |
@@ -169,7 +166,7 @@ que el sitio se publique bajo `omburenovaciones.com`.
 - **Accesibilidad.** Un solo `h1` por página, jerarquía sin saltos, formulario
   etiquetado con errores anunciados, foco visible, navegación por teclado en
   carruseles, pestañas y visor, `prefers-reduced-motion` respetado y **cero
-  fallos de contraste** en la auditoría automática de la propuesta, el sitio y el blog.
+  fallos de contraste** en la auditoría automática del sitio y el blog.
 
 ---
 
