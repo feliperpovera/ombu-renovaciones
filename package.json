@@ -1,0 +1,12 @@
+{
+  "name": "ombu-renovaciones",
+  "private": true,
+  "description": "Sitio de OMBU Renovaciones con panel de edición sobre Supabase",
+  "type": "module",
+  "scripts": {
+    "construir": "python3 herramientas/fotos.py && python3 herramientas/generar.py",
+    "ver": "python3 -m http.server 8765 --directory dist",
+    "semilla": "node herramientas/supabase/semilla.mjs",
+    "bajar": "node herramientas/supabase/bajar.mjs"
+  }
+}

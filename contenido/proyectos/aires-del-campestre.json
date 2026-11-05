@@ -1,0 +1,32 @@
+{
+  "url": "aires-del-campestre",
+  "orden": 3,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Aires del Campestre",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "aires-del-campestre-par-a.webp",
+  "foto_despues": "aires-del-campestre-par-d.webp",
+  "despues": [
+    "aires-del-campestre-d01.webp",
+    "aires-del-campestre-d02.webp",
+    "aires-del-campestre-d03.webp",
+    "aires-del-campestre-d04.webp",
+    "aires-del-campestre-d05.webp",
+    "aires-del-campestre-d06.webp",
+    "aires-del-campestre-d07.webp",
+    "aires-del-campestre-d08.webp",
+    "aires-del-campestre-d09.webp",
+    "aires-del-campestre-d10.webp"
+  ],
+  "antes": [
+    "aires-del-campestre-a01.webp",
+    "aires-del-campestre-a02.webp",
+    "aires-del-campestre-a03.webp",
+    "aires-del-campestre-a04.webp",
+    "aires-del-campestre-a05.webp",
+    "aires-del-campestre-a06.webp"
+  ]
+}

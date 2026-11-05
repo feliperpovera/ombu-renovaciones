@@ -1,0 +1,32 @@
+{
+  "url": "palmar-de-la-abadia",
+  "orden": 11,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Palmar de la Abadía",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "palmar-de-la-abadia-par-a.webp",
+  "foto_despues": "palmar-de-la-abadia-par-d.jpg",
+  "despues": [
+    "palmar-de-la-abadia-d01.webp",
+    "palmar-de-la-abadia-d02.webp",
+    "palmar-de-la-abadia-d03.webp",
+    "palmar-de-la-abadia-d04.webp",
+    "palmar-de-la-abadia-d05.webp",
+    "palmar-de-la-abadia-d06.webp",
+    "palmar-de-la-abadia-d07.webp",
+    "palmar-de-la-abadia-d08.webp",
+    "palmar-de-la-abadia-d09.webp",
+    "palmar-de-la-abadia-d10.webp"
+  ],
+  "antes": [
+    "palmar-de-la-abadia-a01.webp",
+    "palmar-de-la-abadia-a02.webp",
+    "palmar-de-la-abadia-a03.webp",
+    "palmar-de-la-abadia-a04.webp",
+    "palmar-de-la-abadia-a05.webp",
+    "palmar-de-la-abadia-a06.webp"
+  ]
+}

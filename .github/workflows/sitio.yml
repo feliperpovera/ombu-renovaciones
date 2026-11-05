@@ -1,0 +1,74 @@
+# Construye el sitio (dist/) y lo publica en GitHub Pages.
+# Corre al subir cambios, al pulsar «Publicar cambios» en el panel (/admin) y a mano desde la pestaña Actions.
+# Si Supabase está conectado (variables SUPABASE_URL y SUPABASE_ANON_KEY del repositorio),
+# primero baja el contenido y las fotos nuevas, y los guarda en contenido/ y fotos/ como copia.
+name: Construir y publicar
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [publicar]
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Bajar contenido de Supabase
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: npm run -s bajar
+      - name: Guardar copia del contenido en el repositorio
+        env:
+          POR: ${{ github.event.client_payload.por }}
+        run: |
+          git add contenido fotos
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Contenido desde el panel${POR:+ (publicado por $POR)}"
+          git pull --rebase origin main
+          git push
+
+      - name: Reutilizar fotos optimizadas
+        uses: actions/cache@v4
+        with:
+          path: dist/fotos
+          key: fotos-${{ hashFiles('fotos/**', 'herramientas/fotos.py') }}
+          restore-keys: fotos-
+      - run: npm run -s construir
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4

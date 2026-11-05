@@ -1,0 +1,32 @@
+{
+  "url": "torrealta",
+  "orden": 1,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Torrealta",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "torrealta-par-a.webp",
+  "foto_despues": "torrealta-par-d.webp",
+  "despues": [
+    "torrealta-d01.webp",
+    "torrealta-d02.webp",
+    "torrealta-d03.webp",
+    "torrealta-d04.webp",
+    "torrealta-d05.webp",
+    "torrealta-d06.webp",
+    "torrealta-d07.webp",
+    "torrealta-d08.webp",
+    "torrealta-d09.webp",
+    "torrealta-d10.webp"
+  ],
+  "antes": [
+    "torrealta-a01.webp",
+    "torrealta-a02.webp",
+    "torrealta-a03.webp",
+    "torrealta-a04.webp",
+    "torrealta-a05.webp",
+    "torrealta-a06.webp"
+  ]
+}

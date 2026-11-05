@@ -1,0 +1,27 @@
+{
+  "url": "construccion",
+  "orden": 2,
+  "publicado": true,
+  "nombre": "Construcción",
+  "icono": "i-build",
+  "resumen": "Materializamos los diseños con nuestro equipo técnico, procesos definidos y acompañamiento durante toda la obra.",
+  "titulo": "De los planos",
+  "titulo_em": "a la realidad.",
+  "texto": "Ejecutamos proyectos de construcción y renovación con una planificación clara, coordinación técnica y un equipo que acompaña cada etapa.",
+  "lista_titulo": "¿Qué incluye?",
+  "lista": [
+    "Diagnóstico técnico.",
+    "Coordinación de materiales y personal.",
+    "Planimetría.",
+    "Ejecución de las actividades de obra.",
+    "Seguimiento del cronograma."
+  ],
+  "cta": "Quiero transformar mi espacio",
+  "foto": "torrealta-d01.webp",
+  "alt": "Proyecto de OMBU",
+  "ocultar": [],
+  "catalogo_titulo": "",
+  "catalogo_titulo_em": "",
+  "catalogo_texto": "",
+  "piezas": []
+}

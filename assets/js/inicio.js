@@ -4,8 +4,8 @@
 (function () {
   'use strict';
 
-  var WA = '573105996809';
-  var IMG = '../assets/img/proyectos/';
+  var WA = document.body.dataset.wa;
+  var IMG = (document.body.dataset.root || './') + 'fotos/';
   var PROYECTOS = window.OMBU_PROYECTOS || [];
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (s, c) { return (c || document).querySelector(s); };
@@ -32,30 +32,39 @@
 
   /* ---------- Proyectos: tarjetas con comparador ----------
      Cada <ul data-proj="slug,slug"> recibe las tarjetas de esos proyectos (assets/js/proyectos.js). */
-  function src(p, f) { return IMG + p.slug + '/' + f[0]; }
-  function srcset(p, ph) { return src(p, ph[0]) + ' ' + ph[0][1] + 'w, ' + src(p, ph[1]) + ' ' + ph[1][1] + 'w'; }
+  function url(f, chica) { return IMG + f[0] + (chica ? '-800' : '') + '.webp'; }
+  function srcset(f) { return url(f, true) + ' ' + Math.min(f[1], 800) + 'w, ' + url(f) + ' ' + f[1] + 'w'; }
   var porSlug = {};
   PROYECTOS.forEach(function (p) { porSlug[p.slug] = p; });
 
-  function tarjeta(p, lazy) {
-    var a = p.par[0], d = p.par[1];
+  function pieTarjeta(p) {
     var total = p.despues.length + p.antes.length;
+    if (!total) return '<p class="card__btn"><span class="card__txt"><span class="card__name">' + p.nombre + '</span><span class="card__meta">Fotos pendientes</span></span></p>';
+    return '<button class="card__btn" type="button" data-open="' + p.slug + '">' +
+      '<span class="card__txt"><span class="card__name">' + p.nombre + '</span>' +
+      '<span class="card__meta">' + total + ' fotos · Ver proyecto</span></span>' +
+      '<span class="card__go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span></button>';
+  }
+  function tarjeta(p, lazy) {
+    var f = p.despues[0];
+    if (!p.par) {
+      return '<li class="card">' + (f
+        ? '<div class="ph ph--cmp ph--foto"><img src="' + url(f, true) + '" width="' + f[1] + '" height="' + f[2] + '" loading="' + lazy + '" decoding="async" alt="' + p.nombre + '"></div>'
+        : '<div class="ph ph--cmp" role="img" aria-label="Fotos pendientes: ' + p.nombre + '"><svg aria-hidden="true"><use href="#i-camera"/></svg><span>Fotos pendientes</span></div>') +
+        pieTarjeta(p) + '</li>';
+    }
+    var a = p.par[0], d = p.par[1];
     return '<li class="card">' +
       '<div class="cmp" style="--pos: 50%">' +
-        '<img class="cmp__img" src="' + src(p, d) + '" width="' + d[1] + '" height="' + d[2] + '" loading="' + lazy + '" decoding="async"' +
+        '<img class="cmp__img" src="' + url(d, true) + '" width="' + d[1] + '" height="' + d[2] + '" loading="' + lazy + '" decoding="async"' +
         ' alt="' + p.nombre + ', después de la renovación">' +
-        '<div class="cmp__clip"><img class="cmp__img" src="' + src(p, a) + '" width="' + a[1] + '" height="' + a[2] + '" loading="' + lazy + '" decoding="async"' +
+        '<div class="cmp__clip"><img class="cmp__img" src="' + url(a, true) + '" width="' + a[1] + '" height="' + a[2] + '" loading="' + lazy + '" decoding="async"' +
         ' alt="' + p.nombre + ', antes de la renovación"></div>' +
         '<span class="cmp__tag cmp__tag--a" aria-hidden="true">Antes</span>' +
         '<span class="cmp__tag cmp__tag--d" aria-hidden="true">Después</span>' +
         '<div class="cmp__grab" aria-hidden="true"><span class="cmp__knob"><svg><use href="#i-chev-l"/></svg><svg><use href="#i-chev-r"/></svg></span></div>' +
         '<input class="cmp__range" type="range" min="0" max="100" value="50" aria-label="Comparar antes y después en ' + p.nombre + '">' +
-      '</div>' +
-      '<button class="card__btn" type="button" data-open="' + p.slug + '">' +
-        '<span class="card__txt"><span class="card__name">' + p.nombre + '</span>' +
-        '<span class="card__meta">' + total + ' fotos · Ver proyecto</span></span>' +
-        '<span class="card__go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>' +
-      '</button></li>';
+      '</div>' + pieTarjeta(p) + '</li>';
   }
   $$('[data-proj]').forEach(function (ul) {
     var enCarril = !!ul.closest('.rail');
@@ -168,7 +177,7 @@
       gal.setAttribute('aria-labelledby', kind === 'despues' ? 'tab-d' : 'tab-a');
       gal.innerHTML = list.map(function (ph, i) {
         return '<figure class="gal__item"><button class="gal__btn" type="button" data-lb="' + i + '" aria-label="Ampliar foto ' + (i + 1) + ' de ' + list.length + ' (' + (kind === 'despues' ? 'después' : 'antes') + ')">' +
-          '<img src="' + src(current, ph[0]) + '" width="' + ph[0][1] + '" height="' + ph[0][2] + '" loading="lazy" decoding="async" alt="">' +
+          '<img src="' + url(ph, true) + '" width="' + ph[1] + '" height="' + ph[2] + '" loading="lazy" decoding="async" alt="">' +
           '</button></figure>';
       }).join('');
     }
@@ -180,14 +189,23 @@
       lastFocus = lastFocus || document.activeElement;
       var cover = p.despues[0];
       var img = $('#sheet-cover');
-      img.src = src(p, cover[1]); img.srcset = srcset(p, cover); img.sizes = '(min-width: 960px) 1040px, 100vw';
-      img.width = cover[1][1]; img.height = cover[1][2];
+      img.src = url(cover); img.srcset = srcset(cover); img.sizes = '(min-width: 960px) 1040px, 100vw';
+      img.width = cover[1]; img.height = cover[2];
       img.alt = 'Proyecto ' + p.nombre + ' terminado';
       $('#sheet-title').textContent = p.nombre;
       $('.sheet__bar-title', sheet).textContent = p.nombre;
       var meta = p.despues.length + ' fotos del resultado';
       if (p.antes.length) meta += ' · ' + p.antes.length + ' del estado inicial';
       $('#sheet-meta').textContent = meta;
+      var ficha = $('#sheet-ficha');
+      ficha.textContent = '';
+      [['Tipo de espacio', p.tipo], ['Servicios realizados', p.servicios], ['', p.descripcion]].forEach(function (x) {
+        if (!x[1]) return;
+        var e = document.createElement('p');
+        if (x[0]) { var b = document.createElement('strong'); b.textContent = x[0] + ': '; e.appendChild(b); }
+        e.appendChild(document.createTextNode(x[1]));
+        ficha.appendChild(e);
+      });
       $('span', tabs[0]).textContent = '(' + p.despues.length + ')';
       $('span', tabs[1]).textContent = '(' + p.antes.length + ')';
       tabs[1].disabled = !p.antes.length;
@@ -280,7 +298,7 @@
       if (!b) return;
       lbList = current[currentTab];
       lbTrack.innerHTML = lbList.map(function (ph, i) {
-        return '<li><img src="' + src(current, ph[1]) + '" width="' + ph[1][1] + '" height="' + ph[1][2] + '"' +
+        return '<li><img src="' + url(ph) + '" width="' + ph[1] + '" height="' + ph[2] + '"' +
           ' loading="' + (Math.abs(i - +b.dataset.lb) < 2 ? 'eager' : 'lazy') + '" decoding="async"' +
           ' alt="' + current.nombre + ', foto ' + (i + 1) + ' (' + (currentTab === 'despues' ? 'después' : 'antes') + ')"></li>';
       }).join('');
@@ -357,9 +375,18 @@
       if (t('mensaje')) text += '\n\nMi idea: ' + t('mensaje');
       text += '\n\nMi celular: ' + t('celular');
       text += '\n\nAutorizo el tratamiento de mis datos según su política de datos.';
-      var url = waLink(text);
-      window.open(url, '_blank', 'noopener');
-      $('#form-wa').href = url;
+      var enlace = waLink(text);
+      window.open(enlace, '_blank', 'noopener');
+      $('#form-wa').href = enlace;
+      // Copia en el panel (Solicitudes), si Supabase está conectado
+      var sb = window.OMBU_SUPABASE || {};
+      if (sb.url && sb.clave) {
+        fetch(sb.url + '/rest/v1/solicitudes', {
+          method: 'POST',
+          headers: { apikey: sb.clave, Authorization: 'Bearer ' + sb.clave, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ origen: 'contacto', nombre: t('nombre') + ' ' + t('apellido'), whatsapp: t('celular'), ciudad: t('ciudad'), tipo: espacio, mensaje: t('mensaje') }),
+        }).catch(function () {});
+      }
       var ok = $('#form-ok');
       form.hidden = true; ok.hidden = false; ok.focus();
     });

@@ -7,7 +7,7 @@
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var body = document.body;
-  var ROOT = body.dataset.root || '../';          // ruta hasta la carpeta que contiene assets/
+  var ROOT = body.dataset.root || './';          // ruta hasta la carpeta que contiene assets/
 
   /* ---------- Encabezado ---------- */
   var hdr = $('#hdr');
@@ -149,7 +149,7 @@
      La elección queda en localStorage ('ombu-cookies'). Para cargar analítica o
      marketing en el futuro: leer OMBU.consent o escuchar el evento 'ombu:consent'. */
   var CK = 'ombu-cookies';
-  var POLITICA = ROOT + 'sitio/legal/politica-de-cookies.html';
+  var POLITICA = ROOT + 'legal/politica-de-cookies.html';
   function leer() { try { return JSON.parse(localStorage.getItem(CK)); } catch (e) { return null; } }
   function guardar(analitica, marketing) {
     var c = { analitica: analitica, marketing: marketing, fecha: new Date().toISOString() };

@@ -860,3 +860,10 @@ body.ck-open .fab { opacity: 0; pointer-events: none; }
 .legal__table th, .legal__table td { padding: .75rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
 .legal__table th { font-weight: 600; background: var(--ombu-niebla); }
 .legal__table code { font-size: .9em; }
+
+/* Ficha del proyecto y tarjeta con una sola foto */
+.sheet__ficha { display: grid; gap: .5rem; color: var(--text-soft); }
+.sheet__ficha:empty { display: none; }
+.sheet__ficha strong { color: var(--ombu-carbon); font-weight: 600; }
+.ph--foto { padding: 0; overflow: hidden; }
+.ph--foto img { width: 100%; height: 100%; object-fit: cover; }

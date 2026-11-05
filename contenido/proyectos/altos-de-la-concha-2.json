@@ -1,0 +1,32 @@
+{
+  "url": "altos-de-la-concha-2",
+  "orden": 9,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Altos de la Concha II",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "altos-de-la-concha-2-par-a.webp",
+  "foto_despues": "altos-de-la-concha-2-par-d.webp",
+  "despues": [
+    "altos-de-la-concha-2-d01.webp",
+    "altos-de-la-concha-2-d02.webp",
+    "altos-de-la-concha-2-d03.webp",
+    "altos-de-la-concha-2-d04.webp",
+    "altos-de-la-concha-2-d05.webp",
+    "altos-de-la-concha-2-d06.webp",
+    "altos-de-la-concha-2-d07.webp",
+    "altos-de-la-concha-2-d08.webp",
+    "altos-de-la-concha-2-d09.webp",
+    "altos-de-la-concha-2-d10.webp"
+  ],
+  "antes": [
+    "altos-de-la-concha-2-a01.webp",
+    "altos-de-la-concha-2-a02.webp",
+    "altos-de-la-concha-2-a03.webp",
+    "altos-de-la-concha-2-a04.webp",
+    "altos-de-la-concha-2-a05.webp",
+    "altos-de-la-concha-2-a06.webp"
+  ]
+}

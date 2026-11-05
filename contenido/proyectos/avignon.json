@@ -1,0 +1,32 @@
+{
+  "url": "avignon",
+  "orden": 13,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Avignon",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "avignon-par-a.webp",
+  "foto_despues": "avignon-par-d.webp",
+  "despues": [
+    "avignon-d01.webp",
+    "avignon-d02.webp",
+    "avignon-d03.webp",
+    "avignon-d04.webp",
+    "avignon-d05.webp",
+    "avignon-d06.webp",
+    "avignon-d07.webp",
+    "avignon-d08.webp",
+    "avignon-d09.webp",
+    "avignon-d10.webp"
+  ],
+  "antes": [
+    "avignon-a01.webp",
+    "avignon-a02.webp",
+    "avignon-a03.webp",
+    "avignon-a04.webp",
+    "avignon-a05.webp",
+    "avignon-a06.webp"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "url": "kuna-1002",
+  "orden": 5,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Kuna 1002",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "kuna-1002-par-a.webp",
+  "foto_despues": "kuna-1002-par-d.webp",
+  "despues": [
+    "kuna-1002-d01.webp",
+    "kuna-1002-d02.webp",
+    "kuna-1002-d03.webp",
+    "kuna-1002-d04.webp",
+    "kuna-1002-d05.webp",
+    "kuna-1002-d06.webp",
+    "kuna-1002-d07.webp"
+  ],
+  "antes": [
+    "kuna-1002-a01.webp",
+    "kuna-1002-a02.webp",
+    "kuna-1002-a03.webp",
+    "kuna-1002-a04.webp",
+    "kuna-1002-a05.webp",
+    "kuna-1002-a06.webp"
+  ]
+}

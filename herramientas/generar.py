@@ -1,136 +1,57 @@
 # -*- coding: utf-8 -*-
-"""Genera todas las páginas del sitio de OMBU.
+"""OMBU · construye el sitio completo en dist/ a partir de contenido/ (lo que edita el panel),
+assets/ (CSS, JS, fuentes, marca) y panel/ (que queda en /admin).
 
-    python3 herramientas/generar.py
+    python3 herramientas/fotos.py && python3 herramientas/generar.py   (npm run construir)
 
-Escribe en sitio/: index.html, nosotros.html, proyectos.html, contacto.html,
-servicios/ (índice + una página por servicio), blog/ (índice + artículos de
-herramientas/articulos.py) y legal/politica-de-datos.html.
-
-Así la cabecera, el menú, el pie y las secciones repetidas son idénticas en todas las páginas.
-Textos según «OMBU | Estructura y contenidos página web». Lo que falta (fotos, datos legales)
-sale marcado «pendiente»: no se inventa.
+No hay textos aquí: todo sale de contenido/. Lo que falta (fotos, datos legales) sale marcado
+«pendiente»: no se inventa. Para volver editable algo nuevo: agregar el campo en panel/esquema.js,
+en contenido/ y en la plantilla de este archivo.
 """
+import glob
 import html
 import json
 import os
+import re
+import shutil
 from urllib.parse import quote
 
-from articulos import ARTICULOS
-
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITIO = os.path.join(RAIZ, "sitio")
-WA = "https://wa.me/573105996809"
-WA_COTIZAR = WA + "?text=Hola%20OMBU%2C%20quiero%20cotizar%20la%20renovaci%C3%B3n%20de%20mi%20espacio."
+DIST = os.path.join(RAIZ, "dist")
 URL = "https://feliperpovera.github.io/ombu-renovaciones/"
-LEGAL = "legal/politica-de-datos.html"
-# Documentos legales (archivo en sitio/legal/, nombre corto para el pie)
 LEGALES = [
-    ("terminos-y-condiciones.html", "Términos y condiciones"),
-    ("politica-de-datos.html", "Política de datos"),
-    ("aviso-de-privacidad.html", "Aviso de privacidad"),
-    ("politica-de-cookies.html", "Política de cookies"),
+    ("terminos-y-condiciones", "Términos y condiciones"),
+    ("politica-de-datos", "Política de datos"),
+    ("aviso-de-privacidad", "Aviso de privacidad"),
+    ("politica-de-cookies", "Política de cookies"),
 ]
-VIGENCIA = "3 de noviembre de 2026"
+ICONOS_ATRIBUTOS = ["i-shield", "i-design", "i-compare", "i-chat", "i-people"]
+ICONOS_PASOS = ["i-chat", "i-plan", "i-build", "i-key"]
+MESES = "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split()
 
-ARTICULOS = sorted(ARTICULOS, key=lambda a: a["fecha"], reverse=True)
 
-# (clave, texto, ruta desde sitio/)
-MENU = [
-    ("inicio", "Inicio", "index.html"),
-    ("nosotros", "Nosotros", "nosotros.html"),
-    ("servicios", "Servicios", "servicios/index.html"),
-    ("proyectos", "Proyectos", "proyectos.html"),
-    ("blog", "Blog", "blog/index.html"),
-    ("contacto", "Contacto", "contacto.html"),
-]
+def leer(ruta):
+    with open(os.path.join(RAIZ, ruta), encoding="utf-8") as f:
+        return json.load(f)
 
-SERVICIOS = [
-    {"slug": "diseno", "n": "01", "nombre": "Diseño", "ico": "i-design",
-     "resumen": "Convertimos tus ideas en espacios funcionales y personalizados, definiendo cada detalle antes de comenzar.",
-     "titulo": "Diseñamos espacios", "titulo_em": "que se sienten tuyos.",
-     "texto": "Transformamos tus ideas en espacios estéticos y funcionales, pensados para tus necesidades y tu comodidad al habitarlos.",
-     "lista_titulo": "¿Qué incluye?",
-     "lista": ["Desarrollo de propuestas de diseño.", "Renders.", "Planos.", "Detalles de carpintería.", "Selección de materiales y acabados."],
-     "cta": "Quiero diseñar mi espacio", "foto": ("altos-de-la-concha", "d05", 1024, 683)},
-    {"slug": "construccion", "n": "02", "nombre": "Construcción", "ico": "i-build",
-     "resumen": "Materializamos los diseños con nuestro equipo técnico, procesos definidos y acompañamiento durante toda la obra.",
-     "titulo": "De los planos", "titulo_em": "a la realidad.",
-     "texto": "Ejecutamos proyectos de construcción y renovación con una planificación clara, coordinación técnica y un equipo que acompaña cada etapa.",
-     "lista_titulo": "¿Qué incluye?",
-     "lista": ["Diagnóstico técnico.", "Coordinación de materiales y personal.", "Planimetría.", "Ejecución de las actividades de obra.", "Seguimiento del cronograma."],
-     "cta": "Quiero transformar mi espacio", "foto": ("torrealta", "d01", 1024, 683)},
-    {"slug": "mobiliario", "n": "03", "nombre": "Mobiliario", "ico": "i-sofa",
-     "resumen": "Creamos piezas que complementan tus espacios con identidad, funcionalidad y diseño.",
-     "titulo": "Los detalles que", "titulo_em": "completan tu espacio.",
-     "texto": "Complementamos nuestros proyectos con piezas de mobiliario exclusivas y soluciones hechas a la medida que responden a las características de cada ambiente.",
-     "lista_titulo": "Lo que ofrecemos",
-     "lista": ["Catálogo de 10 a 15 productos exclusivos.", "Opciones personalizadas para tu espacio."],
-     "cta": "Conocer mobiliario", "foto": ("aires-del-campestre", "d01", 1024, 683)},
-    {"slug": "interventoria", "n": "04", "nombre": "Interventoría", "ico": "i-clipboard",
-     "resumen": "Supervisamos proyectos para verificar el cumplimiento técnico, la calidad y los cronogramas establecidos.",
-     "titulo": "Supervisión que", "titulo_em": "da tranquilidad.",
-     "texto": "Acompañamos y supervisamos proyectos de construcción para verificar el cumplimiento de criterios técnicos, cronogramas, actividades y estándares de calidad.",
-     "lista_titulo": "Espacios que atendemos",
-     "lista": ["Viviendas.", "Locales comerciales.", "Oficinas de gran formato.", "Conjuntos residenciales y administraciones."],
-     "cta": "Solicitar acompañamiento", "foto": ("palo-alto", "d01", 1024, 683)},
-]
 
-ATRIBUTOS = [
-    ("i-shield", "Confianza y respaldo", "Contratos, pólizas y procesos que aportan seguridad a cada proyecto."),
-    ("i-design", "Diseño a la medida", "Soluciones pensadas alrededor de tus necesidades."),
-    ("i-compare", "Experiencia comprobada", "Proyectos y transformaciones que muestran nuestro trabajo."),
-    ("i-chat", "Acompañamiento cercano", "Profesionales presentes en cada etapa."),
-    ("i-people", "Equipo propio", "Integramos diseño, interiorismo, construcción, mano de obra y logística."),
-]
+def carpeta(nombre):
+    return [leer(os.path.relpath(f, RAIZ)) for f in sorted(glob.glob(os.path.join(RAIZ, "contenido", nombre, "*.json")))]
 
-PASOS = [
-    ("i-chat", "Nos cuentas tu idea", "Nos reunimos para conocer tus necesidades, expectativas y el espacio que quieres transformar."),
-    ("i-plan", "Diseñamos a tu medida", "Desarrollamos una propuesta personalizada, ajustamos los detalles y definimos el presupuesto."),
-    ("i-build", "Construimos con respaldo", "Nuestro equipo ejecuta el proyecto con acompañamiento, seguimiento y reportes periódicos."),
-    ("i-key", "Entregamos lo acordado", "Revisamos los detalles finales y hacemos entrega del proyecto terminado."),
-]
 
-ETAPAS = [
-    ("Nos conocemos", ["Nos compartes tu idea o necesidad.", "Nuestro equipo comercial te recibe.",
-                       "Agendamos una reunión para conocerte.", "Preparamos un plan de trabajo personalizado."]),
-    ("Diseñamos contigo", ["Realizamos el levantamiento del espacio y conocemos tus expectativas.", "Desarrollamos una propuesta inicial.",
-                           "Revisamos y ajustamos el diseño contigo.", "Aprobamos los diseños y el presupuesto."]),
-    ("Hacemos realidad el proyecto", ["Iniciamos la etapa de obra.",
-                                      "Ejecutamos el proyecto con director de obra, líder de ejecución, residente de obra y personal de ejecución. Compartimos informes semanales y programamos visitas de seguimiento con el cliente."]),
-    ("Entregamos", ["Realizamos la entrega final del proyecto."]),
-]
+PAG = {os.path.basename(f)[:-5]: leer(os.path.relpath(f, RAIZ)) for f in glob.glob(os.path.join(RAIZ, "contenido/paginas/*.json"))}
+GEN = PAG["general"]
+SERVICIOS = sorted((s for s in carpeta("servicios") if s.get("publicado", True)), key=lambda s: s["orden"])
+PROYECTOS = sorted((p for p in carpeta("proyectos") if p.get("publicado", True)), key=lambda p: p["orden"])
+ARTICULOS = sorted((a for a in carpeta("blog") if a.get("publicado", True)), key=lambda a: a["fecha"], reverse=True)
+try:
+    MEDIDAS = leer("dist/fotos/medidas.json")
+except FileNotFoundError:
+    raise SystemExit("Falta dist/fotos/medidas.json: corre primero python3 herramientas/fotos.py")
 
-FAQ = [
-    ("¿La primera reunión tiene algún costo?", "No. Nuestra primera reunión es gratuita y nos permite conocer tu idea, entender lo que necesitas y conversar sobre las posibilidades de tu proyecto."),
-    ("¿Cuánto tiempo tarda un proyecto?", "Depende del alcance y las necesidades de cada espacio. Como referencia, la etapa de diseño puede tomar entre 30 y 45 días, mientras que una obra puede tardar entre 90 y 180 días."),
-    ("¿El precio de mi proyecto puede cambiar?", "Trabajamos con presupuestos cerrados. El valor cotizado se mantiene de acuerdo con el alcance aprobado inicialmente."),
-    ("¿De qué depende el costo de un proyecto?", "El presupuesto depende de las características de cada intervención, incluyendo materiales seleccionados, áreas que se van a transformar, iluminación y posibles redistribuciones del espacio."),
-]
-
-# Textuales de omburenovaciones.com
-TESTIMONIOS = [
-    ("EO", "Emilio Ortega", "Renovación total de apartamento",
-     "«Hice la renovación total de mi apartamento con Ombu y, sinceramente, fue una de las mejores decisiones que he tomado.»",
-     "Desde el primer día se encargaron absolutamente de todo. Yo solo conté cómo quería mi espacio y ellos se encargaron de convertir esa idea en algo incluso mejor de lo que imaginé. Los acabados, los materiales y los detalles son de primera. Se nota el cuidado y la calidad en cada rincón. Recomiendo a Ombu sin dudarlo. Son profesionales, cumplidos y el resultado final habla por ellos."),
-    ("LD", "Laura Duran", "Oficina y segundo piso",
-     "«Nuestra experiencia con Ombu fue increíble.»",
-     "Decidimos renovar completamente la oficina y hacer un segundo piso. Siempre nos sentimos acompañados en todo el proceso de renovación, desde escoger el diseño hasta los últimos detalles. ¡Definitivamente la mejor opción que pudimos hacer! ¡Increíble todo el proceso con ellos! Gracias Ombu 🙌🏻"),
-    ("JJ", "Juan Miguel Jaramillo", "Cliente OMBU",
-     "«Me fue muy bien.»",
-     "Un proceso muy eficiente, los materiales excelentes y los acabados muy bonitos, todo muy rápido, muy buen presupuesto. Todo 100/100. Muy contento con el resultado."),
-    ("SO", "Susana Ospina", "Remodelación completa de apartamento",
-     "«Hice la remodelación completa de mi apartamento con Ombu. Fue la mejor decisión que pude haber tomado.»",
-     "Ellos se encargaron de TODO. Yo solo tuve que soñar lo que quería y ellos lo hicieron realidad. Lo mejor de todo es que los materiales son de alta calidad. Los recomiendo 100%."),
-]
-
-# Proyectos (slugs de assets/js/proyectos.js). Los que no tienen fotos van como «pendiente».
-DESTACADOS = ["torrealta", "fenikas", "aires-del-campestre", "palo-alto", "kuna-1002", "bosque-alto"]
-REALIZADOS_SIN_FOTO = ["Tierra Clara", "Báltico", "Casa Mediterránea", "Twins", "Salento"]
-# Página de Proyectos: todos juntos en una sola cuadrícula (los pendientes van al final)
-PROYECTOS_TODOS = ["torrealta", "fenikas", "aires-del-campestre", "palo-alto", "kuna-1002", "bosque-alto",
-                   "altos-de-la-rioja", "kuna-802", "altos-de-la-concha-2", "torrebalsillas",
-                   "palmar-de-la-abadia", "altos-de-la-concha"]
+C = GEN["contacto"]
+WA = "https://wa.me/" + re.sub(r"\D", "", C["whatsapp"])
+WA_COTIZAR = WA + "?text=" + quote(C["mensaje_whatsapp"])
 
 ICONOS_EXTRA = """    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
@@ -143,21 +64,106 @@ ICONOS_EXTRA = """    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 
 # ---------------------------------------------------------------- utilidades
 
 def R(n):
-    """Rutas para una página a n carpetas de sitio/ (0 = sitio/, 1 = sitio/blog/, sitio/servicios/…)."""
+    """Rutas para una página a n carpetas de la raíz del sitio (0 = raíz, 1 = blog/, servicios/, legal/)."""
     sube = "../" * n
-    return {"A": "../" + sube + "assets/", "u": lambda p: sube + p, "root": "../" + sube}
+    return {"A": sube + "assets/", "F": sube + "fotos/", "u": lambda p: sube + p, "root": sube or "./"}
 
 
-def esc(s):
-    return html.escape(s, quote=True)
+def e(s):
+    return html.escape(str(s or ""), quote=True)
 
 
-def jsonstr(s):
-    return json.dumps(s, ensure_ascii=False)
+def en_linea(t):
+    """Formato sencillo dentro de un texto: **negrita**, *cursiva*, [texto](enlace), {pendiente}."""
+    t = e(t).replace("&#x27;", "'")
+    t = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
+    t = re.sub(r"\*(.+?)\*", r"<em>\1</em>", t)
+    t = re.sub(r"\{(.+?)\}", r'<mark class="pend">\1</mark>', t)
+
+    def enlace(m):
+        url = m[2].replace("&amp;", "&")
+        afuera = ' target="_blank" rel="noopener"' if url.startswith("http") else ""
+        return f'<a href="{e(url)}"{afuera}>{m[1]}</a>'
+    return re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", enlace, t)
+
+
+def stem(f):
+    return re.sub(r"\.[a-zA-Z]+$", "", (f or "").split("/")[-1])
+
+
+def medida(f):
+    s = stem(f)
+    if s not in MEDIDAS:
+        raise SystemExit(f"Foto sin procesar: {f}")
+    return MEDIDAS[s][0], MEDIDAS[s][1]
+
+
+def foto(f, n, alt="", sizes="(min-width: 960px) 560px, 100vw", lazy=True):
+    F, s = R(n)["F"], stem(f)
+    w, h = medida(f)
+    carga = ' loading="lazy" decoding="async"' if lazy else ' fetchpriority="high"'
+    return (f'<img src="{F}{s}-800.webp" srcset="{F}{s}-800.webp {min(w, 800)}w, {F}{s}.webp {w}w" sizes="{sizes}" '
+            f'width="{w}" height="{h}"{carga} alt="{e(alt)}">')
+
+
+def md(texto, n, lead=False):
+    """Formato del panel: ## subtítulo, ### subtítulo menor, - lista, > cita, ![descripción](foto "pie"),
+    **negrita**, *cursiva*, [texto](enlace), {pendiente}. Dos fotos seguidas salen lado a lado."""
+    salida = []
+    for i, b in enumerate(x.strip() for x in re.split(r"\n{2,}", (texto or "").replace("\r", ""))):
+        if not b:
+            continue
+        lineas = b.split("\n")
+        fotos = [re.fullmatch(r'!\[(.*?)\]\((\S+?)(?: "(.*)")?\)', l.strip()) for l in lineas]
+        if all(fotos):
+            if len(fotos) == 2:
+                caja = "".join(f"<div>{foto(m[2], n, m[1], '(min-width: 600px) 400px, 50vw')}<span>{e(m[3])}</span></div>" for m in fotos)
+                salida.append(f'<figure class="prose__pair">{caja}</figure>')
+            else:
+                for m in fotos:
+                    pie_ = f"<figcaption>{e(m[3])}</figcaption>" if m[3] else ""
+                    salida.append(f'<figure class="prose__fig">{foto(m[2], n, m[1], "(min-width: 960px) 760px, 100vw")}{pie_}</figure>')
+        elif b == "[[responsable]]":
+            salida.append(responsable())
+        elif b == "[[cookies]]":
+            salida.append('<p><button class="btn" type="button" data-cookies>Preferencias de cookies</button></p>')
+        elif b.startswith("### "):
+            salida.append(f"<h3>{en_linea(b[4:])}</h3>")
+        elif b.startswith("## "):
+            salida.append(f"<h2{' id=\"cookies\"' if 'Cookies' in b else ''}>{en_linea(b[3:])}</h2>")
+        elif b.startswith("> "):
+            salida.append(f'<blockquote class="prose__quote">{en_linea(re.sub(r"^> ?", "", b, flags=re.M))}</blockquote>')
+        elif re.match(r"[-*] ", b):
+            salida.append("<ul>" + "".join(f"<li>{en_linea(l[2:])}</li>" for l in lineas) + "</ul>")
+        else:
+            clase = ' class="prose__lead"' if lead and not salida else ""
+            salida.append(f"<p{clase}>{'<br>'.join(en_linea(l) for l in lineas)}</p>")
+    return "\n".join(salida)
+
+
+def responsable():
+    L = GEN["legal"]
+    p = lambda v: e(v) if v else '<mark class="pend">por confirmar</mark>'
+    return f"""<ul>
+  <li><strong>Responsable:</strong> {e(L['responsable'])}</li>
+  <li><strong>NIT:</strong> {p(L['nit'])}</li>
+  <li><strong>Domicilio:</strong> {e(C['ubicacion'])}, Colombia. Dirección: {p(L['direccion'])}</li>
+  <li><strong>Correo:</strong> {p(L['correo'])}</li>
+  <li><strong>WhatsApp:</strong> <a href="{WA}" target="_blank" rel="noopener">{e(C['whatsapp'])}</a></li>
+</ul>"""
+
+
+def fecha_larga(f):
+    a, m, d = f.split("-")
+    return f"{int(d)} de {MESES[int(m) - 1]} de {a}"
 
 
 def ico(i):
     return f'<svg aria-hidden="true"><use href="#{i}"/></svg>'
+
+
+def tit(o):
+    return f'{e(o["titulo"])} <em>{e(o["titulo_em"])}</em>'
 
 
 def sprite():
@@ -167,35 +173,33 @@ def sprite():
             + simbolos + "\n" + ICONOS_EXTRA + "\n  </defs>\n</svg>")
 
 
-def foto(slug, f, w, h, alt, n, sizes="(min-width: 960px) 560px, 100vw", lazy=True):
-    A = R(n)["A"] + "img/proyectos/" + slug + "/"
-    carga = ' loading="lazy" decoding="async"' if lazy else ' fetchpriority="high"'
-    return (f'<img src="{A}{f}-s.webp" srcset="{A}{f}-s.webp 768w, {A}{f}-l.webp {w}w" sizes="{sizes}" '
-            f'width="{w}" height="{h}"{carga} alt="{esc(alt)}">')
-
-
 def pendiente(texto, clase=""):
-    return f'<div class="ph {clase}" role="img" aria-label="{esc(texto)}">{ico("i-camera")}<span>{texto}</span></div>'
+    return f'<div class="ph {clase}" role="img" aria-label="{e(texto)}">{ico("i-camera")}<span>{e(texto)}</span></div>'
 
 
 # ---------------------------------------------------------------- partes comunes
 
-def head(titulo, descripcion, n, og="website", extra=""):
+MENU = [("inicio", "Inicio", "index.html"), ("nosotros", "Nosotros", "nosotros.html"), ("servicios", "Servicios", "servicios/index.html"),
+        ("proyectos", "Proyectos", "proyectos.html"), ("blog", "Blog", "blog/index.html"), ("contacto", "Contacto", "contacto.html")]
+
+
+def head(seo, n, og="website", extra=""):
     A = R(n)["A"]
+    t, d = e(seo["titulo"]), e(seo["descripcion"])
     return f"""<!doctype html>
 <html lang="es" class="no-js">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{esc(titulo)}</title>
-  <meta name="description" content="{esc(descripcion)}">
+  <title>{t}</title>
+  <meta name="description" content="{d}">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#363840">
   <meta property="og:type" content="{og}">
   <meta property="og:locale" content="es_CO">
   <meta property="og:site_name" content="OMBU Renovaciones">
-  <meta property="og:title" content="{esc(titulo)}">
-  <meta property="og:description" content="{esc(descripcion)}">
+  <meta property="og:title" content="{t}">
+  <meta property="og:description" content="{d}">
   <meta property="og:image" content="{URL}assets/img/og-sitio.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{A}img/favicon.svg" type="image/svg+xml">
@@ -211,14 +215,19 @@ def head(titulo, descripcion, n, og="website", extra=""):
 """
 
 
+def redes():
+    return f"""<a href="{e(C['instagram_url'])}" target="_blank" rel="noopener" aria-label="Instagram de OMBU">{ico("i-ig")}</a>
+      <a href="{e(C['facebook_url'])}" target="_blank" rel="noopener" aria-label="Facebook de OMBU">{ico("i-fb")}</a>"""
+
+
 def cabecera(n, activo):
     r = R(n)
     u = r["u"]
     cur = lambda k: ' aria-current="page"' if k == activo else ""
     svc_drop = "\n".join(
-        f'              <li><a href="{u("servicios/" + s["slug"] + ".html")}"{cur("svc-" + s["slug"])}><span class="drop__ico">{ico(s["ico"])}</span>'
-        f'<span><strong>{s["nombre"]}</strong>{s["resumen"]}</span></a></li>' for s in SERVICIOS)
-    svc_menu = "\n".join(f'          <li><a href="{u("servicios/" + s["slug"] + ".html")}">{s["nombre"]}</a></li>' for s in SERVICIOS)
+        f'              <li><a href="{u("servicios/" + s["url"] + ".html")}"{cur("svc-" + s["url"])}><span class="drop__ico">{ico(s["icono"])}</span>'
+        f'<span><strong>{e(s["nombre"])}</strong>{e(s["resumen"])}</span></a></li>' for s in SERVICIOS)
+    svc_menu = "\n".join(f'          <li><a href="{u("servicios/" + s["url"] + ".html")}">{e(s["nombre"])}</a></li>' for s in SERVICIOS)
     nav, menu = [], []
     for k, t, p in MENU:
         if k == "servicios":
@@ -273,12 +282,11 @@ def cabecera(n, activo):
     </ul>
   </nav>
   <div class="menu__foot">
-    <a class="btn btn--light btn--lg btn--block" href="{WA_COTIZAR}" target="_blank" rel="noopener">
+    <a class="btn btn--light btn--lg btn--block" href="{e(WA_COTIZAR)}" target="_blank" rel="noopener">
       {ico("i-wa")} Escríbenos por WhatsApp
     </a>
     <div class="menu__social">
-      <a href="https://www.instagram.com/ombu.renovaciones/" target="_blank" rel="noopener" aria-label="Instagram de OMBU">{ico("i-ig")}</a>
-      <a href="https://www.facebook.com/share/1AA67nPHKe/" target="_blank" rel="noopener" aria-label="Facebook de OMBU">{ico("i-fb")}</a>
+      {redes()}
     </div>
   </div>
 </div>
@@ -288,13 +296,15 @@ def cabecera(n, activo):
 def pie(n):
     r = R(n)
     u = r["u"]
+    P = GEN["pie"]
     links = "\n".join(f'        <li><a href="{u(p)}">{t}</a></li>' for k, t, p in MENU)
+    legales = "".join(f'<a href="{u("legal/" + f + ".html")}">{t}</a>' for f, t in LEGALES)
     return f"""<!-- ============ Pie ============ -->
 <footer class="ftr on-dark">
   <div class="wrap ftr__grid">
     <div class="ftr__brand">
       <svg class="logo" viewBox="0 0 156 41" role="img" aria-label="OMBU"><use href="{r['A']}img/marca.svg#ombu-logo"/></svg>
-      <p>Una vida detrás <em>de cada puerta.</em></p>
+      <p>{e(P['frase'])} <em>{e(P['frase_em'])}</em></p>
     </div>
     <nav class="ftr__nav" aria-label="Pie de página">
       <ul>
@@ -304,22 +314,21 @@ def pie(n):
     <div class="ftr__social">
       <p>Síguenos</p>
       <div>
-        <a href="https://www.instagram.com/ombu.renovaciones/" target="_blank" rel="noopener" aria-label="Instagram de OMBU">{ico("i-ig")}</a>
-        <a href="https://www.facebook.com/share/1AA67nPHKe/" target="_blank" rel="noopener" aria-label="Facebook de OMBU">{ico("i-fb")}</a>
+      {redes()}
         <a href="{WA}" target="_blank" rel="noopener" aria-label="WhatsApp de OMBU">{ico("i-wa")}</a>
       </div>
     </div>
   </div>
   <div class="wrap ftr__bottom">
-    <p>© 2026 OMBU Renovaciones · Medellín, Antioquia</p>
-    <p class="ftr__legal">{"".join(f'<a href="{u("legal/" + f)}">{t}</a>' for f, t in LEGALES)}<button type="button" data-cookies>Preferencias de cookies</button></p>
+    <p>{e(P['derechos'])}</p>
+    <p class="ftr__legal">{legales}<button type="button" data-cookies>Preferencias de cookies</button><a href="{u('admin/')}" rel="nofollow">Panel</a></p>
   </div>
 </footer>
 """
 
 
 def fab():
-    return f"""<a class="fab" id="fab" href="{WA_COTIZAR}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+    return f"""<a class="fab" id="fab" href="{e(WA_COTIZAR)}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
   {ico("i-wa")}
 </a>
 """
@@ -341,10 +350,7 @@ def dialogos():
       <p class="eyebrow">Proyecto OMBU</p>
       <h2 class="title sheet__title" id="sheet-title"></h2>
       <p class="sheet__meta" id="sheet-meta"></p>
-      <aside class="demo-note">
-        <strong>Ficha del proyecto · pendiente</strong>
-        Tipo de espacio, servicios realizados y una breve descripción. Se completa con la información que entregue OMBU para cada obra.
-      </aside>
+      <div class="sheet__ficha" id="sheet-ficha"></div>
       <div class="tabs" role="tablist" aria-label="Fotos del proyecto">
         <button class="tab" role="tab" type="button" id="tab-d" aria-controls="panel-gal" aria-selected="true" data-tab="despues">Después <span></span></button>
         <button class="tab" role="tab" type="button" id="tab-a" aria-controls="panel-gal" aria-selected="false" data-tab="antes">Antes <span></span></button>
@@ -372,25 +378,25 @@ def dialogos():
 """
 
 
-def pagina(titulo, desc, n, activo, pagina_id, cuerpo, js=(), og="website", extra_head="", extra_body=""):
+def pagina(seo, n, activo, pagina_id, cuerpo, js=(), og="website", extra_head="", extra_body="", antes_js=""):
     A = R(n)["A"]
     scripts = "\n".join(f'<script src="{A}js/{j}"></script>' for j in ("proyectos.js", "comun.js") + tuple(js))
-    return (head(titulo, desc, n, og, extra_head)
-            + f'<body data-page="{pagina_id}" data-root="{R(n)["root"]}">\n'
+    return (head(seo, n, og, extra_head)
+            + f'<body data-page="{pagina_id}" data-root="{R(n)["root"]}" data-wa="{re.sub(r"[^0-9]", "", C["whatsapp"])}">\n'
             + sprite() + '\n\n<a class="skip" href="#contenido">Saltar al contenido</a>\n\n' + cabecera(n, activo)
             + '\n<main id="contenido">\n' + cuerpo + '\n</main>\n\n' + pie(n) + fab() + extra_body
-            + "\n" + scripts + "\n</body>\n</html>\n")
+            + "\n" + antes_js + scripts + "\n</body>\n</html>\n")
 
 
-def phero(titulo, titulo_em, lead, migas, extra=""):
+def phero(o, migas, extra=""):
     """Encabezado de página interior. migas: [(texto, href|None)]"""
     m = '<span aria-hidden="true">/</span>'.join(
         f'<a href="{h}">{t}</a>' if h else f'<span aria-current="page">{t}</span>' for t, h in migas)
     return f"""  <section class="bhero" aria-labelledby="page-title">
     <div class="wrap">
       <nav class="crumbs" aria-label="Ruta">{m}</nav>
-      <h1 class="display bhero__title" id="page-title">{titulo} <em>{titulo_em}</em></h1>
-      <p class="lead">{lead}</p>{extra}
+      <h1 class="display bhero__title" id="page-title">{tit(o)}</h1>
+      <p class="lead">{en_linea(o['texto'])}</p>{extra}
     </div>
   </section>
 """
@@ -398,22 +404,25 @@ def phero(titulo, titulo_em, lead, migas, extra=""):
 
 # ---------------------------------------------------------------- secciones reutilizables
 
-def sec_servicios(n, titulo, titulo_em, cta=True, excluir=(), eyebrow="Servicios"):
+def sec_servicios(n, o, boton="", ocultar=()):
     u = R(n)["u"]
+    lista = [(i, s) for i, s in enumerate(SERVICIOS, 1) if s["url"] not in ocultar]
+    if not lista:
+        return ""
     cards = "\n".join(f"""        <li class="svc reveal">
-          <a class="svc__link" href="{u('servicios/' + s['slug'] + '.html')}">
-            <span class="svc__top"><span class="svc__ico">{ico(s['ico'])}</span><span class="svc__n" aria-hidden="true">{s['n']}</span></span>
-            <h3 class="svc__name">{s['nombre']}</h3>
-            <p>{s['resumen']}</p>
+          <a class="svc__link" href="{u('servicios/' + s['url'] + '.html')}">
+            <span class="svc__top"><span class="svc__ico">{ico(s['icono'])}</span><span class="svc__n" aria-hidden="true">{i:02d}</span></span>
+            <h3 class="svc__name">{e(s['nombre'])}</h3>
+            <p>{e(s['resumen'])}</p>
             <span class="svc__more">Ver servicio {ico('i-arrow')}</span>
           </a>
-        </li>""" for s in SERVICIOS if s["slug"] not in excluir)
-    pie_ = f'\n      <a class="btn btn--lg sec__cta" href="{u("servicios/index.html")}">Conoce nuestros servicios {ico("i-arrow")}</a>' if cta else ""
+        </li>""" for i, s in lista)
+    pie_ = f'\n      <a class="btn btn--lg sec__cta" href="{u("servicios/index.html")}">{e(boton)} {ico("i-arrow")}</a>' if boton else ""
     return f"""  <section class="sec svcs" id="servicios" aria-labelledby="svc-title">
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">{eyebrow}</p>
-        <h2 class="title" id="svc-title">{titulo} <em>{titulo_em}</em></h2>
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="svc-title">{tit(o)}</h2>
       </div>
       <ul class="svc__grid" role="list">
 {cards}
@@ -423,18 +432,18 @@ def sec_servicios(n, titulo, titulo_em, cta=True, excluir=(), eyebrow="Servicios
 """
 
 
-def sec_por_que(n, titulo, titulo_em, eyebrow="Por qué elegirnos"):
+def sec_por_que(n, o):
     cards = "\n".join(f"""        <li class="why__card reveal">
-          <span class="why__ico">{ico(i)}</span>
-          <h3>{t}</h3>
-          <p>{d}</p>
-        </li>""" for i, t, d in ATRIBUTOS)
+          <span class="why__ico">{ico(ICONOS_ATRIBUTOS[i % 5])}</span>
+          <h3>{e(a['titulo'])}</h3>
+          <p>{e(a['texto'])}</p>
+        </li>""" for i, a in enumerate(GEN["atributos"]["lista"]))
     return f"""  <section class="sec why on-dark" id="por-que" aria-labelledby="why-title">
     <svg class="why__ring" viewBox="0 0 2250 2250" aria-hidden="true"><use href="{R(n)['A']}img/marca.svg#ombu-mark"/></svg>
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">{eyebrow}</p>
-        <h2 class="title" id="why-title">{titulo} <em>{titulo_em}</em></h2>
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="why-title">{tit(o)}</h2>
       </div>
       <ul class="why__grid why__grid--5" role="list">
 {cards}
@@ -446,19 +455,20 @@ def sec_por_que(n, titulo, titulo_em, eyebrow="Por qué elegirnos"):
 
 def sec_pasos(n):
     u = R(n)["u"]
+    o = PAG["inicio"]["proceso"]
     pasos = "\n".join(f"""        <li class="step reveal">
-          <span class="step__n" aria-hidden="true">0{i}</span>
-          <span class="step__ico">{ico(ic)}</span>
-          <h3>{t}</h3>
-          <p>{d}</p>
-        </li>""" for i, (ic, t, d) in enumerate(PASOS, 1))
+          <span class="step__n" aria-hidden="true">{i + 1:02d}</span>
+          <span class="step__ico">{ico(ICONOS_PASOS[i % 4])}</span>
+          <h3>{e(p['titulo'])}</h3>
+          <p>{e(p['texto'])}</p>
+        </li>""" for i, p in enumerate(GEN["pasos"]["lista"]))
     return f"""  <section class="sec process" id="proceso" aria-labelledby="process-title">
     <div class="wrap process__grid">
       <div class="process__intro reveal">
-        <p class="eyebrow">Cómo trabajamos</p>
-        <h2 class="title" id="process-title">Un solo equipo. <em>Un proceso pensado para ti.</em></h2>
-        <p class="lead">De la primera conversación a la entrega final, te acompañamos en cada decisión.</p>
-        <a class="btn btn--lg process__cta" href="{u('nosotros.html#proceso')}">Conoce nuestro proceso {ico('i-arrow')}</a>
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="process-title">{tit(o)}</h2>
+        <p class="lead">{e(o['texto'])}</p>
+        <a class="btn btn--lg process__cta" href="{u('nosotros.html#proceso')}">{e(o['boton'])} {ico('i-arrow')}</a>
       </div>
       <ol class="steps" role="list">
 {pasos}
@@ -482,18 +492,25 @@ def carril(slugs, etiqueta):
     </div>"""
 
 
+def iniciales(nombre):
+    return "".join(p[0] for p in nombre.split()[:2]).upper()
+
+
 def sec_testimonios():
+    o = GEN["testimonios"]
+    if not o["lista"]:
+        return ""
     items = "\n".join(f"""        <li class="quote">
           <svg class="quote__mark" aria-hidden="true"><use href="#i-quote"/></svg>
-          <p class="quote__lead">{lead}</p>
-          <p class="quote__text">{txt}</p>
-          <p class="quote__who"><span class="quote__avatar" aria-hidden="true">{ini}</span><span><strong>{nom}</strong> {det}</span></p>
-        </li>""" for ini, nom, det, lead, txt in TESTIMONIOS)
+          <p class="quote__lead">{e(t['cita'])}</p>
+          <p class="quote__text">{e(t['texto'])}</p>
+          <p class="quote__who"><span class="quote__avatar" aria-hidden="true">{e(iniciales(t['nombre']))}</span><span><strong>{e(t['nombre'])}</strong> {e(t['detalle'])}</span></p>
+        </li>""" for t in o["lista"])
     return f"""  <section class="sec quotes" id="testimonios" aria-labelledby="quotes-title">
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">Testimonios</p>
-        <h2 class="title" id="quotes-title">Ellos ya confiaron <em>en OMBU</em></h2>
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="quotes-title">{tit(o)}</h2>
       </div>
     </div>
     <div class="rail rail--quotes" data-rail>
@@ -513,16 +530,17 @@ def sec_testimonios():
 
 
 def sec_faq(n, enlace=False):
+    o = GEN["faq"]
     items = "\n".join(f"""        <details class="faq__item">
-          <summary>{q}<svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></summary>
-          <p>{a}</p>
-        </details>""" for q, a in FAQ)
+          <summary>{e(f['pregunta'])}<svg class="chev" aria-hidden="true"><use href="#i-chev-d"/></svg></summary>
+          <p>{en_linea(f['respuesta'])}</p>
+        </details>""" for f in o["lista"])
     mas = f'\n        <p class="faq__more">¿Tienes otra pregunta? <a href="{R(n)["u"]("contacto.html")}">Escríbenos</a></p>' if enlace else ""
     return f"""  <section class="sec faq" id="preguntas" aria-labelledby="faq-title">
     <div class="wrap faq__grid">
       <div class="sec__head reveal">
-        <p class="eyebrow">Preguntas frecuentes</p>
-        <h2 class="title" id="faq-title">Lo que más <em>nos preguntan</em></h2>{mas}
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="faq-title">{tit(o)}</h2>{mas}
       </div>
       <div class="faq__list reveal">
 {items}
@@ -532,15 +550,18 @@ def sec_faq(n, enlace=False):
 """
 
 
-def banda(n, titulo, titulo_em, texto, cta, href="contacto.html"):
+def banda(n, cta=None, href="contacto.html"):
+    o = GEN["banda"]
+    s = stem(o["foto"])
+    w, h = medida(o["foto"])
     return f"""  <section class="band on-dark" aria-labelledby="band-title">
     <picture class="band__media" aria-hidden="true">
-      <img src="{R(n)['A']}img/proyectos/palo-alto/d01-s.webp" width="768" height="512" loading="lazy" decoding="async" alt="">
+      <img src="{R(n)['F']}{s}-800.webp" width="{w}" height="{h}" loading="lazy" decoding="async" alt="">
     </picture>
     <div class="wrap band__in reveal">
-      <h2 class="band__title display" id="band-title">{titulo} <em>{titulo_em}</em></h2>
-      <p class="lead">{texto}</p>
-      <a class="btn btn--light btn--lg" href="{R(n)['u'](href)}">{cta} {ico('i-arrow')}</a>
+      <h2 class="band__title display" id="band-title">{tit(o)}</h2>
+      <p class="lead">{e(o['texto'])}</p>
+      <a class="btn btn--light btn--lg" href="{R(n)['u'](href)}">{e(cta or o['boton'])} {ico('i-arrow')}</a>
     </div>
   </section>
 """
@@ -548,32 +569,33 @@ def banda(n, titulo, titulo_em, texto, cta, href="contacto.html"):
 
 def tarjeta(a, n, cabeza="h3"):
     r = R(n)
-    href = r["u"]("blog/" + a["slug"] + ".html")
-    w, h = 768, round(768 * a["portada"][2] / a["portada"][1])
-    return f"""<li class="post" data-cat="{a['categoria']}">
+    href = r["u"]("blog/" + a["url"] + ".html")
+    w, h = medida(a["foto"])
+    return f"""<li class="post" data-cat="{e(a['categoria'])}">
   <a class="post__link" href="{href}">
-    <div class="post__media"><img src="{r['A']}img/{a['portada_s']}" width="{w}" height="{h}" loading="lazy" decoding="async" alt=""></div>
+    <div class="post__media"><img src="{r['F']}{stem(a['foto'])}-800.webp" width="{w}" height="{h}" loading="lazy" decoding="async" alt=""></div>
     <div class="post__body">
-      <p class="post__meta"><span class="post__cat">{a['categoria']}</span><span>{a['lectura']} min de lectura</span></p>
-      <{cabeza} class="post__title">{a['titulo']} <em>{a['titulo_em']}</em></{cabeza}>
-      <p class="post__excerpt">{a['resumen']}</p>
+      <p class="post__meta"><span class="post__cat">{e(a['categoria'])}</span><span>{a['lectura']} min de lectura</span></p>
+      <{cabeza} class="post__title">{tit(a)}</{cabeza}>
+      <p class="post__excerpt">{e(a['resumen'])}</p>
       <span class="post__more">Leer artículo {ico('i-arrow')}</span>
     </div>
   </a>
 </li>"""
 
 
-def sec_blog(n, titulo="Ideas para", titulo_em="tu próximo espacio", lista=None, eyebrow="Blog"):
-    lista = lista if lista is not None else ARTICULOS[:3]
+def sec_blog(n, o, lista):
+    if not lista:
+        return ""
     t = "\n".join(tarjeta(a, n) for a in lista)
     return f"""  <section class="sec blog-teaser" aria-labelledby="bt-title">
     <div class="wrap">
       <div class="sec__head bt__head reveal">
         <div>
-          <p class="eyebrow">{eyebrow}</p>
-          <h2 class="title" id="bt-title">{titulo} <em>{titulo_em}</em></h2>
+          <p class="eyebrow">{e(o['eyebrow'])}</p>
+          <h2 class="title" id="bt-title">{tit(o)}</h2>
         </div>
-        <a class="link-arrow" href="{R(n)['u']('blog/index.html')}">Ver todo el blog {ico('i-arrow')}</a>
+        <a class="link-arrow" href="{R(n)['u']('blog/index.html')}">{e(o['enlace'])} {ico('i-arrow')}</a>
       </div>
     </div>
     <div class="rail rail--posts" data-rail>
@@ -585,146 +607,119 @@ def sec_blog(n, titulo="Ideas para", titulo_em="tu próximo espacio", lista=None
 """
 
 
-def banda_final(n, cta="Hablemos de tu proyecto", href="contacto.html"):
-    return banda(n, "Tu próxima vida empieza", "con una conversación.",
-                 "Cuéntanos qué tienes en mente. Nuestro equipo te ayudará a dar el primer paso.", cta, href)
-
-
-# ---------------------------------------------------------------- páginas
-
-def pag_inicio():
-    A = R(0)["A"]
-    preload = f"""  <link rel="preload" as="image" href="{A}img/hero-768.webp"
-        imagesrcset="{A}img/hero-768.webp 768w, {A}img/hero-1024.webp 1024w, {A}img/hero-1536.webp 1536w, {A}img/hero-1920.webp 1920w"
-        imagesizes="100vw">
-  <script type="application/ld+json">
-  {{"@context":"https://schema.org","@type":"GeneralContractor","name":"OMBU Renovaciones","url":"https://omburenovaciones.com/",
-   "logo":"{URL}assets/img/icon-512.png","image":"{URL}assets/img/og-sitio.jpg",
-   "description":"Diseño y construcción para transformar viviendas, oficinas y espacios comerciales.",
-   "telephone":"+57 310 599 6809","areaServed":"Medellín, Antioquia",
-   "address":{{"@type":"PostalAddress","addressLocality":"Medellín","addressRegion":"Antioquia","addressCountry":"CO"}},
-   "sameAs":["https://www.instagram.com/ombu.renovaciones/","https://www.facebook.com/share/1AA67nPHKe/"]}}
-  </script>
-"""
-    cuerpo = f"""
-  <!-- ============ Hero ============ -->
-  <section class="hero on-dark" id="inicio" aria-labelledby="hero-title">
-    <picture class="hero__media">
-      <img src="{A}img/hero-768.webp"
-           srcset="{A}img/hero-768.webp 768w, {A}img/hero-1024.webp 1024w, {A}img/hero-1536.webp 1536w, {A}img/hero-1920.webp 1920w"
-           sizes="100vw" width="1920" height="1280" fetchpriority="high"
-           alt="Sala y cocina renovadas por OMBU con paneles de madera, piso laminado y ventanales hacia la naturaleza">
-    </picture>
-    <div class="hero__body wrap">
-      <p class="eyebrow">Diseño y construcción · Medellín</p>
-      <h1 class="hero__title display" id="hero-title">Tú sueñas el espacio. <em>Nosotros nos encargamos de todo.</em></h1>
-      <p class="hero__lead">Diseñamos y construimos espacios que se adaptan a ti. Con un equipo propio que te acompaña desde la primera idea hasta la entrega final.</p>
-      <div class="hero__ctas">
-        <a class="btn btn--light btn--lg" href="contacto.html">Empezar mi proyecto {ico('i-arrow')}</a>
-        <a class="btn btn--ghost btn--lg" href="proyectos.html">Ver proyectos</a>
-      </div>
-      <ul class="hero__trust" aria-label="Garantías">
-        <li>{ico('i-check')} Equipo propio</li>
-        <li>{ico('i-check')} Presupuestos cerrados</li>
-        <li>{ico('i-check')} Primera reunión gratis</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ Sobre OMBU ============ -->
-  <section class="sec story" aria-labelledby="story-title">
+def historia(n, o, id_, boton=""):
+    """Foto con sello + texto (Sobre OMBU en Inicio, Quiénes somos en Nosotros)."""
+    A, u = R(n)["A"], R(n)["u"]
+    parrafos = "\n".join(f"        <p>{en_linea(p)}</p>" for p in o["parrafos"])
+    cta = f'\n        <a class="btn btn--lg story__cta" href="{u("nosotros.html")}">{e(boton)} {ico("i-arrow")}</a>' if boton else ""
+    return f"""  <section class="sec story" aria-labelledby="{id_}">
     <div class="wrap story__grid">
       <figure class="story__media reveal">
-        <img src="{A}img/fondo-768.webp"
-             srcset="{A}img/fondo-768.webp 768w, {A}img/fondo-1024.webp 1024w, {A}img/fondo-1536.webp 1536w"
-             sizes="(min-width: 960px) 560px, 100vw" width="1536" height="1024" loading="lazy" decoding="async"
-             alt="Sala renovada con muro revestido en madera, sofá claro y comedor al fondo">
+        {foto(o['foto'], n, o['alt'])}
         <div class="story__badge" aria-hidden="true">
           <svg viewBox="0 0 2250 2250"><use href="{A}img/marca.svg#ombu-mark"/></svg>
         </div>
       </figure>
       <div class="story__copy reveal">
-        <p class="eyebrow">Sobre OMBU</p>
-        <h2 class="title" id="story-title">Espacios pensados para ti. <em>Procesos respaldados por expertos.</em></h2>
-        <p>Somos una empresa de diseño y construcción especializada en renovar viviendas, oficinas y espacios comerciales.</p>
-        <p>Creemos que cada espacio debe responder a quienes lo habitan. Por eso, combinamos <strong>diseño personalizado, conocimiento técnico y un equipo propio</strong> de profesionales para hacer realidad cada proyecto.</p>
-        <a class="btn btn--lg story__cta" href="nosotros.html">Conoce OMBU {ico('i-arrow')}</a>
+        <p class="eyebrow">{e(o['eyebrow'])}</p>
+        <h2 class="title" id="{id_}">{tit(o)}</h2>
+{parrafos}{cta}
       </div>
     </div>
   </section>
+"""
 
-{sec_servicios(0, "Todo lo que necesitas", "para transformar tu espacio.", eyebrow="Nuestros servicios")}
+
+# ---------------------------------------------------------------- páginas
+
+def pag_inicio():
+    P = PAG["inicio"]
+    h, pr = P["portada"], P["proyectos"]
+    F, s = R(0)["F"], stem(h["foto"])
+    w, alto = medida(h["foto"])
+    preload = f"""  <link rel="preload" as="image" href="{F}{s}-800.webp" imagesrcset="{F}{s}-800.webp 800w, {F}{s}.webp {w}w" imagesizes="100vw">
+  <script type="application/ld+json">
+  {json.dumps({"@context": "https://schema.org", "@type": "GeneralContractor", "name": "OMBU Renovaciones", "url": URL, "logo": URL + "assets/img/icon-512.png",
+               "image": URL + "assets/img/og-sitio.jpg", "description": P["seo"]["descripcion"], "telephone": C["whatsapp"], "areaServed": C["ubicacion"],
+               "address": {"@type": "PostalAddress", "addressLocality": "Medellín", "addressRegion": "Antioquia", "addressCountry": "CO"},
+               "sameAs": [C["instagram_url"], C["facebook_url"]]}, ensure_ascii=False)}
+  </script>
+"""
+    garantias = "\n".join(f"        <li>{ico('i-check')} {e(g)}</li>" for g in h["garantias"])
+    destacados = [p["url"] for p in PROYECTOS if p.get("destacado")]
+    cuerpo = f"""
+  <!-- ============ Hero ============ -->
+  <section class="hero on-dark" id="inicio" aria-labelledby="hero-title">
+    <picture class="hero__media">
+      <img src="{F}{s}-800.webp" srcset="{F}{s}-800.webp 800w, {F}{s}.webp {w}w" sizes="100vw" width="{w}" height="{alto}" fetchpriority="high" alt="{e(h['alt'])}">
+    </picture>
+    <div class="hero__body wrap">
+      <p class="eyebrow">{e(h['eyebrow'])}</p>
+      <h1 class="hero__title display" id="hero-title">{tit(h)}</h1>
+      <p class="hero__lead">{e(h['texto'])}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--light btn--lg" href="contacto.html">{e(h['boton'])} {ico('i-arrow')}</a>
+        <a class="btn btn--ghost btn--lg" href="proyectos.html">{e(h['boton2'])}</a>
+      </div>
+      <ul class="hero__trust" aria-label="Garantías">
+{garantias}
+      </ul>
+    </div>
+  </section>
+
+{historia(0, P['sobre'], 'story-title', P['sobre']['boton'])}
+{sec_servicios(0, P['servicios'], P['servicios']['boton'])}
 {sec_pasos(0)}
   <!-- ============ Proyectos destacados ============ -->
   <section class="sec projects" id="proyectos" aria-labelledby="projects-title">
     <div class="wrap">
       <div class="sec__head projects__head reveal">
         <div>
-          <p class="eyebrow">Proyectos destacados</p>
-          <h2 class="title" id="projects-title">Los espacios cuentan <em>nuestra historia.</em></h2>
+          <p class="eyebrow">{e(pr['eyebrow'])}</p>
+          <h2 class="title" id="projects-title">{tit(pr)}</h2>
         </div>
-        <div class="badge" aria-hidden="true"><strong>+80</strong><span>proyectos</span></div>
+        <div class="badge" aria-hidden="true"><strong>{e(pr['cifra'])}</strong><span>{e(pr['cifra_txt'])}</span></div>
       </div>
-      <p class="lead projects__lead reveal">Cada proyecto es una oportunidad para transformar ideas en espacios reales. Explora algunos de nuestros trabajos. <span class="sr-only">Más de 80 proyectos realizados.</span></p>
+      <p class="lead projects__lead reveal">{e(pr['texto'])} <span class="sr-only">{e(pr['cifra'])} {e(pr['cifra_txt'])}.</span></p>
     </div>
-{carril(DESTACADOS, "Proyectos destacados")}
-    <div class="wrap"><a class="btn btn--lg sec__cta" href="proyectos.html">Ver todos los proyectos {ico('i-arrow')}</a></div>
+{carril(destacados, "Proyectos destacados")}
+    <div class="wrap"><a class="btn btn--lg sec__cta" href="proyectos.html">{e(pr['boton'])} {ico('i-arrow')}</a></div>
   </section>
 
-{sec_por_que(0, "La tranquilidad de estar", "en buenas manos.", "¿Por qué elegir OMBU?")}
+{sec_por_que(0, P['por_que'])}
 {sec_testimonios()}
 {sec_faq(0, enlace=True)}
-{sec_blog(0)}
-{banda_final(0)}"""
-    return pagina("OMBU Renovaciones · Diseño y construcción de espacios en Medellín",
-                  "Diseñamos, transformamos y construimos viviendas, oficinas y espacios comerciales en Medellín, con un equipo propio de la primera idea a la entrega.",
-                  0, "inicio", "inicio", cuerpo, js=("inicio.js",), extra_head=preload, extra_body=dialogos())
+{sec_blog(0, P['blog'], ARTICULOS[:3])}
+{banda(0)}"""
+    return pagina(P["seo"], 0, "inicio", "inicio", cuerpo, js=("inicio.js",), extra_head=preload, extra_body=dialogos())
 
 
 def pag_nosotros():
-    A = R(0)["A"]
+    P = PAG["nosotros"]
     etapas, k = [], 0
-    for i, (t, pasos) in enumerate(ETAPAS, 1):
-        items = "".join(f'<li value="{k + j}">{p}</li>' for j, p in enumerate(pasos, 1))
-        k += len(pasos)
+    for i, et in enumerate(P["proceso"]["etapas"], 1):
+        items = "".join(f'<li value="{k + j}">{e(p)}</li>' for j, p in enumerate(et["pasos"], 1))
+        k += len(et["pasos"])
         etapas.append(f"""        <li class="stage reveal">
           <p class="stage__n">Etapa {i}</p>
-          <h3 class="stage__title">{t}</h3>
+          <h3 class="stage__title">{e(et['titulo'])}</h3>
           <ol class="stage__list">{items}</ol>
         </li>""")
-    equipo = "\n".join(f"        <li>{pendiente('Foto pendiente: ' + t)}<p>{t}</p></li>" for t in ("Reuniones de diseño", "Visitas de obra", "Ejecución"))
+    equipo = "\n".join(
+        f"        <li>{foto(x['foto'], 0, x['texto'], '(min-width: 600px) 33vw, 100vw') if x['foto'] else pendiente('Foto pendiente: ' + x['texto'])}<p>{e(x['texto'])}</p></li>"
+        for x in P["equipo"]["fotos"])
     nl = "\n"
-    cuerpo = phero("Diseñamos espacios.", "Construimos confianza.",
-                   "En OMBU creemos que un espacio bien pensado puede transformar la manera en que vivimos y trabajamos.",
-                   [("Inicio", "index.html"), ("Nosotros", None)]) + f"""
-  <section class="sec story" aria-labelledby="who-title">
-    <div class="wrap story__grid">
-      <figure class="story__media reveal">
-        <img src="{A}img/fondo-768.webp"
-             srcset="{A}img/fondo-768.webp 768w, {A}img/fondo-1024.webp 1024w, {A}img/fondo-1536.webp 1536w"
-             sizes="(min-width: 960px) 560px, 100vw" width="1536" height="1024" loading="lazy" decoding="async"
-             alt="Sala renovada por OMBU con muro revestido en madera">
-        <div class="story__badge" aria-hidden="true">
-          <svg viewBox="0 0 2250 2250"><use href="{A}img/marca.svg#ombu-mark"/></svg>
-        </div>
-      </figure>
-      <div class="story__copy reveal">
-        <p class="eyebrow">Quiénes somos</p>
-        <h2 class="title" id="who-title">Un solo equipo, <em>de la idea a la entrega.</em></h2>
-        <p>Somos una empresa de diseño y construcción enfocada en renovar viviendas, oficinas y locales comerciales para convertirlos en espacios funcionales, personalizados y alineados con las necesidades de cada cliente.</p>
-        <p>Contamos con un <strong>equipo propio de diseño, interiorismo, construcción, mano de obra y logística.</strong> Esto nos permite mantener el control del proceso y ofrecer acompañamiento desde el inicio hasta la entrega.</p>
-      </div>
-    </div>
-  </section>
-
-{sec_por_que(0, "Lo que nos", "diferencia.")}
+    pr, eq = P["proceso"], P["equipo"]
+    cuerpo = phero(P["portada"], [("Inicio", "index.html"), ("Nosotros", None)]) + f"""
+{historia(0, P['quienes'], 'who-title')}
+{sec_por_que(0, P['diferencia'])}
   <!-- ============ Cómo trabajamos ============ -->
   <section class="sec stages" id="proceso" aria-labelledby="stages-title">
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">Cómo trabajamos</p>
-        <h2 class="title" id="stages-title">De una idea a un espacio <em>hecho realidad.</em></h2>
-        <p class="lead">Creemos en procesos claros, comunicación cercana y decisiones bien acompañadas. Así transformamos tu proyecto paso a paso.</p>
+        <p class="eyebrow">{e(pr['eyebrow'])}</p>
+        <h2 class="title" id="stages-title">{tit(pr)}</h2>
+        <p class="lead">{e(pr['texto'])}</p>
       </div>
       <ol class="stages__grid" role="list">
 {nl.join(etapas)}
@@ -736,9 +731,9 @@ def pag_nosotros():
   <section class="sec team" aria-labelledby="team-title">
     <div class="wrap">
       <div class="sec__head reveal">
-        <p class="eyebrow">Nuestro equipo</p>
-        <h2 class="title" id="team-title">Detrás de cada espacio, <em>hay un equipo.</em></h2>
-        <p class="lead">Diseñadores, profesionales de construcción y personal operativo trabajan de manera coordinada para que cada etapa del proyecto avance bajo una misma visión.</p>
+        <p class="eyebrow">{e(eq['eyebrow'])}</p>
+        <h2 class="title" id="team-title">{tit(eq)}</h2>
+        <p class="lead">{e(eq['texto'])}</p>
       </div>
       <ul class="team__grid reveal" role="list">
 {equipo}
@@ -746,36 +741,31 @@ def pag_nosotros():
     </div>
   </section>
 
-{banda_final(0, "Quiero empezar mi proyecto")}"""
-    return pagina("Nosotros · OMBU Renovaciones", "Somos una empresa de diseño y construcción con equipo propio. Conoce quiénes somos y cómo trabajamos.",
-                  0, "nosotros", "nosotros", cuerpo)
+{banda(0, P['cta']['boton'])}"""
+    return pagina(P["seo"], 0, "nosotros", "nosotros", cuerpo)
 
 
 def pag_servicios():
-    cuerpo = (phero("Soluciones integrales", "para cada espacio.",
-                    "Diseño, construcción, mobiliario e interventoría con un mismo equipo. Elige por dónde empezar o combínalos en un solo proyecto.",
-                    [("Inicio", "../index.html"), ("Servicios", None)])
-              + sec_servicios(1, "Todo lo que necesitas", "para transformar tu espacio.", cta=False)
-              + sec_pasos(1) + sec_faq(1, enlace=True) + banda_final(1))
-    return pagina("Servicios · OMBU Renovaciones", "Diseño, construcción, mobiliario e interventoría para viviendas, oficinas y espacios comerciales en Medellín.",
-                  1, "servicios", "servicios", cuerpo)
+    P = PAG["servicios"]
+    cuerpo = (phero(P["portada"], [("Inicio", "../index.html"), ("Servicios", None)])
+              + sec_servicios(1, P["lista"]) + sec_pasos(1) + sec_faq(1, enlace=True) + banda(1))
+    return pagina(P["seo"], 1, "servicios", "servicios", cuerpo)
 
 
 def pag_servicio(s):
-    slug, f, w, h = s["foto"]
-    # En Diseño no se ofrece Construcción como servicio complementario (ajuste del cliente, 29-oct-2026)
-    s = dict(s, excluir=(s["slug"], "construccion") if s["slug"] == "diseno" else (s["slug"],))
-    lista = "\n".join(f"        <li>{ico('i-check')}<span>{x}</span></li>" for x in s["lista"])
+    lista = "\n".join(f"        <li>{ico('i-check')}<span>{e(x)}</span></li>" for x in s["lista"])
     catalogo = ""
-    if s["slug"] == "mobiliario":
-        piezas = "\n".join(f"        <li>{pendiente('Foto pendiente', 'ph--sq')}<p>Pieza {i} · por confirmar</p></li>" for i in range(1, 7))
+    if s.get("piezas"):
+        piezas = "\n".join(
+            f"        <li>{foto(p['foto'], 1, p['nombre'], '(min-width: 600px) 33vw, 100vw') if p['foto'] else pendiente('Foto pendiente', 'ph--sq')}<p>{e(p['nombre'])}</p></li>"
+            for p in s["piezas"])
         catalogo = f"""
   <section class="sec catalog" aria-labelledby="cat-title">
     <div class="wrap">
       <div class="sec__head reveal">
         <p class="eyebrow">Catálogo</p>
-        <h2 class="title" id="cat-title">Piezas exclusivas <em>para tu espacio.</em></h2>
-        <p class="lead">Entre 10 y 15 productos exclusivos, además de opciones personalizadas. Las fotos y referencias del catálogo están pendientes.</p>
+        <h2 class="title" id="cat-title">{e(s['catalogo_titulo'])} <em>{e(s['catalogo_titulo_em'])}</em></h2>
+        <p class="lead">{e(s['catalogo_texto'])}</p>
       </div>
       <ul class="team__grid team__grid--3" role="list">
 {piezas}
@@ -784,24 +774,25 @@ def pag_servicio(s):
   </section>
 """
     cta = f"contacto.html?servicio={quote(s['nombre'])}"
+    media = foto(s["foto"], 1, s["alt"], lazy=False) if s["foto"] else pendiente("Foto pendiente")
     cuerpo = f"""  <section class="shero" aria-labelledby="page-title">
     <div class="wrap shero__grid">
       <div class="shero__copy">
-        <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><a href="index.html">Servicios</a><span aria-hidden="true">/</span><span aria-current="page">{s['nombre']}</span></nav>
-        <p class="eyebrow">{s['n']} · {s['nombre']}</p>
-        <h1 class="display shero__title" id="page-title">{s['titulo']} <em>{s['titulo_em']}</em></h1>
-        <p class="lead">{s['texto']}</p>
-        <a class="btn btn--lg shero__cta" href="../{cta}">{s['cta']} {ico('i-arrow')}</a>
+        <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><a href="index.html">Servicios</a><span aria-hidden="true">/</span><span aria-current="page">{e(s['nombre'])}</span></nav>
+        <p class="eyebrow">{SERVICIOS.index(s) + 1:02d} · {e(s['nombre'])}</p>
+        <h1 class="display shero__title" id="page-title">{tit(s)}</h1>
+        <p class="lead">{e(s['texto'])}</p>
+        <a class="btn btn--lg shero__cta" href="../{cta}">{e(s['cta'])} {ico('i-arrow')}</a>
       </div>
-      <figure class="shero__media">{foto(slug, f, w, h, 'Proyecto de OMBU', 1, lazy=False)}</figure>
+      <figure class="shero__media">{media}</figure>
     </div>
   </section>
 
   <section class="sec incl" aria-labelledby="incl-title">
     <div class="wrap incl__grid">
       <div class="sec__head reveal">
-        <span class="svc__ico svc__ico--lg">{ico(s['ico'])}</span>
-        <h2 class="title" id="incl-title">{s['lista_titulo']}</h2>
+        <span class="svc__ico svc__ico--lg">{ico(s['icono'])}</span>
+        <h2 class="title" id="incl-title">{e(s['lista_titulo'])}</h2>
       </div>
       <ul class="incl__list reveal" role="list">
 {lista}
@@ -809,38 +800,30 @@ def pag_servicio(s):
     </div>
   </section>
 {catalogo}
-{sec_servicios(1, "Otros servicios", "que se complementan.", cta=False, excluir=s['excluir'], eyebrow="También hacemos")}
-{banda_final(1, s['cta'], cta)}"""
-    return pagina(f"{s['nombre']} · Servicios OMBU Renovaciones", s["texto"], 1, "svc-" + s["slug"], "servicio", cuerpo)
+{sec_servicios(1, PAG['servicios']['otros'], ocultar=[s['url'], *s.get('ocultar', [])])}
+{banda(1, s['cta'], cta)}"""
+    return pagina({"titulo": f"{s['nombre']} · Servicios OMBU Renovaciones", "descripcion": s["texto"]}, 1, "svc-" + s["url"], "servicio", cuerpo)
 
 
 def pag_proyectos():
-    def ph_card(nombre, nota):
-        return f"""        <li class="card card--ph">{pendiente(nota + ': ' + nombre, 'ph--cmp')}
-          <p class="card__btn"><span class="card__txt"><span class="card__name">{nombre}</span><span class="card__meta">{nota}</span></span></p>
-        </li>"""
-
-    pendientes = "\n".join(ph_card(t, "Fotos pendientes") for t in REALIZADOS_SIN_FOTO)
-    badge = '\n      <div class="badge bhero__badge" aria-hidden="true"><strong>+80</strong><span>proyectos</span></div>'
-    cuerpo = (phero("Espacios que hablan", "por nosotros.",
-                    'Detrás de cada proyecto hay una idea, un proceso y una transformación. Desliza cada foto para comparar el antes y el después, y toca el nombre para ver todas las fotos. <span class="sr-only">Más de 80 proyectos.</span>',
-                    [("Inicio", "index.html"), ("Proyectos", None)], badge)
+    P = PAG["proyectos"]
+    o = P["portada"]
+    badge = f'\n      <div class="badge bhero__badge" aria-hidden="true"><strong>{e(o["cifra"])}</strong><span>{e(o["cifra_txt"])}</span></div>'
+    cuerpo = (phero(o, [("Inicio", "index.html"), ("Proyectos", None)], badge)
               + f"""  <section class="sec projects pgal" id="todos" aria-label="Proyectos">
     <div class="wrap">
-      <ul class="pgrid" data-proj="{",".join(PROYECTOS_TODOS)}" role="list">
-{pendientes}
-      </ul>
+      <ul class="pgrid" data-proj="{",".join(p["url"] for p in PROYECTOS)}" role="list"></ul>
     </div>
   </section>
-"""
-              + banda_final(0, "Quiero transformar mi espacio"))
-    return pagina("Proyectos · OMBU Renovaciones", "Más de 80 proyectos de diseño y construcción. Mira el antes y el después de las obras de OMBU.",
-                  0, "proyectos", "proyectos", cuerpo, js=("inicio.js",), extra_body=dialogos())
+""" + banda(0, P["cta"]["boton"]))
+    return pagina(P["seo"], 0, "proyectos", "proyectos", cuerpo, js=("inicio.js",), extra_body=dialogos())
 
 
 def pag_contacto():
-    chips = "\n".join(f'            <label class="chip"><input type="radio" name="espacio" value="{v}"{" checked" if i == 0 else ""}><span>{v}</span></label>'
-                      for i, v in enumerate(["Vivienda", "Oficina", "Local comercial", "Otro"]))
+    P = PAG["contacto"]
+    o, f_ = P["portada"], P["formulario"]
+    chips = "\n".join(f'            <label class="chip"><input type="radio" name="espacio" value="{e(v)}"{" checked" if i == 0 else ""}><span>{e(v)}</span></label>'
+                      for i, v in enumerate(f_["opciones"]))
 
     def campo(id_, nombre, label, tipo, auto, extra=""):
         return f"""          <div class="field">
@@ -852,19 +835,19 @@ def pag_contacto():
     <div class="wrap contact__grid">
       <div class="contact__copy">
         <nav class="crumbs" aria-label="Ruta"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Contacto</span></nav>
-        <h1 class="display bhero__title" id="page-title">Hablemos del espacio <em>que tienes en mente.</em></h1>
-        <p class="lead">Toda transformación comienza con una idea. Cuéntanos la tuya y nuestro equipo se pondrá en contacto contigo.</p>
+        <h1 class="display bhero__title" id="page-title">{tit(o)}</h1>
+        <p class="lead">{e(o['texto'])}</p>
         <ul class="channels" role="list">
-          <li><a class="channel" href="{WA}" target="_blank" rel="noopener"><span class="channel__ico">{ico('i-wa')}</span><span><small>WhatsApp</small>+57 310 599 6809</span></a></li>
-          <li><a class="channel" href="https://www.instagram.com/ombu.renovaciones/" target="_blank" rel="noopener"><span class="channel__ico">{ico('i-ig')}</span><span><small>Instagram</small>@ombu.renovaciones</span></a></li>
-          <li><div class="channel"><span class="channel__ico">{ico('i-pin')}</span><span><small>Ubicación</small>Medellín, Antioquia</span></div></li>
+          <li><a class="channel" href="{WA}" target="_blank" rel="noopener"><span class="channel__ico">{ico('i-wa')}</span><span><small>WhatsApp</small>{e(C['whatsapp'])}</span></a></li>
+          <li><a class="channel" href="{e(C['instagram_url'])}" target="_blank" rel="noopener"><span class="channel__ico">{ico('i-ig')}</span><span><small>Instagram</small>{e(C['instagram_txt'])}</span></a></li>
+          <li><div class="channel"><span class="channel__ico">{ico('i-pin')}</span><span><small>Ubicación</small>{e(C['ubicacion'])}</span></div></li>
         </ul>
       </div>
 
       <div class="form-wrap">
         <form class="form" id="form" novalidate>
-          <h2 class="form__title">Cuéntanos de tu proyecto</h2>
-          <p class="form__hint">Toma menos de un minuto.</p>
+          <h2 class="form__title">{e(f_['titulo'])}</h2>
+          <p class="form__hint">{e(f_['ayuda'])}</p>
           <div class="form__row">
 {campo("name", "nombre", "Nombre", "text", "given-name")}
 {campo("last", "apellido", "Apellido", "text", "family-name")}
@@ -874,26 +857,26 @@ def pag_contacto():
 {campo("city", "ciudad", "Ciudad", "text", "address-level2", ' placeholder="Medellín"')}
           </div>
           <fieldset class="field">
-            <legend>¿Qué espacio quieres transformar?</legend>
+            <legend>{e(f_['pregunta_espacio'])}</legend>
             <div class="chips">
 {chips}
             </div>
           </fieldset>
           <div class="field">
-            <label for="f-msg">Cuéntanos tu idea <span class="field__opt">(opcional)</span></label>
-            <textarea id="f-msg" name="mensaje" rows="4" placeholder="Ej.: renovar cocina y baños, cambiar pisos…"></textarea>
+            <label for="f-msg">{e(f_['idea'])} <span class="field__opt">(opcional)</span></label>
+            <textarea id="f-msg" name="mensaje" rows="4" placeholder="{e(f_['idea_ejemplo'])}"></textarea>
           </div>
           <div class="field">
-            <label class="check"><input id="f-ok" type="checkbox" name="autorizo" required aria-describedby="e-ok"><span>Acepto los <a href="legal/terminos-y-condiciones.html" target="_blank">términos y condiciones</a> y autorizo a OMBU Renovaciones a tratar mis datos personales según su <a href="{LEGAL}" target="_blank">política de tratamiento de datos</a>.</span></label>
+            <label class="check"><input id="f-ok" type="checkbox" name="autorizo" required aria-describedby="e-ok"><span>Acepto los <a href="legal/terminos-y-condiciones.html" target="_blank">términos y condiciones</a> y autorizo a OMBU Renovaciones a tratar mis datos personales según su <a href="legal/politica-de-datos.html" target="_blank">política de tratamiento de datos</a>.</span></label>
             <p class="field__err" id="e-ok" aria-live="polite"></p>
           </div>
-          <button class="btn btn--lg btn--block form__submit" type="submit">Enviar mi proyecto {ico('i-arrow')}</button>
-          <p class="form__note">Se abrirá WhatsApp con tu mensaje listo para enviar.</p>
+          <button class="btn btn--lg btn--block form__submit" type="submit">{e(f_['boton'])} {ico('i-arrow')}</button>
+          <p class="form__note">{e(f_['nota'])}</p>
         </form>
         <div class="form form--ok" id="form-ok" tabindex="-1" hidden>
           <span class="form__ok-ico">{ico('i-check')}</span>
-          <h2 class="form__title">¡Gracias por compartir tu idea!</h2>
-          <p>Recibimos tu información y nuestro equipo se pondrá en contacto contigo.</p>
+          <h2 class="form__title">{e(f_['gracias_titulo'])}</h2>
+          <p>{e(f_['gracias_texto'])}</p>
           <p class="form__note">¿No se abrió WhatsApp? <a id="form-wa" href="{WA}" target="_blank" rel="noopener">Envía tu mensaje aquí</a>.</p>
         </div>
       </div>
@@ -901,26 +884,27 @@ def pag_contacto():
   </section>
 
 {sec_faq(0)}"""
-    return pagina("Contacto · OMBU Renovaciones", "Cuéntanos tu idea y nuestro equipo se pondrá en contacto contigo. La primera reunión es gratuita.",
-                  0, "contacto", "contacto", cuerpo, js=("inicio.js",))
+    return pagina(P["seo"], 0, "contacto", "contacto", cuerpo, js=("inicio.js",), antes_js='<script src="admin/config.js"></script>\n')
 
 
 def pag_blog_indice():
+    P = PAG["blog"]
+    migas = [("Inicio", "../index.html"), ("Blog", None)]
+    if not ARTICULOS:
+        return pagina(P["seo"], 1, "blog", "blog", phero(P["portada"], migas) + banda(1), js=("blog.js",))
     d = ARTICULOS[0]
     resto = "\n".join(tarjeta(a, 1) for a in ARTICULOS[1:])
     cats = sorted({a["categoria"] for a in ARTICULOS})
-    chips = "\n".join(f'          <button class="filter" type="button" aria-pressed="false" data-filter="{c}">{c}</button>' for c in cats)
-    cuerpo = phero("Ideas, inspiración y conocimiento", "para transformar espacios.",
-                   "Diseño e interiorismo, consejos para renovar, materiales, procesos de construcción y tendencias.",
-                   [("Inicio", "../index.html"), ("Blog", None)]) + f"""
+    chips = "\n".join(f'          <button class="filter" type="button" aria-pressed="false" data-filter="{e(c)}">{e(c)}</button>' for c in cats)
+    cuerpo = phero(P["portada"], migas) + f"""
   <section class="wrap blist" aria-label="Artículos">
-    <article class="feature reveal" data-cat="{d['categoria']}">
-      <a class="feature__link" href="{d['slug']}.html">
-        <div class="feature__media"><img src="../../assets/img/{d['portada'][0]}" width="{d['portada'][1]}" height="{d['portada'][2]}" alt="{d['portada_alt']}" fetchpriority="high"></div>
+    <article class="feature reveal" data-cat="{e(d['categoria'])}">
+      <a class="feature__link" href="{d['url']}.html">
+        <div class="feature__media">{foto(d['foto'], 1, d['alt'], '(min-width: 960px) 700px, 100vw', lazy=False)}</div>
         <div class="feature__body">
-          <p class="post__meta"><span class="post__cat">{d['categoria']}</span><span>{d['fecha_txt']}</span><span>{d['lectura']} min</span></p>
-          <h2 class="feature__title">{d['titulo']} <em>{d['titulo_em']}</em></h2>
-          <p class="post__excerpt">{d['resumen']}</p>
+          <p class="post__meta"><span class="post__cat">{e(d['categoria'])}</span><span>{fecha_larga(d['fecha'])}</span><span>{d['lectura']} min</span></p>
+          <h2 class="feature__title">{tit(d)}</h2>
+          <p class="post__excerpt">{e(d['resumen'])}</p>
           <span class="btn">Leer artículo {ico('i-arrow')}</span>
         </div>
       </a>
@@ -937,37 +921,35 @@ def pag_blog_indice():
     <p class="posts__empty" id="posts-empty" hidden>Todavía no hay artículos en este tema.</p>
   </section>
 
-""" + banda_final(1)
-    return pagina("Blog · OMBU Renovaciones", "Ideas, inspiración y conocimiento para transformar espacios: diseño, renovación, materiales y construcción.",
-                  1, "blog", "blog", cuerpo, js=("blog.js",))
+""" + banda(1)
+    return pagina(P["seo"], 1, "blog", "blog", cuerpo, js=("blog.js",))
 
 
 def pag_articulo(a):
-    otros = [x for x in ARTICULOS if x["slug"] != a["slug"]]
-    cuerpo_art = a["cuerpo"].replace("{A}", "../../assets/")
+    otros = [x for x in ARTICULOS if x["url"] != a["url"]]
     titulo_txt = f'{a["titulo"]} {a["titulo_em"]}'
     ld = f"""  <script type="application/ld+json">
-  {{"@context":"https://schema.org","@type":"BlogPosting","headline":{jsonstr(titulo_txt)},"description":{jsonstr(a['resumen'])},
-   "datePublished":"{a['fecha']}","image":"{URL}assets/img/{a['portada'][0]}","author":{{"@type":"Organization","name":"OMBU Renovaciones"}},
-   "publisher":{{"@type":"Organization","name":"OMBU Renovaciones","logo":{{"@type":"ImageObject","url":"{URL}assets/img/icon-512.png"}}}}}}
+  {json.dumps({"@context": "https://schema.org", "@type": "BlogPosting", "headline": titulo_txt, "description": a["resumen"], "datePublished": a["fecha"],
+               "image": f"{URL}fotos/{stem(a['foto'])}.webp", "author": {"@type": "Organization", "name": "OMBU Renovaciones"}}, ensure_ascii=False)}
   </script>
 """
     share = quote(f"{titulo_txt} · OMBU Renovaciones")
+    pie_foto = f"<figcaption>{e(a['pie_foto'])}</figcaption>" if a.get("pie_foto") else ""
     cuerpo = f"""  <article class="art">
     <header class="art__head wrap">
-      <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><a href="index.html">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{a['categoria']}</span></nav>
-      <p class="post__meta"><span class="post__cat">{a['categoria']}</span><span><time datetime="{a['fecha']}">{a['fecha_txt']}</time></span><span>{a['lectura']} min de lectura</span></p>
-      <h1 class="display art__title">{a['titulo']} <em>{a['titulo_em']}</em></h1>
-      <p class="lead art__lead">{a['resumen']}</p>
-      <p class="art__by"><span class="art__avatar" aria-hidden="true"><svg viewBox="0 0 2250 2250"><use href="../../assets/img/marca.svg#ombu-mark"/></svg></span><span><strong>Equipo OMBU</strong>Diseño y construcción</span></p>
+      <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><a href="index.html">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{e(a['categoria'])}</span></nav>
+      <p class="post__meta"><span class="post__cat">{e(a['categoria'])}</span><span><time datetime="{a['fecha']}">{fecha_larga(a['fecha'])}</time></span><span>{a['lectura']} min de lectura</span></p>
+      <h1 class="display art__title">{tit(a)}</h1>
+      <p class="lead art__lead">{e(a['resumen'])}</p>
+      <p class="art__by"><span class="art__avatar" aria-hidden="true"><svg viewBox="0 0 2250 2250"><use href="../assets/img/marca.svg#ombu-mark"/></svg></span><span><strong>{e(a['autor'])}</strong>Diseño y construcción</span></p>
     </header>
     <figure class="art__cover wrap">
-      <img src="../../assets/img/{a['portada'][0]}" width="{a['portada'][1]}" height="{a['portada'][2]}" alt="{a['portada_alt']}" fetchpriority="high">
-      <figcaption>{a['pie_portada']}</figcaption>
+      {foto(a['foto'], 1, a['alt'], '(min-width: 960px) 1100px, 100vw', lazy=False)}
+      {pie_foto}
     </figure>
     <div class="art__layout wrap">
       <div class="prose">
-{cuerpo_art}
+{md(a['cuerpo'], 1, lead=True)}
       </div>
       <aside class="art__side">
         <div class="share" aria-label="Compartir">
@@ -980,208 +962,35 @@ def pag_articulo(a):
     </div>
     <section class="wrap art__cta reveal" aria-labelledby="cta-title">
       <div class="cta-box on-dark">
-        <svg class="cta-box__mark" viewBox="0 0 2250 2250" aria-hidden="true"><use href="../../assets/img/marca.svg#ombu-mark"/></svg>
+        <svg class="cta-box__mark" viewBox="0 0 2250 2250" aria-hidden="true"><use href="../assets/img/marca.svg#ombu-mark"/></svg>
         <h2 class="cta-box__title" id="cta-title">¿Quieres transformar <em>tu espacio?</em></h2>
         <p>Cuéntanos qué tienes en mente. La primera reunión es gratuita.</p>
         <div class="cta-box__btns">
           <a class="btn btn--light btn--lg" href="../contacto.html">Empezar mi proyecto {ico('i-arrow')}</a>
-          <a class="btn btn--ghost btn--lg" href="{WA_COTIZAR}" target="_blank" rel="noopener">{ico('i-wa')} WhatsApp</a>
+          <a class="btn btn--ghost btn--lg" href="{e(WA_COTIZAR)}" target="_blank" rel="noopener">{ico('i-wa')} WhatsApp</a>
         </div>
       </div>
     </section>
   </article>
 
-{sec_blog(1, "Más ideas", "del blog", otros, "Sigue leyendo")}"""
-    return pagina(f"{titulo_txt} · Blog OMBU", a["resumen"], 1, "blog", "articulo", cuerpo, js=("blog.js",), og="article", extra_head=ld)
-
-
-PEND = '<mark class="pend">por confirmar</mark>'
-
-RESPONSABLE = f"""        <ul>
-          <li><strong>Responsable:</strong> OMBU Renovaciones</li>
-          <li><strong>NIT:</strong> {PEND}</li>
-          <li><strong>Domicilio:</strong> Medellín, Antioquia, Colombia. Dirección: {PEND}</li>
-          <li><strong>Correo:</strong> {PEND}</li>
-          <li><strong>WhatsApp:</strong> <a href="{WA}" target="_blank" rel="noopener">+57 310 599 6809</a></li>
-        </ul>"""
-
-COOKIES_BTN = '<p><button class="btn" type="button" data-cookies>Preferencias de cookies</button></p>'
-
-LEGAL_TEXTOS = {
-    "terminos-y-condiciones.html": ("Términos y condiciones", "de uso del sitio",
-        "Las reglas para usar este sitio web y lo que puedes esperar de la información que publicamos.", f"""
-        <h2>1. Quiénes somos</h2>
-        <p>Este sitio pertenece a OMBU Renovaciones, empresa de diseño y construcción con domicilio en Medellín, Colombia.</p>
-{RESPONSABLE}
-
-        <h2>2. Aceptación</h2>
-        <p>Al navegar por este sitio o enviar el formulario de contacto aceptas estos términos. Si no estás de acuerdo con ellos, te pedimos no usar el sitio.</p>
-
-        <h2>3. Uso del sitio</h2>
-        <p>Puedes usar el sitio para conocer nuestros servicios y proyectos y para contactarnos. No está permitido:</p>
-        <ul>
-          <li>Usarlo para fines ilegales o que afecten derechos de otras personas.</li>
-          <li>Enviar información falsa o hacerte pasar por otra persona.</li>
-          <li>Intentar dañar, sobrecargar o acceder sin permiso a partes del sitio o de sus servidores.</li>
-          <li>Copiar o reutilizar el contenido con fines comerciales sin nuestra autorización.</li>
-        </ul>
-
-        <h2>4. Información del sitio</h2>
-        <p>Los textos, fotografías y proyectos del sitio muestran trabajos realizados y tienen fines informativos. No son una oferta comercial vinculante.</p>
-        <p>Los tiempos que mencionamos (por ejemplo, de 30 a 45 días para diseño o de 90 a 180 días para obra) son referencias. El alcance, el valor, los plazos y las garantías de cada proyecto se definen en la cotización y en el contrato escrito que firmamos contigo.</p>
-
-        <h2>5. Cotizaciones y contratos</h2>
-        <p>La primera reunión es gratuita. Enviar el formulario o escribirnos por WhatsApp no crea ningún compromiso para ninguna de las partes. Cada proyecto se rige por su propio contrato, que prevalece sobre lo publicado en este sitio.</p>
-
-        <h2>6. Propiedad intelectual</h2>
-        <p>La marca OMBU, el logo, los textos, las fotografías, los diseños y demás contenidos del sitio pertenecen a OMBU Renovaciones o se usan con autorización de sus titulares. Están protegidos por la Ley 23 de 1982, la Decisión Andina 351 de 1993 y demás normas de derechos de autor y propiedad industrial. No puedes reproducirlos, modificarlos ni distribuirlos sin nuestra autorización previa y por escrito.</p>
-
-        <h2>7. Enlaces a otros sitios</h2>
-        <p>El sitio tiene enlaces a WhatsApp, Instagram y Facebook. Esas plataformas tienen sus propios términos y políticas de privacidad, y no somos responsables de su contenido ni de su funcionamiento.</p>
-
-        <h2>8. Responsabilidad</h2>
-        <p>Trabajamos para que el sitio funcione bien y su información esté actualizada, pero no podemos garantizar que esté siempre disponible o libre de errores. No respondemos por daños causados por el uso indebido del sitio, por fallas técnicas ajenas a nosotros o por el contenido de sitios de terceros.</p>
-
-        <h2>9. Datos personales</h2>
-        <p>Tratamos los datos que nos compartes según nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>, nuestro <a href="aviso-de-privacidad.html">Aviso de privacidad</a> y nuestra <a href="politica-de-cookies.html">Política de cookies</a>.</p>
-
-        <h2>10. Derechos como consumidor</h2>
-        <p>Cuando contratas nuestros servicios como consumidor tienes los derechos que reconoce el Estatuto del Consumidor (Ley 1480 de 2011). Para peticiones, quejas o reclamos escríbenos por los canales de contacto. También puedes acudir a la Superintendencia de Industria y Comercio (SIC).</p>
-
-        <h2>11. Cambios a estos términos</h2>
-        <p>Podemos actualizar estos términos. Publicaremos la nueva versión en esta página con su fecha de vigencia.</p>
-
-        <h2>12. Ley aplicable</h2>
-        <p>Estos términos se rigen por las leyes de la República de Colombia. Cualquier controversia se resolverá ante los jueces de Medellín, sin perjuicio de los derechos que tengas como consumidor ante la SIC.</p>
-"""),
-
-    "politica-de-datos.html": ("Política de tratamiento", "de datos personales",
-        "Cómo recolectamos, usamos y protegemos tu información, y cómo puedes conocerla, actualizarla o pedir que la eliminemos.", f"""
-        <h2>1. Responsable del tratamiento</h2>
-{RESPONSABLE}
-
-        <h2>2. Marco legal</h2>
-        <p>Esta política cumple la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto Único 1074 de 2015) y demás normas colombianas sobre protección de datos personales.</p>
-
-        <h2>3. Qué datos recolectamos</h2>
-        <ul>
-          <li><strong>Datos de contacto:</strong> nombre, apellido, número de celular y ciudad que escribes en el formulario o nos envías por WhatsApp.</li>
-          <li><strong>Datos del proyecto:</strong> tipo de espacio, ideas, fotos, planos y medidas que decidas compartir.</li>
-          <li><strong>Datos de navegación:</strong> tus preferencias de cookies, guardadas en tu propio navegador.</li>
-        </ul>
-        <p>No pedimos datos sensibles ni datos de menores de edad.</p>
-
-        <h2>4. Para qué los usamos</h2>
-        <ul>
-          <li>Responder tu solicitud, asesorarte y preparar tu cotización.</li>
-          <li>Coordinar visitas, diseño, ejecución y entrega de tu proyecto.</li>
-          <li>Enviarte información sobre el estado de tu obra y garantías.</li>
-          <li>Enviarte novedades de OMBU, solo si nos das permiso. Puedes retirarlo cuando quieras.</li>
-          <li>Cumplir obligaciones legales, contables y tributarias.</li>
-        </ul>
-
-        <h2>5. Autorización</h2>
-        <p>Al marcar la casilla de autorización del formulario, o al escribirnos por WhatsApp, nos autorizas a tratar tus datos para las finalidades anteriores. Guardamos prueba de esa autorización mientras dure la relación contigo.</p>
-
-        <h2>6. Tus derechos</h2>
-        <p>Como titular de los datos puedes:</p>
-        <ul>
-          <li>Conocer, actualizar y corregir tus datos.</li>
-          <li>Pedir prueba de la autorización que nos diste.</li>
-          <li>Saber cómo hemos usado tus datos.</li>
-          <li>Revocar la autorización o pedir que eliminemos tus datos, cuando no exista un deber legal o contractual de conservarlos.</li>
-          <li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC).</li>
-          <li>Acceder gratis a tus datos personales.</li>
-        </ul>
-
-        <h2>7. Cómo ejercer tus derechos</h2>
-        <p>Escríbenos al correo o por WhatsApp con tu nombre, número de contacto y lo que necesitas.</p>
-        <ul>
-          <li><strong>Consultas:</strong> respondemos en máximo 10 días hábiles. Si necesitamos más tiempo te avisamos, y nunca serán más de 5 días hábiles adicionales.</li>
-          <li><strong>Reclamos</strong> (corrección, actualización, eliminación o revocatoria): respondemos en máximo 15 días hábiles, prorrogables hasta 8 días hábiles más con aviso previo.</li>
-        </ul>
-        <p>Antes de acudir a la SIC debes haber presentado tu consulta o reclamo ante nosotros.</p>
-
-        <h2>8. Con quién compartimos tus datos</h2>
-        <p>No vendemos ni alquilamos tus datos. Los compartimos solo con quienes nos ayudan a prestar el servicio (por ejemplo, proveedores y contratistas de tu obra) y bajo deber de confidencialidad. Las conversaciones por WhatsApp pasan por los servidores de Meta Platforms, que pueden estar fuera de Colombia.</p>
-
-        <h2>9. Seguridad y conservación</h2>
-        <p>Aplicamos medidas razonables para evitar pérdida, uso o acceso no autorizado a tus datos. Los conservamos mientras dure la relación contigo y el tiempo que exija la ley.</p>
-
-        <h2>10. Cookies</h2>
-        <p>Lo que guarda el sitio en tu navegador está explicado en nuestra <a href="politica-de-cookies.html">Política de cookies</a>.</p>
-
-        <h2>11. Cambios a esta política</h2>
-        <p>Si cambiamos esta política publicaremos la nueva versión en esta página con su fecha de vigencia. Si el cambio afecta las finalidades, te pediremos una nueva autorización.</p>
-"""),
-
-    "aviso-de-privacidad.html": ("Aviso", "de privacidad",
-        "El resumen de cómo tratamos tus datos personales, según el artículo 15 del Decreto 1377 de 2013.", f"""
-        <h2>Responsable</h2>
-{RESPONSABLE}
-
-        <h2>Qué hacemos con tus datos</h2>
-        <p>Recolectamos tu nombre, apellido, celular, ciudad y la información de tu proyecto para responder tu solicitud, asesorarte, preparar tu cotización, coordinar tu proyecto y, si nos das permiso, enviarte novedades de OMBU.</p>
-
-        <h2>Tus derechos</h2>
-        <p>Puedes conocer, actualizar, corregir y pedir que eliminemos tus datos, revocar tu autorización, pedir prueba de ella y presentar quejas ante la Superintendencia de Industria y Comercio. Las preguntas sobre datos sensibles o de menores de edad son de respuesta opcional.</p>
-
-        <h2>Cómo ejercerlos</h2>
-        <p>Escríbenos al correo o por WhatsApp. Respondemos consultas en máximo 10 días hábiles y reclamos en máximo 15 días hábiles.</p>
-
-        <h2>Política completa</h2>
-        <p>Consulta todos los detalles en nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>.</p>
-"""),
-
-    "politica-de-cookies.html": ("Política", "de cookies",
-        "Qué guarda este sitio en tu navegador, para qué y cómo puedes cambiar tu elección.", f"""
-        <h2>1. Qué son</h2>
-        <p>Las cookies y el almacenamiento local son pequeños archivos que un sitio guarda en tu navegador para recordar información entre visitas.</p>
-
-        <h2>2. Qué usamos hoy</h2>
-        <div class="legal__table">
-          <table>
-            <thead><tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr></thead>
-            <tbody><tr><td><code>ombu-cookies</code></td><td>Necesaria (almacenamiento local)</td><td>Recordar las preferencias de cookies que elegiste.</td><td>Hasta que la borres de tu navegador</td></tr></tbody>
-          </table>
-        </div>
-        <p>Hoy este sitio no usa cookies de analítica ni de marketing, ni carga herramientas de terceros que te rastreen.</p>
-
-        <h2>3. Categorías</h2>
-        <ul>
-          <li><strong>Necesarias:</strong> hacen funcionar el sitio y recuerdan tus preferencias. Siempre están activas.</li>
-          <li><strong>Analítica:</strong> nos dirían qué páginas se visitan para mejorar el sitio. Solo se activarían si las aceptas.</li>
-          <li><strong>Marketing:</strong> permitirían mostrarte anuncios de OMBU en otras plataformas. Solo se activarían si las aceptas.</li>
-        </ul>
-        <p>Si en el futuro activamos analítica o marketing, actualizaremos esta tabla antes de hacerlo.</p>
-
-        <h2>4. Enlaces a otras plataformas</h2>
-        <p>Al tocar los botones de WhatsApp, Instagram o Facebook sales de este sitio. Esas plataformas usan sus propias cookies según sus políticas.</p>
-
-        <h2>5. Cómo cambiar tu elección</h2>
-        <p>Puedes cambiar tu elección cuando quieras con este botón o desde el pie de página. También puedes borrar o bloquear las cookies en la configuración de tu navegador.</p>
-        {COOKIES_BTN}
-
-        <h2>6. Más información</h2>
-        <p>Consulta nuestra <a href="politica-de-datos.html">Política de tratamiento de datos personales</a>.</p>
-"""),
-}
+{sec_blog(1, {"eyebrow": "Sigue leyendo", "titulo": "Más ideas", "titulo_em": "del blog", "enlace": "Ver todo el blog"}, otros)}"""
+    return pagina({"titulo": f"{titulo_txt} · Blog OMBU", "descripcion": a["resumen"]}, 1, "blog", "articulo", cuerpo, js=("blog.js",), og="article", extra_head=ld)
 
 
 def pag_legal(archivo):
-    titulo, titulo_em, lead, cuerpo_legal = LEGAL_TEXTOS[archivo]
+    o = PAG[archivo]["documento"]
     nombre = dict(LEGALES)[archivo]
-    otros = "".join(f'<li><a href="{f}"{" aria-current=\"page\"" if f == archivo else ""}>{t}</a></li>' for f, t in LEGALES)
+    otros = "".join(f'<li><a href="{f}.html"{" aria-current=\"page\"" if f == archivo else ""}>{t}</a></li>' for f, t in LEGALES)
     cuerpo = f"""  <article class="art legal">
     <header class="art__head wrap">
       <nav class="crumbs" aria-label="Ruta"><a href="../index.html">Inicio</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span></nav>
-      <h1 class="display art__title">{titulo} <em>{titulo_em}</em></h1>
-      <p class="lead art__lead">{lead}</p>
-      <p class="post__meta"><span>Vigente desde el {VIGENCIA}</span></p>
+      <h1 class="display art__title">{tit(o)}</h1>
+      <p class="lead art__lead">{e(o['texto'])}</p>
+      <p class="post__meta"><span>Vigente desde el {e(o['vigencia'])}</span></p>
     </header>
     <div class="wrap legal__body">
       <div class="prose">
-{cuerpo_legal}
+{md(o['cuerpo'], 1)}
       </div>
       <nav class="legal__nav" aria-label="Documentos legales">
         <p>Documentos legales</p>
@@ -1190,12 +999,31 @@ def pag_legal(archivo):
     </div>
   </article>
 """
-    return pagina(f"{titulo} {titulo_em} · OMBU Renovaciones", lead, 1, "", "legal", cuerpo)
+    return pagina({"titulo": f"{o['titulo']} {o['titulo_em']} · OMBU Renovaciones", "descripcion": o["texto"]}, 1, "", "legal", cuerpo)
 
 
 # ---------------------------------------------------------------- escritura
 
+def datos_proyectos():
+    """assets/js/proyectos.js del sitio: fotos con medidas, para las tarjetas, la ficha y el visor."""
+    def ph(f):
+        return [stem(f), *medida(f)]
+    lista = [{"slug": p["url"], "nombre": p["nombre"], "tipo": p.get("tipo", ""), "servicios": p.get("servicios", ""), "descripcion": p.get("descripcion", ""),
+              "par": [ph(p["foto_antes"]), ph(p["foto_despues"])] if p.get("foto_antes") and p.get("foto_despues") else None,
+              "despues": [ph(f) for f in p["despues"]], "antes": [ph(f) for f in p["antes"]]} for p in PROYECTOS]
+    return "window.OMBU_PROYECTOS = " + json.dumps(lista, ensure_ascii=False, separators=(",", ":")) + ";\n"
+
+
 def main():
+    for x in os.listdir(DIST):
+        if x != "fotos":
+            ruta = os.path.join(DIST, x)
+            shutil.rmtree(ruta) if os.path.isdir(ruta) else os.remove(ruta)
+    shutil.copytree(os.path.join(RAIZ, "assets"), os.path.join(DIST, "assets"), ignore=shutil.ignore_patterns("proyectos", "hero-*", "fondo-*", "comparador-*"))
+    shutil.copytree(os.path.join(RAIZ, "panel"), os.path.join(DIST, "admin"))
+    with open(os.path.join(DIST, "assets/js/proyectos.js"), "w", encoding="utf-8") as f:
+        f.write(datos_proyectos())
+
     paginas = {
         "index.html": pag_inicio(),
         "nosotros.html": pag_nosotros(),
@@ -1203,19 +1031,25 @@ def main():
         "contacto.html": pag_contacto(),
         "servicios/index.html": pag_servicios(),
         "blog/index.html": pag_blog_indice(),
+        # la dirección anterior del sitio
+        "sitio/index.html": '<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=../"><link rel="canonical" href="../"><a href="../">OMBU Renovaciones</a>\n',
     }
     for s in SERVICIOS:
-        paginas["servicios/" + s["slug"] + ".html"] = pag_servicio(s)
-    for f, _ in LEGALES:
-        paginas["legal/" + f] = pag_legal(f)
+        paginas["servicios/" + s["url"] + ".html"] = pag_servicio(s)
     for a in ARTICULOS:
-        paginas["blog/" + a["slug"] + ".html"] = pag_articulo(a)
+        paginas["blog/" + a["url"] + ".html"] = pag_articulo(a)
+    for f, _ in LEGALES:
+        paginas["legal/" + f + ".html"] = pag_legal(f)
     for ruta, contenido in paginas.items():
-        ruta = os.path.join(SITIO, ruta)
+        ruta = os.path.join(DIST, ruta)
         os.makedirs(os.path.dirname(ruta), exist_ok=True)
         with open(ruta, "w", encoding="utf-8") as f:
             f.write(contenido)
-    print("Generadas", len(paginas), "páginas en sitio/")
+
+    # Datos para ver el panel en modo demo (/admin/?demo) sin Supabase
+    with open(os.path.join(DIST, "admin/demo.json"), "w", encoding="utf-8") as f:
+        json.dump({"paginas": PAG, "servicios": carpeta("servicios"), "proyectos": carpeta("proyectos"), "blog": carpeta("blog")}, f, ensure_ascii=False)
+    print("Generadas", len(paginas), "páginas en dist/")
 
 
 if __name__ == "__main__":

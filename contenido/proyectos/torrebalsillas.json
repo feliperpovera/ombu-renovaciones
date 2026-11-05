@@ -1,0 +1,32 @@
+{
+  "url": "torrebalsillas",
+  "orden": 10,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Torrebalsillas",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "torrebalsillas-par-a.webp",
+  "foto_despues": "torrebalsillas-par-d.webp",
+  "despues": [
+    "torrebalsillas-d01.webp",
+    "torrebalsillas-d02.webp",
+    "torrebalsillas-d03.webp",
+    "torrebalsillas-d04.webp",
+    "torrebalsillas-d05.webp",
+    "torrebalsillas-d06.webp",
+    "torrebalsillas-d07.webp",
+    "torrebalsillas-d08.webp",
+    "torrebalsillas-d09.webp",
+    "torrebalsillas-d10.webp"
+  ],
+  "antes": [
+    "torrebalsillas-a01.webp",
+    "torrebalsillas-a02.webp",
+    "torrebalsillas-a03.webp",
+    "torrebalsillas-a04.webp",
+    "torrebalsillas-a05.webp",
+    "torrebalsillas-a06.webp"
+  ]
+}

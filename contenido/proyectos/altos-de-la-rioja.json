@@ -1,0 +1,32 @@
+{
+  "url": "altos-de-la-rioja",
+  "orden": 7,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Altos de la Rioja",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "altos-de-la-rioja-par-a.webp",
+  "foto_despues": "altos-de-la-rioja-par-d.webp",
+  "despues": [
+    "altos-de-la-rioja-d01.webp",
+    "altos-de-la-rioja-d02.webp",
+    "altos-de-la-rioja-d03.webp",
+    "altos-de-la-rioja-d04.webp",
+    "altos-de-la-rioja-d05.webp",
+    "altos-de-la-rioja-d06.webp",
+    "altos-de-la-rioja-d07.webp",
+    "altos-de-la-rioja-d08.webp",
+    "altos-de-la-rioja-d09.webp",
+    "altos-de-la-rioja-d10.webp"
+  ],
+  "antes": [
+    "altos-de-la-rioja-a01.webp",
+    "altos-de-la-rioja-a02.webp",
+    "altos-de-la-rioja-a03.webp",
+    "altos-de-la-rioja-a04.webp",
+    "altos-de-la-rioja-a05.webp",
+    "altos-de-la-rioja-a06.webp"
+  ]
+}

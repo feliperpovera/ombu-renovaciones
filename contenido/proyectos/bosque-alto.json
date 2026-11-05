@@ -1,0 +1,30 @@
+{
+  "url": "bosque-alto",
+  "orden": 6,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Bosque Alto",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "bosque-alto-par-a.webp",
+  "foto_despues": "bosque-alto-par-d.webp",
+  "despues": [
+    "bosque-alto-d01.webp",
+    "bosque-alto-d02.webp",
+    "bosque-alto-d03.webp",
+    "bosque-alto-d04.webp",
+    "bosque-alto-d05.webp",
+    "bosque-alto-d06.webp",
+    "bosque-alto-d07.webp",
+    "bosque-alto-d08.webp"
+  ],
+  "antes": [
+    "bosque-alto-a01.webp",
+    "bosque-alto-a02.webp",
+    "bosque-alto-a03.webp",
+    "bosque-alto-a04.webp",
+    "bosque-alto-a05.webp",
+    "bosque-alto-a06.webp"
+  ]
+}

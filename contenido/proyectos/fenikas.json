@@ -1,0 +1,32 @@
+{
+  "url": "fenikas",
+  "orden": 2,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Fenikas",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "fenikas-par-a.webp",
+  "foto_despues": "fenikas-par-d.webp",
+  "despues": [
+    "fenikas-d01.webp",
+    "fenikas-d02.webp",
+    "fenikas-d03.webp",
+    "fenikas-d04.webp",
+    "fenikas-d05.webp",
+    "fenikas-d06.webp",
+    "fenikas-d07.webp",
+    "fenikas-d08.webp",
+    "fenikas-d09.webp",
+    "fenikas-d10.webp"
+  ],
+  "antes": [
+    "fenikas-a01.webp",
+    "fenikas-a02.webp",
+    "fenikas-a03.webp",
+    "fenikas-a04.webp",
+    "fenikas-a05.webp",
+    "fenikas-a06.webp"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "seo": {
+    "titulo": "Servicios · OMBU Renovaciones",
+    "descripcion": "Diseño, construcción, mobiliario e interventoría para viviendas, oficinas y espacios comerciales en Medellín."
+  },
+  "portada": {
+    "titulo": "Soluciones integrales",
+    "titulo_em": "para cada espacio.",
+    "texto": "Diseño, construcción, mobiliario e interventoría con un mismo equipo. Elige por dónde empezar o combínalos en un solo proyecto."
+  },
+  "lista": {
+    "eyebrow": "Servicios",
+    "titulo": "Todo lo que necesitas",
+    "titulo_em": "para transformar tu espacio."
+  },
+  "otros": {
+    "eyebrow": "También hacemos",
+    "titulo": "Otros servicios",
+    "titulo_em": "que se complementan."
+  }
+}

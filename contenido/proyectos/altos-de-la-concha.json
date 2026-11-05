@@ -1,0 +1,32 @@
+{
+  "url": "altos-de-la-concha",
+  "orden": 12,
+  "publicado": true,
+  "destacado": false,
+  "nombre": "Altos de la Concha",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "altos-de-la-concha-par-a.webp",
+  "foto_despues": "altos-de-la-concha-par-d.webp",
+  "despues": [
+    "altos-de-la-concha-d01.webp",
+    "altos-de-la-concha-d02.webp",
+    "altos-de-la-concha-d03.webp",
+    "altos-de-la-concha-d04.webp",
+    "altos-de-la-concha-d05.webp",
+    "altos-de-la-concha-d06.webp",
+    "altos-de-la-concha-d07.webp",
+    "altos-de-la-concha-d08.webp",
+    "altos-de-la-concha-d09.webp",
+    "altos-de-la-concha-d10.webp"
+  ],
+  "antes": [
+    "altos-de-la-concha-a01.webp",
+    "altos-de-la-concha-a02.webp",
+    "altos-de-la-concha-a03.webp",
+    "altos-de-la-concha-a04.webp",
+    "altos-de-la-concha-a05.webp",
+    "altos-de-la-concha-a06.webp"
+  ]
+}

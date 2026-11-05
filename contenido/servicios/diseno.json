@@ -1,0 +1,29 @@
+{
+  "url": "diseno",
+  "orden": 1,
+  "publicado": true,
+  "nombre": "Diseño",
+  "icono": "i-design",
+  "resumen": "Convertimos tus ideas en espacios funcionales y personalizados, definiendo cada detalle antes de comenzar.",
+  "titulo": "Diseñamos espacios",
+  "titulo_em": "que se sienten tuyos.",
+  "texto": "Transformamos tus ideas en espacios estéticos y funcionales, pensados para tus necesidades y tu comodidad al habitarlos.",
+  "lista_titulo": "¿Qué incluye?",
+  "lista": [
+    "Desarrollo de propuestas de diseño.",
+    "Renders.",
+    "Planos.",
+    "Detalles de carpintería.",
+    "Selección de materiales y acabados."
+  ],
+  "cta": "Quiero diseñar mi espacio",
+  "foto": "altos-de-la-concha-d05.webp",
+  "alt": "Proyecto de OMBU",
+  "ocultar": [
+    "construccion"
+  ],
+  "catalogo_titulo": "",
+  "catalogo_titulo_em": "",
+  "catalogo_texto": "",
+  "piezas": []
+}

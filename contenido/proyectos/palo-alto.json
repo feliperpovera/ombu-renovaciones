@@ -1,0 +1,32 @@
+{
+  "url": "palo-alto",
+  "orden": 4,
+  "publicado": true,
+  "destacado": true,
+  "nombre": "Palo Alto",
+  "tipo": "",
+  "servicios": "",
+  "descripcion": "",
+  "foto_antes": "palo-alto-par-a.webp",
+  "foto_despues": "palo-alto-par-d.webp",
+  "despues": [
+    "palo-alto-d01.webp",
+    "palo-alto-d02.webp",
+    "palo-alto-d03.webp",
+    "palo-alto-d04.webp",
+    "palo-alto-d05.webp",
+    "palo-alto-d06.webp",
+    "palo-alto-d07.webp",
+    "palo-alto-d08.webp",
+    "palo-alto-d09.webp",
+    "palo-alto-d10.webp"
+  ],
+  "antes": [
+    "palo-alto-a01.webp",
+    "palo-alto-a02.webp",
+    "palo-alto-a03.webp",
+    "palo-alto-a04.webp",
+    "palo-alto-a05.webp",
+    "palo-alto-a06.webp"
+  ]
+}

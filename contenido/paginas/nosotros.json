@@ -1,0 +1,89 @@
+{
+  "seo": {
+    "titulo": "Nosotros · OMBU Renovaciones",
+    "descripcion": "Somos una empresa de diseño y construcción con equipo propio. Conoce quiénes somos y cómo trabajamos."
+  },
+  "portada": {
+    "titulo": "Diseñamos espacios.",
+    "titulo_em": "Construimos confianza.",
+    "texto": "En OMBU creemos que un espacio bien pensado puede transformar la manera en que vivimos y trabajamos."
+  },
+  "quienes": {
+    "eyebrow": "Quiénes somos",
+    "titulo": "Un solo equipo,",
+    "titulo_em": "de la idea a la entrega.",
+    "parrafos": [
+      "Somos una empresa de diseño y construcción enfocada en renovar viviendas, oficinas y locales comerciales para convertirlos en espacios funcionales, personalizados y alineados con las necesidades de cada cliente.",
+      "Contamos con un **equipo propio de diseño, interiorismo, construcción, mano de obra y logística.** Esto nos permite mantener el control del proceso y ofrecer acompañamiento desde el inicio hasta la entrega."
+    ],
+    "foto": "fondo.webp",
+    "alt": "Sala renovada por OMBU con muro revestido en madera"
+  },
+  "diferencia": {
+    "eyebrow": "Por qué elegirnos",
+    "titulo": "Lo que nos",
+    "titulo_em": "diferencia."
+  },
+  "proceso": {
+    "eyebrow": "Cómo trabajamos",
+    "titulo": "De una idea a un espacio",
+    "titulo_em": "hecho realidad.",
+    "texto": "Creemos en procesos claros, comunicación cercana y decisiones bien acompañadas. Así transformamos tu proyecto paso a paso.",
+    "etapas": [
+      {
+        "titulo": "Nos conocemos",
+        "pasos": [
+          "Nos compartes tu idea o necesidad.",
+          "Nuestro equipo comercial te recibe.",
+          "Agendamos una reunión para conocerte.",
+          "Preparamos un plan de trabajo personalizado."
+        ]
+      },
+      {
+        "titulo": "Diseñamos contigo",
+        "pasos": [
+          "Realizamos el levantamiento del espacio y conocemos tus expectativas.",
+          "Desarrollamos una propuesta inicial.",
+          "Revisamos y ajustamos el diseño contigo.",
+          "Aprobamos los diseños y el presupuesto."
+        ]
+      },
+      {
+        "titulo": "Hacemos realidad el proyecto",
+        "pasos": [
+          "Iniciamos la etapa de obra.",
+          "Ejecutamos el proyecto con director de obra, líder de ejecución, residente de obra y personal de ejecución. Compartimos informes semanales y programamos visitas de seguimiento con el cliente."
+        ]
+      },
+      {
+        "titulo": "Entregamos",
+        "pasos": [
+          "Realizamos la entrega final del proyecto."
+        ]
+      }
+    ]
+  },
+  "equipo": {
+    "eyebrow": "Nuestro equipo",
+    "titulo": "Detrás de cada espacio,",
+    "titulo_em": "hay un equipo.",
+    "texto": "Diseñadores, profesionales de construcción y personal operativo trabajan de manera coordinada para que cada etapa del proyecto avance bajo una misma visión.",
+    "fotos": [
+      {
+        "foto": "",
+        "texto": "Reuniones de diseño"
+      },
+      {
+        "foto": "",
+        "texto": "Visitas de obra"
+      },
+      {
+        "foto": "",
+        "texto": "Ejecución"
+      }
+    ]
+  },
+  "cta": {
+    "boton": "Quiero empezar mi proyecto"
+  }
+}
