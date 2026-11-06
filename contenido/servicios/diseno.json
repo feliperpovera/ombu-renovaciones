@@ -8,6 +8,8 @@
   "titulo": "Diseñamos espacios",
   "titulo_em": "que se sienten tuyos.",
   "texto": "Transformamos tus ideas en espacios estéticos y funcionales, pensados para tus necesidades y tu comodidad al habitarlos.",
+  "foto": "altos-de-la-concha-d05.webp",
+  "alt": "Proyecto de OMBU",
   "lista_titulo": "¿Qué incluye?",
   "lista": [
     "Desarrollo de propuestas de diseño.",
@@ -17,8 +19,6 @@
     "Selección de materiales y acabados."
   ],
   "cta": "Quiero diseñar mi espacio",
-  "foto": "altos-de-la-concha-d05.webp",
-  "alt": "Proyecto de OMBU",
   "ocultar": [
     "construccion"
   ],

@@ -8,6 +8,8 @@
   "titulo": "De los planos",
   "titulo_em": "a la realidad.",
   "texto": "Ejecutamos proyectos de construcción y renovación con una planificación clara, coordinación técnica y un equipo que acompaña cada etapa.",
+  "foto": "torrealta-d01.webp",
+  "alt": "Proyecto de OMBU",
   "lista_titulo": "¿Qué incluye?",
   "lista": [
     "Diagnóstico técnico.",
@@ -17,8 +19,6 @@
     "Seguimiento del cronograma."
   ],
   "cta": "Quiero transformar mi espacio",
-  "foto": "torrealta-d01.webp",
-  "alt": "Proyecto de OMBU",
   "ocultar": [],
   "catalogo_titulo": "",
   "catalogo_titulo_em": "",

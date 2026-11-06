@@ -3,64 +3,64 @@
     "titulo": "OMBU Renovaciones · Diseño y construcción de espacios en Medellín",
     "descripcion": "Diseñamos, transformamos y construimos viviendas, oficinas y espacios comerciales en Medellín, con un equipo propio de la primera idea a la entrega."
   },
+  "blog": {
+    "enlace": "Ver todo el blog",
+    "titulo": "Ideas para",
+    "eyebrow": "Blog",
+    "titulo_em": "tu próximo espacio"
+  },
+  "sobre": {
+    "alt": "Sala renovada con muro revestido en madera, sofá claro y comedor al fondo",
+    "foto": "fondo.webp",
+    "boton": "Conoce OMBU",
+    "titulo": "Espacios pensados para ti.",
+    "eyebrow": "Sobre OMBU",
+    "parrafos": [
+      "Somos una empresa de diseño y construcción especializada en renovar viviendas, oficinas y espacios comerciales.",
+      "Creemos que cada espacio debe responder a quienes lo habitan. Por eso, combinamos **diseño personalizado, conocimiento técnico y un equipo propio** de profesionales para hacer realidad cada proyecto."
+    ],
+    "titulo_em": "Procesos respaldados por expertos."
+  },
+  "por_que": {
+    "titulo": "La tranquilidad de estar",
+    "eyebrow": "¿Por qué elegir OMBU?",
+    "titulo_em": "en buenas manos."
+  },
   "portada": {
-    "eyebrow": "Diseño y construcción · Medellín",
-    "titulo": "Tú sueñas el espacio.",
-    "titulo_em": "Nosotros nos encargamos de todo.",
-    "texto": "Diseñamos y construimos espacios que se adaptan a ti. Con un equipo propio que te acompaña desde la primera idea hasta la entrega final.",
+    "alt": "Sala y cocina renovadas por OMBU con paneles de madera, piso laminado y ventanales hacia la naturaleza",
+    "foto": "hero.webp",
     "boton": "Empezar mi proyecto",
+    "texto": "Diseñamos y construimos espacios que se adaptan a ti. Con un equipo propio que te acompaña desde la primera idea hasta la entrega final.",
     "boton2": "Ver proyectos",
+    "titulo": "Tú sueñas el espacio.",
+    "eyebrow": "Diseño y construcción · Medellín",
     "garantias": [
       "Equipo propio",
       "Presupuestos cerrados",
       "Primera reunión gratis"
     ],
-    "foto": "hero.webp",
-    "alt": "Sala y cocina renovadas por OMBU con paneles de madera, piso laminado y ventanales hacia la naturaleza"
-  },
-  "sobre": {
-    "eyebrow": "Sobre OMBU",
-    "titulo": "Espacios pensados para ti.",
-    "titulo_em": "Procesos respaldados por expertos.",
-    "parrafos": [
-      "Somos una empresa de diseño y construcción especializada en renovar viviendas, oficinas y espacios comerciales.",
-      "Creemos que cada espacio debe responder a quienes lo habitan. Por eso, combinamos **diseño personalizado, conocimiento técnico y un equipo propio** de profesionales para hacer realidad cada proyecto."
-    ],
-    "boton": "Conoce OMBU",
-    "foto": "fondo.webp",
-    "alt": "Sala renovada con muro revestido en madera, sofá claro y comedor al fondo"
-  },
-  "servicios": {
-    "eyebrow": "Nuestros servicios",
-    "titulo": "Todo lo que necesitas",
-    "titulo_em": "para transformar tu espacio.",
-    "boton": "Conoce nuestros servicios"
+    "titulo_em": "Nosotros nos encargamos de todo."
   },
   "proceso": {
-    "eyebrow": "Cómo trabajamos",
-    "titulo": "Un solo equipo.",
-    "titulo_em": "Un proceso pensado para ti.",
+    "boton": "Conoce nuestro proceso",
     "texto": "De la primera conversación a la entrega final, te acompañamos en cada decisión.",
-    "boton": "Conoce nuestro proceso"
+    "titulo": "Un solo equipo.",
+    "eyebrow": "Cómo trabajamos",
+    "titulo_em": "Un proceso pensado para ti."
   },
   "proyectos": {
-    "eyebrow": "Proyectos destacados",
-    "titulo": "Los espacios cuentan",
-    "titulo_em": "nuestra historia.",
-    "texto": "Cada proyecto es una oportunidad para transformar ideas en espacios reales. Explora algunos de nuestros trabajos.",
+    "boton": "Ver todos los proyectos",
     "cifra": "+80",
+    "texto": "Cada proyecto es una oportunidad para transformar ideas en espacios reales. Explora algunos de nuestros trabajos.",
+    "titulo": "Los espacios cuentan",
+    "eyebrow": "Proyectos destacados",
     "cifra_txt": "proyectos",
-    "boton": "Ver todos los proyectos"
+    "titulo_em": "nuestra historia."
   },
-  "por_que": {
-    "eyebrow": "¿Por qué elegir OMBU?",
-    "titulo": "La tranquilidad de estar",
-    "titulo_em": "en buenas manos."
-  },
-  "blog": {
-    "eyebrow": "Blog",
-    "titulo": "Ideas para",
-    "titulo_em": "tu próximo espacio",
-    "enlace": "Ver todo el blog"
+  "servicios": {
+    "boton": "Conoce nuestros servicios",
+    "titulo": "Todo lo que necesitas",
+    "eyebrow": "Nuestros servicios",
+    "titulo_em": "para transformar tu espacio."
   }
 }

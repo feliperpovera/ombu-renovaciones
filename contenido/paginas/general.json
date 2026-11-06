@@ -1,109 +1,5 @@
 {
-  "contacto": {
-    "whatsapp": "+57 310 599 6809",
-    "mensaje_whatsapp": "Hola OMBU, quiero cotizar la renovación de mi espacio.",
-    "instagram_url": "https://www.instagram.com/ombu.renovaciones/",
-    "instagram_txt": "@ombu.renovaciones",
-    "facebook_url": "https://www.facebook.com/share/1AA67nPHKe/",
-    "ubicacion": "Medellín, Antioquia"
-  },
-  "legal": {
-    "responsable": "OMBU Renovaciones",
-    "nit": "",
-    "direccion": "",
-    "correo": ""
-  },
-  "pie": {
-    "frase": "Una vida detrás",
-    "frase_em": "de cada puerta.",
-    "derechos": "© 2026 OMBU Renovaciones · Medellín, Antioquia"
-  },
-  "banda": {
-    "titulo": "Tu próxima vida empieza",
-    "titulo_em": "con una conversación.",
-    "texto": "Cuéntanos qué tienes en mente. Nuestro equipo te ayudará a dar el primer paso.",
-    "boton": "Hablemos de tu proyecto",
-    "foto": "palo-alto-d01.webp"
-  },
-  "atributos": {
-    "lista": [
-      {
-        "titulo": "Confianza y respaldo",
-        "texto": "Contratos, pólizas y procesos que aportan seguridad a cada proyecto."
-      },
-      {
-        "titulo": "Diseño a la medida",
-        "texto": "Soluciones pensadas alrededor de tus necesidades."
-      },
-      {
-        "titulo": "Experiencia comprobada",
-        "texto": "Proyectos y transformaciones que muestran nuestro trabajo."
-      },
-      {
-        "titulo": "Acompañamiento cercano",
-        "texto": "Profesionales presentes en cada etapa."
-      },
-      {
-        "titulo": "Equipo propio",
-        "texto": "Integramos diseño, interiorismo, construcción, mano de obra y logística."
-      }
-    ]
-  },
-  "pasos": {
-    "lista": [
-      {
-        "titulo": "Nos cuentas tu idea",
-        "texto": "Nos reunimos para conocer tus necesidades, expectativas y el espacio que quieres transformar."
-      },
-      {
-        "titulo": "Diseñamos a tu medida",
-        "texto": "Desarrollamos una propuesta personalizada, ajustamos los detalles y definimos el presupuesto."
-      },
-      {
-        "titulo": "Construimos con respaldo",
-        "texto": "Nuestro equipo ejecuta el proyecto con acompañamiento, seguimiento y reportes periódicos."
-      },
-      {
-        "titulo": "Entregamos lo acordado",
-        "texto": "Revisamos los detalles finales y hacemos entrega del proyecto terminado."
-      }
-    ]
-  },
-  "testimonios": {
-    "eyebrow": "Testimonios",
-    "titulo": "Ellos ya confiaron",
-    "titulo_em": "en OMBU",
-    "lista": [
-      {
-        "nombre": "Emilio Ortega",
-        "detalle": "Renovación total de apartamento",
-        "cita": "«Hice la renovación total de mi apartamento con Ombu y, sinceramente, fue una de las mejores decisiones que he tomado.»",
-        "texto": "Desde el primer día se encargaron absolutamente de todo. Yo solo conté cómo quería mi espacio y ellos se encargaron de convertir esa idea en algo incluso mejor de lo que imaginé. Los acabados, los materiales y los detalles son de primera. Se nota el cuidado y la calidad en cada rincón. Recomiendo a Ombu sin dudarlo. Son profesionales, cumplidos y el resultado final habla por ellos."
-      },
-      {
-        "nombre": "Laura Duran",
-        "detalle": "Oficina y segundo piso",
-        "cita": "«Nuestra experiencia con Ombu fue increíble.»",
-        "texto": "Decidimos renovar completamente la oficina y hacer un segundo piso. Siempre nos sentimos acompañados en todo el proceso de renovación, desde escoger el diseño hasta los últimos detalles. ¡Definitivamente la mejor opción que pudimos hacer! ¡Increíble todo el proceso con ellos! Gracias Ombu 🙌🏻"
-      },
-      {
-        "nombre": "Juan Miguel Jaramillo",
-        "detalle": "Cliente OMBU",
-        "cita": "«Me fue muy bien.»",
-        "texto": "Un proceso muy eficiente, los materiales excelentes y los acabados muy bonitos, todo muy rápido, muy buen presupuesto. Todo 100/100. Muy contento con el resultado."
-      },
-      {
-        "nombre": "Susana Ospina",
-        "detalle": "Remodelación completa de apartamento",
-        "cita": "«Hice la remodelación completa de mi apartamento con Ombu. Fue la mejor decisión que pude haber tomado.»",
-        "texto": "Ellos se encargaron de TODO. Yo solo tuve que soñar lo que quería y ellos lo hicieron realidad. Lo mejor de todo es que los materiales son de alta calidad. Los recomiendo 100%."
-      }
-    ]
-  },
   "faq": {
-    "eyebrow": "Preguntas frecuentes",
-    "titulo": "Lo que más",
-    "titulo_em": "nos preguntan",
     "lista": [
       {
         "pregunta": "¿La primera reunión tiene algún costo?",
@@ -121,6 +17,110 @@
         "pregunta": "¿De qué depende el costo de un proyecto?",
         "respuesta": "El presupuesto depende de las características de cada intervención, incluyendo materiales seleccionados, áreas que se van a transformar, iluminación y posibles redistribuciones del espacio."
       }
+    ],
+    "titulo": "Lo que más",
+    "eyebrow": "Preguntas frecuentes",
+    "titulo_em": "nos preguntan"
+  },
+  "pie": {
+    "frase": "Una vida detrás",
+    "derechos": "© 2026 OMBU Renovaciones · Medellín, Antioquia",
+    "frase_em": "de cada puerta."
+  },
+  "banda": {
+    "foto": "palo-alto-d01.webp",
+    "boton": "Hablemos de tu proyecto",
+    "texto": "Cuéntanos qué tienes en mente. Nuestro equipo te ayudará a dar el primer paso.",
+    "titulo": "Tu próxima vida empieza",
+    "titulo_em": "con una conversación."
+  },
+  "legal": {
+    "nit": "",
+    "correo": "",
+    "direccion": "",
+    "responsable": "OMBU Renovaciones"
+  },
+  "pasos": {
+    "lista": [
+      {
+        "texto": "Nos reunimos para conocer tus necesidades, expectativas y el espacio que quieres transformar.",
+        "titulo": "Nos cuentas tu idea"
+      },
+      {
+        "texto": "Desarrollamos una propuesta personalizada, ajustamos los detalles y definimos el presupuesto.",
+        "titulo": "Diseñamos a tu medida"
+      },
+      {
+        "texto": "Nuestro equipo ejecuta el proyecto con acompañamiento, seguimiento y reportes periódicos.",
+        "titulo": "Construimos con respaldo"
+      },
+      {
+        "texto": "Revisamos los detalles finales y hacemos entrega del proyecto terminado.",
+        "titulo": "Entregamos lo acordado"
+      }
     ]
+  },
+  "contacto": {
+    "whatsapp": "+57 310 599 6809",
+    "ubicacion": "Medellín, Antioquia",
+    "facebook_url": "https://www.facebook.com/share/1AA67nPHKe/",
+    "instagram_txt": "@ombu.renovaciones",
+    "instagram_url": "https://www.instagram.com/ombu.renovaciones/",
+    "mensaje_whatsapp": "Hola OMBU, quiero cotizar la renovación de mi espacio."
+  },
+  "atributos": {
+    "lista": [
+      {
+        "texto": "Contratos, pólizas y procesos que aportan seguridad a cada proyecto.",
+        "titulo": "Confianza y respaldo"
+      },
+      {
+        "texto": "Soluciones pensadas alrededor de tus necesidades.",
+        "titulo": "Diseño a la medida"
+      },
+      {
+        "texto": "Proyectos y transformaciones que muestran nuestro trabajo.",
+        "titulo": "Experiencia comprobada"
+      },
+      {
+        "texto": "Profesionales presentes en cada etapa.",
+        "titulo": "Acompañamiento cercano"
+      },
+      {
+        "texto": "Integramos diseño, interiorismo, construcción, mano de obra y logística.",
+        "titulo": "Equipo propio"
+      }
+    ]
+  },
+  "testimonios": {
+    "lista": [
+      {
+        "cita": "«Hice la renovación total de mi apartamento con Ombu y, sinceramente, fue una de las mejores decisiones que he tomado.»",
+        "texto": "Desde el primer día se encargaron absolutamente de todo. Yo solo conté cómo quería mi espacio y ellos se encargaron de convertir esa idea en algo incluso mejor de lo que imaginé. Los acabados, los materiales y los detalles son de primera. Se nota el cuidado y la calidad en cada rincón. Recomiendo a Ombu sin dudarlo. Son profesionales, cumplidos y el resultado final habla por ellos.",
+        "nombre": "Emilio Ortega",
+        "detalle": "Renovación total de apartamento"
+      },
+      {
+        "cita": "«Nuestra experiencia con Ombu fue increíble.»",
+        "texto": "Decidimos renovar completamente la oficina y hacer un segundo piso. Siempre nos sentimos acompañados en todo el proceso de renovación, desde escoger el diseño hasta los últimos detalles. ¡Definitivamente la mejor opción que pudimos hacer! ¡Increíble todo el proceso con ellos! Gracias Ombu 🙌🏻",
+        "nombre": "Laura Duran",
+        "detalle": "Oficina y segundo piso"
+      },
+      {
+        "cita": "«Me fue muy bien.»",
+        "texto": "Un proceso muy eficiente, los materiales excelentes y los acabados muy bonitos, todo muy rápido, muy buen presupuesto. Todo 100/100. Muy contento con el resultado.",
+        "nombre": "Juan Miguel Jaramillo",
+        "detalle": "Cliente OMBU"
+      },
+      {
+        "cita": "«Hice la remodelación completa de mi apartamento con Ombu. Fue la mejor decisión que pude haber tomado.»",
+        "texto": "Ellos se encargaron de TODO. Yo solo tuve que soñar lo que quería y ellos lo hicieron realidad. Lo mejor de todo es que los materiales son de alta calidad. Los recomiendo 100%.",
+        "nombre": "Susana Ospina",
+        "detalle": "Remodelación completa de apartamento"
+      }
+    ],
+    "titulo": "Ellos ya confiaron",
+    "eyebrow": "Testimonios",
+    "titulo_em": "en OMBU"
   }
 }

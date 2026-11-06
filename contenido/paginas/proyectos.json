@@ -1,16 +1,16 @@
 {
+  "cta": {
+    "boton": "Quiero transformar mi espacio"
+  },
   "seo": {
     "titulo": "Proyectos · OMBU Renovaciones",
     "descripcion": "Más de 80 proyectos de diseño y construcción. Mira el antes y el después de las obras de OMBU."
   },
   "portada": {
-    "titulo": "Espacios que hablan",
-    "titulo_em": "por nosotros.",
-    "texto": "Detrás de cada proyecto hay una idea, un proceso y una transformación. Desliza cada foto para comparar el antes y el después, y toca el nombre para ver todas las fotos.",
     "cifra": "+80",
-    "cifra_txt": "proyectos"
-  },
-  "cta": {
-    "boton": "Quiero transformar mi espacio"
+    "texto": "Detrás de cada proyecto hay una idea, un proceso y una transformación. Desliza cada foto para comparar el antes y el después, y toca el nombre para ver todas las fotos.",
+    "titulo": "Espacios que hablan",
+    "cifra_txt": "proyectos",
+    "titulo_em": "por nosotros."
   }
 }

@@ -4,25 +4,25 @@
     "descripcion": "Cuéntanos tu idea y nuestro equipo se pondrá en contacto contigo. La primera reunión es gratuita."
   },
   "portada": {
+    "texto": "Toda transformación comienza con una idea. Cuéntanos la tuya y nuestro equipo se pondrá en contacto contigo.",
     "titulo": "Hablemos del espacio",
-    "titulo_em": "que tienes en mente.",
-    "texto": "Toda transformación comienza con una idea. Cuéntanos la tuya y nuestro equipo se pondrá en contacto contigo."
+    "titulo_em": "que tienes en mente."
   },
   "formulario": {
-    "titulo": "Cuéntanos de tu proyecto",
+    "idea": "Cuéntanos tu idea",
+    "nota": "Se abrirá WhatsApp con tu mensaje listo para enviar.",
     "ayuda": "Toma menos de un minuto.",
-    "pregunta_espacio": "¿Qué espacio quieres transformar?",
+    "boton": "Enviar mi proyecto",
+    "titulo": "Cuéntanos de tu proyecto",
     "opciones": [
       "Vivienda",
       "Oficina",
       "Local comercial",
       "Otro"
     ],
-    "idea": "Cuéntanos tu idea",
     "idea_ejemplo": "Ej.: renovar cocina y baños, cambiar pisos…",
-    "boton": "Enviar mi proyecto",
-    "nota": "Se abrirá WhatsApp con tu mensaje listo para enviar.",
+    "gracias_texto": "Recibimos tu información y nuestro equipo se pondrá en contacto contigo.",
     "gracias_titulo": "¡Gracias por compartir tu idea!",
-    "gracias_texto": "Recibimos tu información y nuestro equipo se pondrá en contacto contigo."
+    "pregunta_espacio": "¿Qué espacio quieres transformar?"
   }
 }

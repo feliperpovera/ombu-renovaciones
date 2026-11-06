@@ -8,6 +8,8 @@
   "titulo": "Supervisión que",
   "titulo_em": "da tranquilidad.",
   "texto": "Acompañamos y supervisamos proyectos de construcción para verificar el cumplimiento de criterios técnicos, cronogramas, actividades y estándares de calidad.",
+  "foto": "palo-alto-d01.webp",
+  "alt": "Proyecto de OMBU",
   "lista_titulo": "Espacios que atendemos",
   "lista": [
     "Viviendas.",
@@ -16,8 +18,6 @@
     "Conjuntos residenciales y administraciones."
   ],
   "cta": "Solicitar acompañamiento",
-  "foto": "palo-alto-d01.webp",
-  "alt": "Proyecto de OMBU",
   "ocultar": [],
   "catalogo_titulo": "",
   "catalogo_titulo_em": "",
