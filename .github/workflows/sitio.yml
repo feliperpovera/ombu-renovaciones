@@ -1,4 +1,4 @@
-# Construye el sitio (dist/) y lo publica en GitHub Pages.
+# Construye el sitio (dist/) y lo publica en Hostinger (omburenovaciones.com).
 # Corre al subir cambios, al pulsar «Publicar cambios» en el panel (/admin) y a mano desde la pestaña Actions.
 # Si Supabase está conectado (variables SUPABASE_URL y SUPABASE_ANON_KEY del repositorio),
 # primero baja el contenido y las fotos nuevas, y los guarda en contenido/ y fotos/ como copia.
@@ -59,11 +59,25 @@ jobs:
           key: fotos-${{ hashFiles('fotos/**', 'herramientas/fotos.py') }}
           restore-keys: fotos-
       - run: npm run -s construir
+      # Hostinger: se activa con la variable FTP_SERVIDOR y los secretos FTP_USUARIO y FTP_CLAVE.
+      # La cuenta FTP entra directo en public_html. Solo toca los archivos del sitio.
+      - name: Subir a Hostinger
+        if: vars.FTP_SERVIDOR != ''
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ vars.FTP_SERVIDOR }}
+          username: ${{ secrets.FTP_USUARIO }}
+          password: ${{ secrets.FTP_CLAVE }}
+          protocol: ftps
+          local-dir: dist/
+          server-dir: ./
       - uses: actions/upload-pages-artifact@v3
+        if: vars.FTP_SERVIDOR == ''
         with:
           path: dist
 
   publicar:
+    if: vars.FTP_SERVIDOR == ''
     needs: construir
     runs-on: ubuntu-latest
     environment:

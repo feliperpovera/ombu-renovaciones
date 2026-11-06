@@ -4,16 +4,16 @@ Sitio de **OMBU Renovaciones** (Medellín) y un panel para editar textos, fotos,
 
 | | Dirección |
 |---|---|
-| Sitio | https://feliperpovera.github.io/ombu-renovaciones/ |
-| Panel de edición | https://feliperpovera.github.io/ombu-renovaciones/admin/ |
-| Panel en modo demo (no guarda) | https://feliperpovera.github.io/ombu-renovaciones/admin/?demo |
+| Sitio | https://omburenovaciones.com/ |
+| Panel de edición | https://omburenovaciones.com/admin/ |
+| Panel en modo demo (no guarda) | https://omburenovaciones.com/admin/?demo |
 
 ## Cómo funciona
 
 1. **El panel** (`/admin`) guarda en **Supabase** lo que se edita.
 2. **«Publicar cambios»** llama a la función `publicar`, que le pide a GitHub construir el sitio.
 3. **GitHub Actions** baja el contenido de Supabase a `contenido/` (queda copia en el repositorio), optimiza las fotos y arma las páginas en `dist/`.
-4. La acción publica `dist/` en GitHub Pages. Tarda 2 a 3 minutos. El sitio es estático: carga rápido y Google lo lee completo.
+4. La acción sube `dist/` a Hostinger por FTPS. Tarda 2 a 3 minutos. El sitio es estático: carga rápido y Google lo lee completo.
 
 ## Estructura
 
@@ -70,13 +70,14 @@ Luego abre http://localhost:8765 para el sitio y http://localhost:8765/admin/?de
 
 1. Crear el proyecto en Supabase (región São Paulo).
 2. SQL Editor: pegar y ejecutar `supabase/instalar.sql` (tablas, permisos, fotos, contenido y el editor ombumercadeo@gmail.com).
-3. Authentication → URL Configuration: Site URL y Redirect URL `https://feliperpovera.github.io/ombu-renovaciones/admin/`.
+3. Authentication → URL Configuration: Site URL y Redirect URL `https://omburenovaciones.com/admin/`.
 4. Authentication → Users → Invite user: `ombumercadeo@gmail.com`. Ese correo crea la contraseña.
 5. Edge Functions: crear la función `publicar` con `supabase/functions/publicar/index.ts` y los secretos `GITHUB_REPO` = `feliperpovera/ombu-renovaciones` y `GITHUB_TOKEN` (token fine-grained solo de este repositorio, permiso *Contents: Read and write*).
 6. Llenar `panel/config.js` con la URL del proyecto y la clave pública (publishable).
 7. GitHub → Settings → Secrets and variables → Actions → **Variables**: `SUPABASE_URL` y `SUPABASE_ANON_KEY` (la misma clave pública).
 
-## Antes de salir en vivo
+## Hostinger
 
-- Quitar `noindex` en `head()` de `herramientas/generar.py` y cambiar `URL` cuando esté en su dominio.
-- Completar desde el panel: NIT, dirección y correo (Datos generales), y las fotos pendientes.
+- GitHub: variable `FTP_SERVIDOR` y secretos `FTP_USUARIO` y `FTP_CLAVE`. La cuenta FTP entra directo en `public_html`.
+- El correo usa los MX de Hostinger: no depende de estos archivos. No tocar los registros MX.
+- El WordPress anterior quedó guardado en una carpeta fuera de la web y en las copias de seguridad de Hostinger.

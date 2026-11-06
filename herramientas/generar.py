@@ -18,7 +18,7 @@ from urllib.parse import quote
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST = os.path.join(RAIZ, "dist")
-URL = "https://feliperpovera.github.io/ombu-renovaciones/"
+URL = "https://omburenovaciones.com/"
 LEGALES = [
     ("terminos-y-condiciones", "Términos y condiciones"),
     ("politica-de-datos", "Política de datos"),
@@ -193,7 +193,6 @@ def head(seo, n, og="website", extra=""):
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{t}</title>
   <meta name="description" content="{d}">
-  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#363840">
   <meta property="og:type" content="{og}">
   <meta property="og:locale" content="es_CO">
@@ -1045,6 +1044,28 @@ def main():
         os.makedirs(os.path.dirname(ruta), exist_ok=True)
         with open(ruta, "w", encoding="utf-8") as f:
             f.write(contenido)
+
+    # Lo que necesita el dominio: robots, sitemap y las direcciones del sitio anterior
+    rutas = [r for r in paginas if not r.startswith("sitio/")]
+    with open(os.path.join(DIST, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(f"User-agent: *\nAllow: /\nDisallow: /admin/\n\nSitemap: {URL}sitemap.xml\n")
+    with open(os.path.join(DIST, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                + "".join(f"  <url><loc>{URL}{'' if r == 'index.html' else r.replace('index.html', '')}</loc></url>\n" for r in rutas) + "</urlset>\n")
+    with open(os.path.join(DIST, ".htaccess"), "w", encoding="utf-8") as f:
+        f.write("""DirectoryIndex index.html
+Options -Indexes
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Direcciones del sitio anterior (WordPress)
+RewriteRule ^proyectos/?$ /proyectos.html [L,R=301]
+RewriteRule ^proyectoss/?$ /proyectos.html [L,R=301]
+RewriteRule ^contacto/?$ /contacto.html [L,R=301]
+RewriteRule ^por-que-elegirnos/?$ /nosotros.html [L,R=301]
+RewriteRule ^inicio/?$ / [L,R=301]
+""")
 
     # Datos para ver el panel en modo demo (/admin/?demo) sin Supabase
     with open(os.path.join(DIST, "admin/demo.json"), "w", encoding="utf-8") as f:
