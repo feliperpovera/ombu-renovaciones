@@ -64,7 +64,7 @@ main{padding:32px clamp(16px,4vw,48px) 80px;max-width:1040px;width:100%}
 .form{display:grid;gap:16px;background:var(--blanco);border-radius:var(--r);padding:clamp(18px,3vw,32px);margin-top:20px}
 .campo{display:grid;gap:6px;min-width:0}
 fieldset.campo{border:1px solid var(--line);border-radius:8px;padding:14px 16px 16px;margin:0}
-legend,.lbl{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lila);padding:0 4px}
+legend,.lbl{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:0 4px}
 .lbl{padding:0}
 .ayuda{color:var(--muted);font-size:13px}
 input[type=text],input[type=email],input[type=number],input[type=date],input:not([type]),textarea,select{width:100%;font-family:inherit;font-weight:300;font-size:15px;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--niebla);color:var(--carbon)}
@@ -105,7 +105,7 @@ textarea{resize:vertical}
 /* tablas */
 .tabla{width:100%;border-collapse:collapse;background:var(--blanco);border-radius:var(--r);overflow:hidden;font-size:14px}
 .tabla th,.tabla td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-.tabla th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--lila)}
+.tabla th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .envoltura{overflow-x:auto}
 
 /* aviso flotante */
