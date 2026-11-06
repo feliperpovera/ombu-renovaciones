@@ -1055,10 +1055,15 @@ def main():
     with open(os.path.join(DIST, ".htaccess"), "w", encoding="utf-8") as f:
         f.write("""DirectoryIndex index.html
 Options -Indexes
+<IfModule mod_headers.c>
+Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteRule ^ https://omburenovaciones.com%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\\. [NC]
+RewriteRule ^ https://omburenovaciones.com%{REQUEST_URI} [L,R=301]
 # Direcciones del sitio anterior (WordPress)
 RewriteRule ^proyectos/?$ /proyectos.html [L,R=301]
 RewriteRule ^proyectoss/?$ /proyectos.html [L,R=301]
