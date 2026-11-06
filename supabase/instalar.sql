@@ -22,8 +22,8 @@ set search_path = ''
 as $$
   select exists (select 1 from public.editores e where e.email = lower(auth.jwt() ->> 'email'));
 $$;
-revoke execute on function public.es_editor() from public, anon;
-grant execute on function public.es_editor() to authenticated;
+revoke execute on function public.es_editor() from public;
+grant execute on function public.es_editor() to anon, authenticated; -- las políticas de lectura la evalúan también para el público (da falso)
 
 -- ---------- Contenido ----------
 
